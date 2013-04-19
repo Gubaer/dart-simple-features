@@ -1,0 +1,6 @@
+name:  simple_features
+description:  An implementation of the Simple Features specification for Dart
+
+dependencies:
+  unittest: any
+  meta: any
