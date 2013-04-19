@@ -34,37 +34,26 @@ class Point extends Geometry {
   /**
    * Creates a new point from a list of point values.
    *
-   * [values] is a list with either 2, 3, or 4 numbers.
+   * [values] is a list with either 2 or 4 elements, otherwise an
+   * [ArgumentError] is thrown.
    *
-   * If [values] has two elements, a [Point] with an x- and y-coordinate is
-   * created.
+   * * [x,y] - an xy-point.
+   * * [x,y,z,m] - an xy-point with an z- and/or m-coordinate, if
+   *   the 3d and/or the 4th element isn't null.
    *
-   * If [values] has four elements, a [Point] with an x-, a y-, and a
-   * z-coordinate is created. The fourth element is considered the
-   * m-values.
-   *
-   * If [values] has three elements, either [withZ] or [withM] must be
-   * set. Depending on the supplied flag, the third element is considered
-   * as z- or as m-value.
-   *
+   * x and y must be a [num], otherwise an [ArgumentError] is thrown.
+   * z and m must be a [num] or null, otherwise an [ArgumentError] is thrown.
    */
-  factory Point.from(List<num> values, {bool withZ: false, bool withM: false}) {
+  factory Point.from(List<num> values) {
     _require(values is List);
-    _require(values.length >= 2 && values.length <= 4);
-    _require(values.every((v) => v is num));
-    if (values.length == 2) {
-      return new Point(values[0], values[1]);
-    } else if (values.length == 4) {
-      return new Point(values[0], values[1], z: values[2], m: values[3]);
-    } else {
-      _require(withZ || withM,
-          "requires either withZ or withM for list with 3 values");
-      if (withZ) {
-        return new Point(values[0], values[1], z: values[2]);
-      } else if (withM) {
-        return new Point(values[0], values[1], m: values[2]);
-      }
-    }
+    _require(values.length == 2 && values.length == 4);
+    _require(values.take(2).every((v) => v is num));
+    _require(values.skip(2).every((v) => v is num || v == null));
+    var x = values[0];
+    var y = values[1];
+    var z = values[2];
+    var m = values[3];
+    return new Point(x,y, m:m, z:z);
   }
 
   @override bool get isEmpty => x == null || y == null;
