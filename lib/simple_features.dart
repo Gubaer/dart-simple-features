@@ -11,4 +11,5 @@ part "src/point.dart";
 part "src/wkt.dart";
 part "src/geometry_collection.dart";
 part "src/multipoint.dart";
+part "src/linestring.dart";
 

@@ -86,5 +86,23 @@ class Point extends Geometry {
   @override bool get isSimple => true;
   @override String get geometryType => "Point";
   @override int get dimension => 0;
+
+
+  @override
+  _Envelope _computeEnvelope() {
+    if (isEmpty) return new _Envelope.empty();
+    return new _Envelope.collapsed(x, y);
+  }
+
+  /**
+   * Replies true if the (x,y)-coordinates of this point are
+   * equal to the (x,y)-coordinates of [other].
+   *
+   * Replies false if [other] is null.
+   */
+  bool equals2D(Point other) {
+    if (other == null) return false;
+    return x == other.x && y == other.y;
+  }
 }
 

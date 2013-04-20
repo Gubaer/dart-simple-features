@@ -11,7 +11,8 @@ part of simple_features;
  *
  */
 //TODO: abstract class?
-class GeometryCollection extends Geometry with IterableMixin<Geometry> {
+class GeometryCollection extends Geometry
+  with IterableMixin<Geometry>, _GeometryContainerMixin {
   List<Geometry> _geometries;
 
   /**
@@ -23,13 +24,9 @@ class GeometryCollection extends Geometry with IterableMixin<Geometry> {
       _geometries = null;
     } else {
       _geometries = new List<Geometry>.from(geometries, growable:false);
+      _require(this.every((p) => p != null));
     }
   }
-
-  /**
-   * Creates an empty geometry collection.
-   */
-  GeometryCollection.empty(): this(null);
 
   /**
    * Replies the number of geometries in this collection.
@@ -61,6 +58,65 @@ class GeometryCollection extends Geometry with IterableMixin<Geometry> {
     if (_geometries == null) return [].iterator;
     else return _geometries.iterator;
   }
+}
+
+class _GeometryContainerMixin {
+  bool _is3D = null;
+  _computeIs3D() {
+    if (this.isEmpty) {
+      _is3D = false;
+    } else {
+      _is3D = this.firstWhere((p) => !p.is3D,
+          orElse: () => null) == null;
+    }
+  }
+
+  /**
+   * A collection of geometries is considered 3D if *every* child geometry
+   * has a non-null z-component.
+   *
+   * The value of this property is computed upon first access and then
+   * cached. Subsequent reads of the property efficiently reply the cached
+   * value.
+   */
+  @override
+  bool get is3D {
+    if (_is3D == null) _computeIs3D();
+    return _is3D;
+  }
+
+  bool _isMeasured = null;
+  _computeIsMeasured() {
+    if (this.isEmpty) {
+      _isMeasured = false;
+    } else {
+      _isMeasured = firstWhere((p) => !p.isMeasured,
+          orElse: () => null) == null;
+    }
+  }
+
+  /**
+   * A collection of geometries is considered *measured* if *every* child
+   * geometry has an m-component.
+   *
+   * The value of this property is computed upon first access and then
+   * cached. Subsequent reads of the property efficiently reply the cached
+   * value.
+   */
+  @override
+  bool get isMeasured {
+    if (_isMeasured == null) _computeIsMeasured();
+    return _isMeasured;
+  }
+
+  _Envelope _computeEnvelope() {
+    if (this.isEmpty) return new _Envelope.empty();
+    _Envelope e = new _Envelope.empty();
+    forEach((p) => e.growTo(p));
+    return e;
+  }
+
+  operator [](int n) => this.elementAt(n);
 }
 
 

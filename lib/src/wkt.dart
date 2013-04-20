@@ -360,7 +360,7 @@ class _WKTParser {
     }
     var ret = [];
     for (int i=0; i< n; i++) {
-      var token = tokenizer.next();
+      advanceMandatory();
       token.ensureNotEOS();
       token.ensureNumber();
       ret.add(decode(token.value));
@@ -437,19 +437,19 @@ class _WKTParser {
     }
   }
 
-  parseMultiPoint() {
-    parsePointText(coordSpec) {
-      var numbers = parseNumbers(coordSpec.ncoord);
-      var x = numbers[0];
-      var y = numbers[1];
-      var z = coordSpec.withZ ? numbers[2] : null;
-      var m = null;
-      if (coordSpec.withMZ) m = numbers[3];
-      else if (coordSpec.withM) m = numbers[2];
-      else m = null;
-      return new Point(x,y,z:z,m:m);
-    }
+  parsePointText(coordSpec) {
+    var numbers = parseNumbers(coordSpec.ncoord);
+    var x = numbers[0];
+    var y = numbers[1];
+    var z = coordSpec.withZ ? numbers[2] : null;
+    var m = null;
+    if (coordSpec.withMZ) m = numbers[3];
+    else if (coordSpec.withM) m = numbers[2];
+    else m = null;
+    return new Point(x,y,z:z,m:m);
+  }
 
+  parseMultiPoint() {
     advanceMandatory();
     token.ensureKeyword("multipoint");
     advanceMandatory();
@@ -489,6 +489,39 @@ class _WKTParser {
       }
     }
     return new MultiPoint(points);
+  }
+
+  parseLineString() {
+    advanceMandatory();
+    token.ensureKeyword("linestring");
+    advanceMandatory();
+    var coordSpec;
+    if (token.matchKeyword("empty")) {
+      return new LineString.empty();
+    } else if (token.isLParen) {
+      coordSpec = new _CoordSpecification.xy();
+    } else {
+      coordSpec = parseCoordSpecification();
+      advanceMandatory();
+      if (token.matchKeyword("empty")) {
+        return new LineString.empty();
+      } else {
+        token.ensureLParen();
+      }
+    }
+    var points = [];
+    while(true) {
+      points.add(parsePointText(coordSpec));
+      advanceMandatory();
+      if (token.isComma) {
+        continue;
+      } else if (token.isRParen) {
+        break;
+      } else {
+        throw new WKTError("expected ',' or ')', got '${token.value}'");
+      }
+    }
+    return new LineString(points);
   }
 }
 

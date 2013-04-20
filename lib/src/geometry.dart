@@ -24,5 +24,15 @@ abstract class Geometry {
 
   int get SRID => _srid;
   set SRID(int value) => _srid = value;
+
+  _Envelope get _envelope {
+    if (_cachedEnvelope == null) {
+      _cachedEnvelope = _computeEnvelope();
+    }
+    return _cachedEnvelope;
+  }
+
+  _Envelope _cachedEnvelope;
+  _Envelope _computeEnvelop();
 }
 
