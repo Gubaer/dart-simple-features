@@ -12,15 +12,7 @@ class LineString extends Geometry
 
   List<Point> _points;
 
-  /**
-   * Creates a new linestring.
-   *
-   * Creates an empty linestring if [points] is null or empty.
-   *
-   * Throws an [ArgumentError] if [points] contains only one
-   * point or if it contains null values or empty points.
-   */
-  LineString(List<Point> points) {
+  _init(points) {
     if (points == null || points.isEmpty) {
       _points = null;
     } else {
@@ -30,6 +22,52 @@ class LineString extends Geometry
           "points must not contain null values or empty points");
       _points = new List.from(points,growable:false);
     }
+  }
+
+  /**
+   * Creates a new linestring.
+   *
+   * Creates an empty linestring if [points] is null or empty.
+   *
+   * Throws an [ArgumentError] if [points] contains only one
+   * point or if it contains null values or empty points.
+   */
+  LineString(List<Point> points) {
+    _init(points);
+  }
+
+  /**
+   * Creates a new line.
+   *
+   * A line is a linestring with exactly two non-null, non-empty,
+   * non-equal [points].
+   *
+   * Throws an [ArgumentError] if one of these conditions isn't met.
+   */
+  LineString.line(List<Point> points) {
+    _require(points != null);
+    _require(points.length == 2);
+    _require(points.every((p) => p != null && ! p.isEmpty));
+    _require(! points.first.equals2D(points.last));
+    _points = new List.from(points,growable:false);
+  }
+
+  /**
+   * Creates a new linear ring.
+   *
+   * A linear ring is a linestring that is both closed and simple.
+   * As a consequence, it must have at least four nodes.
+   *
+   * Throws an [ArgumentError] if the [points] passed in do not represent
+   * a linear ring.
+   */
+   LineString.ring(List<Point> points) {
+     _init(points);
+    _require(!this.isEmpty, "a ring can't be empty");
+    _require(this.length >= 4, "a ring must have at least four nodes");
+    _require(this.isClosed, "a ring must be closed");
+    //TODO: not yet implemented
+    //_require(this.isSimple, "a ring must be simple");
   }
 
   /**
@@ -107,3 +145,16 @@ class LineString extends Geometry
   }
 }
 
+/**
+ * A Line is a [LineString] with exactly 2 [Point]s.
+ */
+class Line extends LineString {
+  Line(List<Point> points) : super.line(points);
+}
+
+/**
+ * A [LinearRing] is a [LineString] that is both closed and simple.
+ */
+class LinearRing extends LineString {
+  LinearRing(List<Point> points) : super.ring(points);
+}

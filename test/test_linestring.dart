@@ -176,5 +176,55 @@ main() {
       expect(ls.last.equals2D(new Point(31,32)), true);
     });
   });
+
+  group("line -", () {
+    test("a linestring with two points is a line", () {
+      var ls = new Line([
+           new Point(11,12),
+           new Point(21,22)
+      ]);
+      expect(ls.length, 2);
+    });
+    test("a linestring with three points isn't a line", () {
+      var ls;
+      expect((){
+        ls = new Line([
+             new Point(11,12),
+             new Point(21,22),
+             new Point(31,32)
+        ]);
+        },
+        throwsA(new isInstanceOf<ArgumentError>())
+      );
+    });
+  });
+
+  group("line -", () {
+    test("a simple closed linestring with four points is a LinearRing", () {
+      var ls = new LinearRing([
+           new Point(11,12),
+           new Point(21,22),
+           new Point(31,32),
+           new Point(11,12)
+      ]);
+      expect(ls.length, 4);
+    });
+    test("a open linestring with four points isn't a LinearRing", () {
+      var ls;
+      expect((){
+        ls = new Line([
+             new Point(11,12),
+             new Point(21,22),
+             new Point(31,32),
+             new Point(41,42)
+        ]);
+        },
+        throwsA(new isInstanceOf<ArgumentError>())
+      );
+    });
+    test("a non simple linestring isn't a LinearRing", () {
+      //TODO: test for simplicity not implemented yet
+    });
+  });
 }
 
