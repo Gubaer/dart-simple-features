@@ -27,6 +27,10 @@ class GeometryCollection extends Geometry
       _require(this.every((p) => p != null));
     }
   }
+  /**
+   * Creates an empty geometry collection.
+   */
+  GeometryCollection.empty(): this(null);
 
   /**
    * Replies the number of geometries in this collection.

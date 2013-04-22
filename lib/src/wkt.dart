@@ -1,7 +1,26 @@
 part of simple_features;
 
-Future<dynamic> parseWKT(source) {
-
+/**
+ * Parses the WKT string [wkt] and replies the parsed [Geometry].
+ *
+ * [wkt] must not be null.
+ *
+ * Throws a [WKTError] if parsing fails.
+ */
+Geometry parseWKT(String wkt) {
+  _require(wkt != null);
+  var parser = new _WKTParser(wkt);
+  parser.advanceMandatory();
+  parser.token.ensureKeyword();
+  switch(parser.token.value.toLowerCase()) {
+    case "point": return parser.parsePoint();
+    case "multipoint": return parser.parseMultiPoint();
+    case "linestring": return parser.parseLineString();
+    case "multilinestring": return parser.parseMultiLineString();
+    default:
+      throw new WKTError("WKT parsing for geometry '${parser.token.value}'"
+        " isn't supported yet");
+  }
 }
 
 class _WKTTokenType {
@@ -38,9 +57,12 @@ class _WKTToken {
   bool get isNumber => type == _WKTTokenType.NUMERIC_LITERAL;
   bool get isEOS => type == _WKTTokenType.EOS;
 
-  ensureKeyword(kw) {
-    if (value.toLowerCase() != kw.toLowerCase()) {
-      throw new WKTError("unexpected keyword: expected '$kw', got '${value}'");
+  ensureKeyword([kw=null]) {
+    if (!isKeyword) {
+      throw new WKTError("expected a keyword, got '$value'");
+    }
+    if (kw != null && value.toLowerCase() != kw.toLowerCase()) {
+      throw new WKTError("unexpected keyword: expected '$kw', got '$value'");
     }
   }
 
@@ -360,66 +382,45 @@ class _WKTParser {
     }
     var ret = [];
     for (int i=0; i< n; i++) {
-      advanceMandatory();
       token.ensureNotEOS();
       token.ensureNumber();
       ret.add(decode(token.value));
+      advanceMandatory();
     }
     return ret;
   }
 
-  parsePoint() {
-    var token = tokenizer.next();
-
-    token.ensureKeyword("point");
-    token = tokenizer.next();
-    var n = 2;
-    bool hasZ = false;
-    bool hasM = false;
-    var coords;
-    if (token.isLParen) {
-      coords = parseNumbers(2);
-    } else if (token.isKeyword) {
-      var kw = token.value.toLowerCase();
-      if (kw == "empty") {
-        return new Point.empty();
-      } else if (kw == "z") {
-        n = 3;
-        hasZ = true;
-      } else if (kw == "m") {
-        n = 3;
-        hasM = true;
-      } else if (kw == "zm" || kw == "mz") {
-        n = 4;
-        hasZ = true; hasM = true;
-      }
-      token = tokenizer.next();
-      token.ensureNotEOS();
-      if (token.isKeyword) {
-        if (token.value.toLowerCase() == "empty") {
-          return new Point.empty();
-        } else {
-          throw new WKTError("unexpected keyword '${token.value}'");
-        }
-      } else if (token.isLParen) {
-        coords = parseNumbers(n);
-      } else {
-        throw new WKTError("unexpected token '${token.value}'");
-      }
+  parseCoordSpecificationOrEmpty() {
+    var coordSpec= null;
+    if (token.matchKeyword("empty")) {
+      // return null
+    } else if (token.isLParen) {
+      coordSpec = new _CoordSpecification.xy();
     } else {
-      throw new WKTError("unexpected token '${token.value}'");
+      coordSpec = parseCoordSpecification();
+      advanceMandatory();
+      if (token.matchKeyword("empty")) {
+        return null;
+      } else {
+        token.ensureLParen();
+      }
     }
-    token = tokenizer.next();
-    token.ensureNotEOS();
+    return coordSpec;
+  }
+
+  /**
+   * pre: token is 'point'
+   * post: token is ')'
+   */
+  parsePoint() {
+    token.ensureKeyword("point");
+    advanceMandatory();
+    var coordSpec = parseCoordSpecificationOrEmpty();
+    if (coordSpec == null) return new Point.empty();
+    advanceMandatory();
+    var point = parsePointText(coordSpec);
     token.ensureRParen();
-    var x = coords[0];
-    var y = coords[1];
-    var z = hasZ ? coords[2] : null;
-    var m;
-    if (hasZ && hasM) m = coords[3];
-    else if (!hasZ && hasM) m = coords[2];
-    print("m: $m, hasM: $hasM, hasZ: $hasZ, coords: $coords");
-    return new Point(x,y, z:z, m:m);
+    return point;
   }
 
   advance() => token = tokenizer.next();
@@ -437,6 +438,10 @@ class _WKTParser {
     }
   }
 
+  /**
+   * pre: token is a number
+   * post: token is the token following the coordSpec.ncoord parsed numbers
+   */
   parsePointText(coordSpec) {
     var numbers = parseNumbers(coordSpec.ncoord);
     var x = numbers[0];
@@ -449,32 +454,23 @@ class _WKTParser {
     return new Point(x,y,z:z,m:m);
   }
 
+  /**
+   * pre: token is 'multipoint'
+   * post: token is ')'
+   */
   parseMultiPoint() {
-    advanceMandatory();
     token.ensureKeyword("multipoint");
     advanceMandatory();
-    var coordSpec;
-    if (token.matchKeyword("empty")) {
-      return new MultiPoint.empty();
-    } else if (token.isLParen) {
-      coordSpec = new _CoordSpecification.xy();
-    } else {
-      coordSpec = parseCoordSpecification();
-      advanceMandatory();
-      if (token.matchKeyword("empty")) {
-        return new MultiPoint.empty();
-      } else {
-        token.ensureLParen();
-      }
-    }
+    var coordSpec = parseCoordSpecificationOrEmpty();
+    if (coordSpec == null) return new MultiPoint.empty();
     advanceMandatory();
     var points = [];
     while(true) {
       if (token.isRParen) {
         break;
       } else if (token.isLParen) {
-        points.add(parsePointText(coordSpec));
         advanceMandatory();
+        points.add(parsePointText(coordSpec));
         token.ensureRParen();
         advanceMandatory();
         if (token.isComma) {
@@ -491,28 +487,29 @@ class _WKTParser {
     return new MultiPoint(points);
   }
 
+  /**
+   * pre: token is 'linestring'
+   * post: token is ')'
+   */
   parseLineString() {
-    advanceMandatory();
     token.ensureKeyword("linestring");
     advanceMandatory();
-    var coordSpec;
-    if (token.matchKeyword("empty")) {
-      return new LineString.empty();
-    } else if (token.isLParen) {
-      coordSpec = new _CoordSpecification.xy();
-    } else {
-      coordSpec = parseCoordSpecification();
-      advanceMandatory();
-      if (token.matchKeyword("empty")) {
-        return new LineString.empty();
-      } else {
-        token.ensureLParen();
-      }
-    }
+    var coordSpec = parseCoordSpecificationOrEmpty();
+    if (coordSpec == null) return new LineString.empty();
+    var points = parseLineStringText(coordSpec);
+    return new LineString(points);
+  }
+
+  /**
+   * pre: token  is  '('
+   * post: token is  ')'
+   */
+  parseLineStringText(coordSpec) {
     var points = [];
+    token.ensureLParen();
     while(true) {
-      points.add(parsePointText(coordSpec));
       advanceMandatory();
+      points.add(parsePointText(coordSpec));
       if (token.isComma) {
         continue;
       } else if (token.isRParen) {
@@ -521,7 +518,33 @@ class _WKTParser {
         throw new WKTError("expected ',' or ')', got '${token.value}'");
       }
     }
-    return new LineString(points);
+    return points;
+  }
+
+  /**
+   * pre: token is 'multilinestring'
+   * post: token is ')'
+   */
+  parseMultiLineString() {
+    token.ensureKeyword("multilinestring");
+    advanceMandatory();
+    var coordSpec = parseCoordSpecificationOrEmpty();
+    if (coordSpec == null) return new MultiLineString.empty();
+    advanceMandatory();
+    var linestrings = [];
+    while(true) {
+      linestrings.add(new LineString(parseLineStringText(coordSpec)));
+      advanceMandatory();
+      if (token.isComma) {
+        advanceMandatory();
+        continue;
+      } else if (token.isRParen) {
+        break;
+      } else {
+        throw new WKTError("expected ',' or ')', got '${token.value}'");
+      }
+    }
+    return new MultiLineString(linestrings);
   }
 }
 

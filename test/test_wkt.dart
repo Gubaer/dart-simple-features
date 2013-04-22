@@ -10,6 +10,7 @@ part "../lib/src/point.dart";
 part "../lib/src/geometry_collection.dart";
 part "../lib/src/multipoint.dart";
 part "../lib/src/linestring.dart";
+part "../lib/src/multilinestring.dart";
 part "../lib/src/wkt.dart";
 
 main() {
@@ -139,6 +140,7 @@ main() {
     test("point xy", () {
       var wkt = "point (123 456)";
       var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
       var point = parser.parsePoint();
       expect(point.x, 123);
       expect(point.y, 456);
@@ -149,6 +151,7 @@ main() {
     test("point z", () {
       var wkt = "point z (123 456 789)";
       var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
       var point = parser.parsePoint();
       expect(point.x, 123);
       expect(point.y, 456);
@@ -159,6 +162,7 @@ main() {
     test("point m", () {
       var wkt = "point m (123 456 789)";
       var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
       var point = parser.parsePoint();
       expect(point.x, 123);
       expect(point.y, 456);
@@ -169,6 +173,7 @@ main() {
     test("point zm", () {
       var wkt = "point zm (123 456 789 -123.456)";
       var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
       var point = parser.parsePoint();
       expect(point.x, 123);
       expect(point.y, 456);
@@ -183,6 +188,7 @@ main() {
     test("empty", () {
       var wkt = "multipoint empty";
       var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
       var mp = parser.parseMultiPoint();
       expect(mp.isEmpty, true);
     });
@@ -190,6 +196,7 @@ main() {
     test("single xy", () {
       var wkt = "multipoint ((1 2))";
       var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
       var mp = parser.parseMultiPoint();
       expect(mp.length, 1);
       expect(mp.first.x, 1);
@@ -199,6 +206,7 @@ main() {
     test("single xyz", () {
       var wkt = "multipoint z ((1 2 3))";
       var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
       var mp = parser.parseMultiPoint();
       expect(mp.length, 1);
       expect(mp.first.x, 1);
@@ -209,6 +217,7 @@ main() {
     test("single xym", () {
       var wkt = "multipoint m ((1 2 3))";
       var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
       var mp = parser.parseMultiPoint();
       expect(mp.length, 1);
       expect(mp.first.x, 1);
@@ -219,6 +228,7 @@ main() {
     test("single xyzm", () {
       var wkt = "multipoint zm ((1 2 3 4))";
       var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
       var mp = parser.parseMultiPoint();
       expect(mp.length, 1);
       expect(mp.first.x, 1);
@@ -230,6 +240,7 @@ main() {
     test("multiple xy", () {
       var wkt = "multipoint ((11 12), (21 22), (31 32))";
       var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
       var mp = parser.parseMultiPoint();
       expect(mp.length, 3);
       expect([mp[0].x, mp[0].y], [11, 12]);
@@ -243,6 +254,7 @@ main() {
     test("empty", () {
       var wkt = "linestring empty";
       var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
       var ls = parser.parseLineString();
       expect(ls.isEmpty, true);
     });
@@ -250,6 +262,7 @@ main() {
     test("a line with two points", () {
       var wkt = "linestring (1 2, 3 4)";
       var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
       var ls = parser.parseLineString();
       expect(ls.length, 2);
       expect(ls.first.x, 1);
@@ -259,6 +272,7 @@ main() {
     test("a linestring with two 3d points", () {
       var wkt = "linestring z (1 2 3, 4.0 +5 -6E1)";
       var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
       var ls = parser.parseLineString();
       expect(ls.length, 2);
       expect(ls.is3D, true);
@@ -268,11 +282,70 @@ main() {
     test("a linestring with two measured points", () {
       var wkt = "LINeStrIng M (1 2 3, 4.0 +5 -6E1)";
       var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
       var ls = parser.parseLineString();
       expect(ls.length, 2);
       expect(ls.isMeasured, true);
       expect(ls.last.m, -60);
     });
+  });
+
+  /* --------------------------------------------------------------------- */
+  group("parse multilinestring - ", () {
+    test("empty", () {
+      var wkt = "multilinestring empty";
+      var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
+      var mls = parser.parseMultiLineString();
+      expect(mls.isEmpty, true);
+    });
+
+    test("a multilinestring with one line string", () {
+      var wkt = "multilinestring ( (1 2, 3 4, 5 6) )";
+      var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
+      var mls = parser.parseMultiLineString();
+      expect(mls.length, 1);
+      expect(mls.first is LineString, true);
+    });
+
+    test("a multilinestring with two 3D linestrings", () {
+      var wkt = "multilinestring z ( (1 2 3, 4.0 +5 -6E1, 4 5 6), (1 2 3, 4 5 6, 7 8 9))";
+      var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
+      var mls = parser.parseMultiLineString();
+      expect(mls.length, 2);
+      expect(mls.is3D, true);
+    });
+  });
+
+
+
+  /* --------------------------------------------------------------------- */
+  group("parse WKT - ", () {
+    test("with a point", () {
+      var wkt = "point (1 2)";
+      var g = parseWKT(wkt);
+      expect(g is Point, true);
+    });
+    test("with a multipoint", () {
+      var wkt = "multipoint ( (1 2), (3 4))";
+      var g = parseWKT(wkt);
+      expect(g is MultiPoint, true);
+    });
+    test("with a linestring", () {
+      var wkt = "linestring (1 2, 3 4, 5 6)";
+      var g = parseWKT(wkt);
+      expect(g is LineString, true);
+    });
+
+    test("with a multilinestring", () {
+      var wkt = "multilinestring ( (1 2, 3 4, 5 6), (1 2, 3 4, 5 6))";
+      var g = parseWKT(wkt);
+      expect(g is MultiLineString, true);
+    });
+
+
   });
 }
 

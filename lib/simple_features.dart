@@ -13,6 +13,7 @@ part "src/wkt.dart";
 part "src/geometry_collection.dart";
 part "src/multipoint.dart";
 part "src/linestring.dart";
+part "src/multilinestring.dart";
 part "src/topology.dart";
 part "src/line_intersection.dart";
 
