@@ -1,5 +1,8 @@
 part of simple_features;
 
+/// the singleton empty geomtery collection
+final _EMPTY_GEOMETRY_COLLECTION = new GeometryCollection(null);
+
 /**
  * A [GeometryCollection] is a geometric object that is a collection of
  * some number of geometric objects.
@@ -30,7 +33,7 @@ class GeometryCollection extends Geometry
   /**
    * Creates an empty geometry collection.
    */
-  GeometryCollection.empty(): this(null);
+  factory GeometryCollection.empty() => _EMPTY_GEOMETRY_COLLECTION;
 
   /**
    * Replies the number of geometries in this collection.

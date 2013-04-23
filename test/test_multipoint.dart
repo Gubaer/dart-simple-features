@@ -166,6 +166,21 @@ main() {
     });
   });
 
+  group("boundary -", () {
+    test("the boundary of an empty multipoint is empty", () {
+      var mp = new MultiPoint.empty();
+      expect(mp.boundary.isEmpty, true);
+    });
 
+    test("the boundary of any multipoint is empty", () {
+      var points = [
+                    new Point(11,12),
+                    new Point(21,22, m:23),
+                    new Point(31,32, z:33)
+                    ];
+      var mp = new MultiPoint(points);
+      expect(mp.boundary.isEmpty, true);
+    });
+  });
 }
 

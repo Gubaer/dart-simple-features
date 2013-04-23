@@ -10,6 +10,7 @@ part "../lib/src/point.dart";
 part "../lib/src/geometry.dart";
 part "../lib/src/geometry_collection.dart";
 part "../lib/src/linestring.dart";
+part "../lib/src/multipoint.dart";
 
 main() {
   group("constructor -", () {
@@ -224,6 +225,35 @@ main() {
     });
     test("a non simple linestring isn't a LinearRing", () {
       //TODO: test for simplicity not implemented yet
+    });
+  });
+
+  group("boundary -", () {
+    test("the boundary of an empty line is empty", () {
+      var ls = new LineString.empty();
+      expect(ls.boundary.isEmpty, true);
+    });
+    test("the boundary of a closed line string is empty", () {
+      var ls = new LineString([
+           new Point(11,12),
+           new Point(21,22),
+           new Point(31,32),
+           new Point(41,42),
+           new Point(11,12)
+      ]);
+      expect(ls.boundary.isEmpty, true);
+    });
+    test("the boundary of an open linestring consists of the endpoints", () {
+      var ls = new LineString([
+         new Point(11,12),
+         new Point(21,22),
+         new Point(31,32),
+         new Point(41,42)
+     ]);
+      expect(ls.boundary.isEmpty, false);
+      expect(ls.boundary.length, 2);
+      expect(ls.boundary.first.x, 11);
+      expect(ls.boundary.last.y, 42);
     });
   });
 }

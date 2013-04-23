@@ -72,4 +72,8 @@ class MultiPoint extends GeometryCollection {
     if (_isSimple == null) _computeIsSimple();
     return _isSimple;
   }
+
+  /// The boundary of a [MultiPoint] is an empty [GeometryCollection]
+  @override
+  Geometry get boundary => new GeometryCollection.empty();
 }

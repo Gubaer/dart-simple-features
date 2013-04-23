@@ -143,6 +143,18 @@ class LineString extends Geometry
   bool get isRing {
     throw new UnimplementedError();
   }
+
+  /**
+   * The boundary is empty if this linestring [isEmpty]
+   * or [isClosed]. Otherwise it consists of a
+   * [MultiPoint] with the two end points.
+   */
+  @override
+  Geometry get boundary {
+    if (this.isEmpty) return new GeometryCollection.empty();
+    if (this.isClosed) return new GeometryCollection.empty();
+    return new MultiPoint([first, last]);
+  }
 }
 
 /**

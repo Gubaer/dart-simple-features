@@ -81,8 +81,14 @@ class Point extends Geometry {
     buffer.write(")");
     return buffer.toString();
   }
-  /// the boundary of a point is the empty set, that is, null
-  @override Geometry get boundary => null;
+  /**
+   * The boundary of a point is the empty [GeometryCollection].
+   *
+   * Note: According to the SFS the boundary of a [Point] is the
+   * empty set. Like the Java Topology Suite we reply an empty
+   * [GeometryCollection], not an empty [Point].
+   */
+  @override Geometry get boundary => new GeometryCollection.empty();
   @override bool get isSimple => true;
   @override String get geometryType => "Point";
   @override int get dimension => 0;
