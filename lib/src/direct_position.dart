@@ -1,22 +1,10 @@
 part of simple_features;
 
-abstract class DirectPosition2D {
-  num get x;
-  num get y;
-}
 
-abstract class DirectPosition3D extends DirectPosition2D {
-  num get z;
-}
-
-abstract class DirectPosition extends DirectPosition3D {
-  num get m;
-}
-
-class _DirectPosition2DImpl implements DirectPosition2D, Comparable {
+class DirectPosition2D implements Comparable {
   final double x;
   final double y;
-  const _DirectPosition2DImpl(num x, num y):
+  const DirectPosition2D(num x, num y):
     this.x= x.toDouble(), this.y=y.toDouble();
 
   int compareTo(other) {

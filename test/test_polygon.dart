@@ -137,4 +137,34 @@ main() {
       expect(p.interiorRings.every((r) => r is LineString), true);
     });
   });
+
+  /* ---------------------------------------------------------------- */
+  group("triangle -", () {
+    test("must consist of a closed linestring with three coordinates ", () {
+      var exterior = parseWKT("linestring (0 0, 100 0, 0 100, 0 0)");
+      var p = new Polygon.triangle(exterior);
+    });
+  });
+
+  group("triangle -", () {
+    test("a triangle with too many nodes ", () {
+      var exterior = parseWKT("linestring (0 0, 100 0, 0 100, 50 50, 0 0)");
+      var p;
+      expect(() => new Polygon.triangle(exterior),
+          throwsA(new isInstanceOf<ArgumentError>()));
+    });
+
+    test("a non-closed triangle isn't a triangle", () {
+      var exterior = parseWKT("linestring (0 0, 100 0, 0 100, 50 50)");
+      var p;
+      expect(() => new Polygon.triangle(exterior),
+          throwsA(new isInstanceOf<ArgumentError>()));
+    });
+
+    test("the exterior must not be null", () {
+      var p;
+      expect(() => p = new Polygon.triangle(null),
+          throwsA(new isInstanceOf<ArgumentError>()));
+    });
+  });
 }

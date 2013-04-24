@@ -57,6 +57,26 @@ class Polygon extends Surface {
   Polygon.empty(): _exterior=null, _interiors = null;
 
   /**
+   * Creates a triangle with the [exterior].
+   *
+   * [exterior] must be a non-null, closed linestring with exactly three
+   * distinct, non-colienar points.
+   *
+   * Throws [ArgumentError] if the preconditions aren't met.
+   */
+  Polygon.triangle(LineString exterior){
+    _require(exterior != null);
+    _require(
+      exterior.map((p) => new DirectPosition2D(p.x, p.y)).toSet().length == 3,
+      "a triangle must consist of three non-colinear nodes"
+    );
+    _require(exterior.isClosed, "the exterior of a triangle must be closed");
+    //TODO: check for colienary of the three points
+
+    _exterior = exterior;
+  }
+
+  /**
    * The exterior ring of this polygon.
    *
    * Replies an empty linestring if this polygon is empty.
@@ -123,4 +143,22 @@ class Polygon extends Surface {
     rings.addAll(interiorRings);
     return new MultiLineString(rings);
   }
+}
+
+/**
+ * A Triangle is a polygon with 3 distinct, non-collinear vertices and no
+ * interior boundary.
+ *
+ */
+class Triangle extends Polygon {
+
+  /**
+   * Creates a triangle with the [exterior].
+   *
+   * [exterior] must be a non-null, closed linestring with exactly three
+   * distinct, non-colienar points.
+   *
+   * Throws [ArgumentError] if the preconditions aren't met.
+   */
+  Triangle(LineString exterior) : super.triangel(exterior);
 }
