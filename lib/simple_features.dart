@@ -17,4 +17,7 @@ part "src/linestring.dart";
 part "src/multilinestring.dart";
 part "src/topology.dart";
 part "src/line_intersection.dart";
+part "src/surface.dart";
+part "src/polygon.dart";
+
 

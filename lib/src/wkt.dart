@@ -17,6 +17,7 @@ Geometry parseWKT(String wkt) {
     case "multipoint": return parser.parseMultiPoint();
     case "linestring": return parser.parseLineString();
     case "multilinestring": return parser.parseMultiLineString();
+    case "polygon": return parser.parsePolygon();
     default:
       throw new WKTError("WKT parsing for geometry '${parser.token.value}'"
         " isn't supported yet");
@@ -545,6 +546,30 @@ class _WKTParser {
       }
     }
     return new MultiLineString(linestrings);
+  }
+
+  parsePolygon() {
+    token.ensureKeyword("polygon");
+    advanceMandatory();
+    var coordSpec = parseCoordSpecificationOrEmpty();
+    if (coordSpec == null) return new MultiLineString.empty();
+    advanceMandatory();
+    var rings = [];
+    while(true) {
+      //TODO: validate that linestring is a ring, either here or
+      // in the polygon constructor
+      rings.add(new LineString(parseLineStringText(coordSpec)));
+      advanceMandatory();
+      if (token.isComma) {
+        advanceMandatory();
+        continue;
+      } else if (token.isRParen) {
+        break;
+      } else {
+        throw new WKTError("expected ',' or ')', got '${token.value}'");
+      }
+    }
+    return new Polygon(rings[0], rings.skip(1));
   }
 }
 

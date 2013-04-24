@@ -12,6 +12,8 @@ part "../lib/src/multipoint.dart";
 part "../lib/src/linestring.dart";
 part "../lib/src/multilinestring.dart";
 part "../lib/src/wkt.dart";
+part "../lib/src/surface.dart";
+part "../lib/src/polygon.dart";
 
 main() {
   group("elementary token type test - ", () {
@@ -319,6 +321,66 @@ main() {
     });
   });
 
+  /* --------------------------------------------------------------------- */
+  group("parse polygon - ", () {
+    test("empty", () {
+      var wkt = "polygon empty";
+      var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
+      var p = parser.parsePolygon();
+      expect(p.isEmpty, true);
+    });
+
+    test("a polygon with an exterior ring only", () {
+      var wkt = "polygon ( (1 2, 3 4, 5 6, 1 2) )";
+      var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
+      var p = parser.parsePolygon();
+      expect(p.isEmpty, false);
+      expect(p.interiorRings.isEmpty, true);
+      expect(p.exteriorRing, isNotNull);
+    });
+
+    test("a polygon with an exterior and two interior rings", () {
+      var wkt = "polygon ( (0 0, 0 100, 100 100, 100 0, 0 0), "
+                         " (1 1, 1 2, 2 2, 2 1, 1 1), "
+                         " (50 50, 50 60, 60 60, 60 50, 50 50) )";
+      var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
+      var p = parser.parsePolygon();
+      expect(p.isEmpty, false);
+      expect(p.interiorRings.length, 2);
+      expect(p.exteriorRing, isNotNull);
+    });
+
+    test("a 3D polygon", () {
+      var wkt = "polygon z ( (0 0 0, 0 100 0, 100 100 0, 100 0 0, 0 0 0), "
+                         " (1 1 0, 1 2 0, 2 2 0, 2 1 0, 1 1 0), "
+                         " (50 50 0, 50 60 0, 60 60 0, 60 50 0, 50 50 0) )";
+      var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
+      var p = parser.parsePolygon();
+      expect(p.isEmpty, false);
+      expect(p.interiorRings.length, 2);
+      expect(p.exteriorRing, isNotNull);
+      expect(p.is3D, true);
+    });
+
+    test("a measured 3D polygon", () {
+      var wkt = "polygon zm ( (0 0 0 0, 0 100 0 0, 100 100 0 0, 100 0 0 0, 0 0 0 0), "
+                         " (1 1 0 0, 1 2 0 0, 2 2 0 0, 2 1 0 0, 1 1 0 0), "
+                         " (50 50 0 0, 50 60 0 0, 60 60 0 0, 60 50 0 0, 50 50 0 0) )";
+      var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
+      var p = parser.parsePolygon();
+      expect(p.isEmpty, false);
+      expect(p.interiorRings.length, 2);
+      expect(p.exteriorRing, isNotNull);
+      expect(p.is3D, true);
+    });
+
+
+  });
 
 
   /* --------------------------------------------------------------------- */
@@ -344,8 +406,6 @@ main() {
       var g = parseWKT(wkt);
       expect(g is MultiLineString, true);
     });
-
-
   });
 }
 
