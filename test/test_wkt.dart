@@ -2,7 +2,7 @@ library test_wkt;
 
 import "dart:async";
 import "dart:collection";
-import "package:unittest/unittest.dart";
+import "package:unittest/unittest.dart" hide isEmpty;
 
 part "../lib/src/util.dart";
 part "../lib/src/geometry.dart";
@@ -15,6 +15,7 @@ part "../lib/src/wkt.dart";
 part "../lib/src/surface.dart";
 part "../lib/src/polygon.dart";
 part "../lib/src/multipolygon.dart";
+part "../lib/src/polyhedral_surface.dart";
 
 main() {
   group("elementary token type test - ", () {
@@ -428,6 +429,51 @@ main() {
 
 
   /* --------------------------------------------------------------------- */
+  group("parse polyhedralsurface - ", () {
+    test("empty", () {
+      var wkt = "polyhedralsurface empty";
+      var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
+      var g = parser.parsePolyhedralSurface();
+      expect(g.isEmpty, true);
+    });
+
+    test("a polyhedralsurface with one polygon", () {
+      var wkt = "polyhedralsurface ( ((1 2, 3 4, 5 6, 1 2)))";
+      var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
+      var g = parser.parsePolyhedralSurface();
+      expect(g.isEmpty, false);
+      expect(g.length, 1);
+    });
+
+    test("a polyhedralsurface with one polygon with internal rings", () {
+      var wkt = "polyhedralsurface ( ( (0 0, 0 100, 100 100, 100 0, 0 0), "
+                         " (1 1, 1 2, 2 2, 2 1, 1 1), "
+                         " (50 50, 50 60, 60 60, 60 50, 50 50) ) )";
+      var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
+      var g = parser.parsePolyhedralSurface();
+      expect(g.length, 1);
+    });
+
+    test("a 3D polyhedralsurface with two polygons", () {
+      var wkt = "polyhedralsurface z ("
+                         // polygon 1
+                         "( (1 2 0, 3 4 0, 5 6 0, 1 2 0) ),"
+                         // polygon 2
+                         "( (0 0 0, 0 100 0, 100 100 0, 100 0 0, 0 0 0), "
+                         "  (1 1 0, 1 2 0, 2 2 0, 2 1 0, 1 1 0), "
+                         "  (50 50 0, 50 60 0, 60 60 0, 60 50 0, 50 50 0) )"
+                         ")";
+      var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
+      var g = parser.parsePolyhedralSurface();
+      expect(g.length, 2);
+    });
+  });
+
+  /* --------------------------------------------------------------------- */
   group("parse geometrycollection -", () {
     test("empty", () {
       var wkt = "geometrycollection empty";
@@ -509,7 +555,6 @@ main() {
       var g = parseWKT(wkt);
       expect(g is GeometryCollection, true);
     });
-
   });
 }
 

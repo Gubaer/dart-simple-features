@@ -3,7 +3,8 @@ library simple_features;
 import "dart:async";
 import "dart:collection";
 import "package:meta/meta.dart";
-import "computational_geometry.dart";
+import "dart:math";
+
 
 part "src/annotations.dart";
 part "src/direct_position.dart";
@@ -21,5 +22,6 @@ part "src/line_intersection.dart";
 part "src/surface.dart";
 part "src/polygon.dart";
 part "src/multipolygon.dart";
+part "src/polyhedral_surface.dart";
 
 

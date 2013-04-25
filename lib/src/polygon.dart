@@ -64,7 +64,7 @@ class Polygon extends Surface {
    */
   factory Polygon.wkt(String wkt) {
     var g = parseWKT(wkt);
-    if (g is! Point) {
+    if (g is! Polygon) {
       throw new WKTError("WKT string doesn't represent a Polygon");
     }
   }

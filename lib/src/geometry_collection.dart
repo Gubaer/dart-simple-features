@@ -88,6 +88,9 @@ class GeometryCollection extends Geometry
       writer..decIdent()..ident()..rparen();
     }
   }
+
+  @override String get geometryType => "GeometryCollection";
+  @override int get dimension => fold(0, (prev, g) => max(prev, g.dimension));
 }
 
 class _GeometryContainerMixin {

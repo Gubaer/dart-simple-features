@@ -571,17 +571,8 @@ class _WKTParser {
     return new Polygon(rings[0], rings.skip(1));
   }
 
-  /**
-   * pre: token is 'multipolygon'
-   */
-  parseMultiPolygon() {
-    token.ensureKeyword("multipolygon");
-    advanceMandatory();
-    var coordSpec = parseCoordSpecificationOrEmpty();
-    if (coordSpec == null) return new MultiPolygon.empty();
-    token.ensureLParen();
+  parsePolygonList(coordSpec) {
     var polygons = [];
-    advanceMandatory();
     while(true){
       var rings = parsePolygonText(coordSpec);
       polygons.add(new Polygon(rings[0], rings.skip(1)));
@@ -595,7 +586,49 @@ class _WKTParser {
         throw new WKTError("expected ',' or ')', got '${token.value}'");
       }
     }
+    return polygons;
+  }
+
+  /**
+   * pre: token is 'multipolygon'
+   */
+  parseMultiPolygon() {
+    token.ensureKeyword("multipolygon");
+    advanceMandatory();
+    var coordSpec = parseCoordSpecificationOrEmpty();
+    if (coordSpec == null) return new MultiPolygon.empty();
+    token.ensureLParen();
+    advanceMandatory();
+    var polygons = parsePolygonList(coordSpec);
     return new MultiPolygon(polygons);
+  }
+
+  /**
+   * pre: token is 'polyhedralsurface'
+   */
+  parsePolyhedralSurface() {
+    token.ensureKeyword("polyhedralsurface");
+    advanceMandatory();
+    var coordSpec = parseCoordSpecificationOrEmpty();
+    if (coordSpec == null) return new PolyhedralSurface.empty();
+    token.ensureLParen();
+    advanceMandatory();
+    var polygons = parsePolygonList(coordSpec);
+    return new PolyhedralSurface(polygons);
+  }
+
+  /**
+   * pre: token is 'tin'
+   */
+  parseTin() {
+    token.ensureKeyword("tin");
+    advanceMandatory();
+    var coordSpec = parseCoordSpecificationOrEmpty();
+    if (coordSpec == null) return new Tin.empty();
+    token.ensureLParen();
+    advanceMandatory();
+    var polygons = parsePolygonList(coordSpec);
+    return new Tin(polygons);
   }
 
   /**
@@ -611,6 +644,8 @@ class _WKTParser {
       case "polygon": return parsePolygon();
       case "multipolygon": return parseMultiPolygon();
       case "geometrycollection": return parseGeometryCollection();
+      case "polyhedralsurface": return parsePolyhedralSurface();
+      case "tin": return parseTin();
       default:
         throw new WKTError("unsupported keyword '${token.value}'"
         " in WKT string");
