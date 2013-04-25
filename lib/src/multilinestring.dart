@@ -56,7 +56,7 @@ class MultiLineString extends GeometryCollection{
     forEach((child) {
       if (child.isEmpty) return;
       child.boundary.forEach((p) {
-        countPosition(new _DirectPosition2DImpl(p.x,p.y));
+        countPosition(new DirectPosition2D(p.x,p.y));
       });
     });
 
