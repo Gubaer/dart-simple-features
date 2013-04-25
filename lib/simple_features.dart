@@ -19,5 +19,6 @@ part "src/topology.dart";
 part "src/line_intersection.dart";
 part "src/surface.dart";
 part "src/polygon.dart";
+part "src/multipolygon.dart";
 
 

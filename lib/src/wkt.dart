@@ -548,11 +548,14 @@ class _WKTParser {
     return new MultiLineString(linestrings);
   }
 
-  parsePolygon() {
-    token.ensureKeyword("polygon");
-    advanceMandatory();
-    var coordSpec = parseCoordSpecificationOrEmpty();
-    if (coordSpec == null) return new MultiLineString.empty();
+  /**
+   *  pre: token is '('  (...) (...)
+   *                 ^
+   *  post: token is '('  (...) (...) ')'
+   *                                   ^
+   */
+  parsePolygonText(coordSpec) {
+    token.ensureLParen();
     advanceMandatory();
     var rings = [];
     while(true) {
@@ -569,7 +572,39 @@ class _WKTParser {
         throw new WKTError("expected ',' or ')', got '${token.value}'");
       }
     }
+    return rings;
+  }
+
+  parsePolygon() {
+    token.ensureKeyword("polygon");
+    advanceMandatory();
+    var coordSpec = parseCoordSpecificationOrEmpty();
+    if (coordSpec == null) return new MultiLineString.empty();
+    var rings = parsePolygonText(coordSpec);
     return new Polygon(rings[0], rings.skip(1));
+  }
+
+  parseMultiPolygon() {
+    token.ensureKeyowrd("multipolygon");
+    advanceMandatory();
+    var coordSpec = parseCoordSpecificationOrEmpty();
+    if (coordSpec == null) return new MultiPolygon.empty();
+    token.ensureLParen();
+    var polygons = [];
+    advanceMandatory();
+    while(true){
+      var rings = parsePolygonText(coordSpec);
+      polygons.add(new Polygon(rings[0], rings.skip(1)));
+      if (token.isComma) {
+        advanceMandatory();
+        continue;
+      } else if (token.isRParen) {
+        break;
+      } else {
+        throw new WKTError("expected ',' or ')', got '${token.value}'");
+      }
+    }
+    return new MultiPolygon(polygons);
   }
 }
 
