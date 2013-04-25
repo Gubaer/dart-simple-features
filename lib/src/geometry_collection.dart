@@ -65,6 +65,14 @@ class GeometryCollection extends Geometry
     if (_geometries == null) return [].iterator;
     else return _geometries.iterator;
   }
+
+  /**
+   * A geometry collecton is simple if all its child geometries are
+   * simple.
+   */
+  @override bool get isSimple =>
+    //NOTE: !any(!condition) probably more efficient than every(condition)
+    !_geometries.any((g) => !g.isSimple);
 }
 
 class _GeometryContainerMixin {
