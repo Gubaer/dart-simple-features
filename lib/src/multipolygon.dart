@@ -3,9 +3,39 @@ part of simple_features;
 final _EMPTY_MULTI_POLYGON = new MultiPolygon(null);
 
 /**
+ * A MultiSurface is a 2-dimensional [GeometryCollection] whose elements
+ * are [Surface]s, all using coordinates from the same coordinate reference
+ * system.
+ */
+abstract class MultiSurface extends GeometryCollection {
+  MultiSurface(Iterable<Surface> surfaces):super(surfaces);
+
+  /**
+   * The mathematical centroid for this [Surface] as a [Point]. The result
+   * is not guaranteed to be on this [Surface].
+   *
+   */
+  @specification(name="centroid()")
+  Point get centroid;
+
+  /**
+   * A [Point] guaranteed to be on this [Surface].
+   */
+  @specification(name="pointOnSurface()")
+  Point get pointOnSurface;
+
+  /**
+   * The area of this [Surface], as measured in the spatial reference system
+   * of this [Surface].
+   */
+  @specification(name="area()")
+  double get area;
+}
+
+/**
  * A MultiPolygon is a MultiSurface whose elements are [Polygon]s.
  */
-class MultiPolygon extends GeometryCollection {
+class MultiPolygon extends MultiSurface {
 
   /**
    * Creates a multipolygon.
@@ -36,4 +66,16 @@ class MultiPolygon extends GeometryCollection {
   @override int get dimension => 2;
   @override String get geometryType => "MultiPolygon";
 
+
+  @override Point get centroid {
+    throw new UnimplementedError();
+  }
+
+  @override Point get pointOnSurface {
+    throw new UnimplementedError();
+  }
+
+  @override double get area {
+    throw new UnimplementedError();
+  }
 }

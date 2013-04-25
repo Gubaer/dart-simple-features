@@ -83,5 +83,32 @@ main() {
     });
   });
 
+  /* --------------------------------------------------------------- */
+  group("area -", () {
+    test("not yet implemented", () {
+      var polygon = parseWKT(POLYGON_1);
+      var mp = new MultiPolygon([polygon]);
+      expect(() => mp.area, throwsA(new isInstanceOf<UnimplementedError>()));
+    });
+  });
+
+  /* --------------------------------------------------------------- */
+  group("centroid -", () {
+    test("not yet implemented", () {
+      var polygon = parseWKT(POLYGON_1);
+      var mp = new MultiPolygon([polygon]);
+      expect(() => mp.centroid, throwsA(new isInstanceOf<UnimplementedError>()));
+    });
+  });
+
+  /* --------------------------------------------------------------- */
+  group("pointOnSurface -", () {
+    test("not yet implemented", () {
+      var polygon = parseWKT(POLYGON_1);
+      var mp = new MultiPolygon([polygon]);
+      expect(() => mp.pointOnSurface, throwsA(new isInstanceOf<UnimplementedError>()));
+    });
+  });
+
 
 }
