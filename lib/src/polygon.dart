@@ -57,6 +57,19 @@ class Polygon extends Surface {
   Polygon.empty(): _exterior=null, _interiors = null;
 
   /**
+   * Creates a new point from the WKT string [wkt].
+   *
+   * Throws a [WKTError] if [wkt] isn't a valid representation of
+   * a [Polygon].
+   */
+  factory Polygon.wkt(String wkt) {
+    var g = parseWKT(wkt);
+    if (g is! Point) {
+      throw new WKTError("WKT string doesn't represent a Polygon");
+    }
+  }
+
+  /**
    * Creates a triangle with the [exterior].
    *
    * [exterior] must be a non-null, closed linestring with exactly three
@@ -71,7 +84,7 @@ class Polygon extends Surface {
       "a triangle must consist of three non-colinear nodes"
     );
     _require(exterior.isClosed, "the exterior of a triangle must be closed");
-    //TODO: check for colienary of the three points
+    //TODO: check for colienarity of the three points
 
     _exterior = exterior;
   }
@@ -85,7 +98,6 @@ class Polygon extends Surface {
   LineString get exteriorRing => _exterior == null
     ? new LineString.empty()
     : _exterior;
-
 
   /**
    * The interior rings. Replies an empty iterable, if
@@ -143,6 +155,34 @@ class Polygon extends Surface {
     rings.addAll(interiorRings);
     return new MultiLineString(rings);
   }
+
+
+  @override
+  _writeTaggedWKT(writer, {bool withZ: false, bool withM: false}) {
+    writer.write("POLYGON");
+    writer.blank();
+    if (!isEmpty) {
+      writer.ordinateSpecification(withZ: is3D, withM: isMeasured);
+    }
+    _writeWKT(writer, withZ: withZ, withM: withM);
+  }
+
+  _writeWKT(writer, {bool withZ: false, bool withM: false}) {
+    if (this.isEmpty){
+      writer.empty();
+    } else {
+      writer..lparen()..newline();
+      writer..incIdent()..ident();
+      _exterior._writeWKT(writer, withZ: withZ, withM: withM);
+      if (!_interiors.isEmpty) writer..comma()..newline();
+      for(int i=0; i< _interiors.length; i++) {
+        if (i > 0) writer..comma()..newline()..ident();
+        _interiors[i]._writeWKT(writer, withZ: withZ, withM: withM);
+      }
+      writer..newline();
+      writer..decIdent()..ident()..rparen();
+    }
+  }
 }
 
 /**
@@ -160,5 +200,5 @@ class Triangle extends Polygon {
    *
    * Throws [ArgumentError] if the preconditions aren't met.
    */
-  Triangle(LineString exterior) : super.triangel(exterior);
+  Triangle(LineString exterior) : super.triangle(exterior);
 }

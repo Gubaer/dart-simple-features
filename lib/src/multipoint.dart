@@ -31,6 +31,20 @@ class MultiPoint extends GeometryCollection {
    */
   factory MultiPoint.empty() =>_EMPTY_MULTIPOINT;
 
+  /**
+   * Creates a new multipoint from the WKT string [wkt].
+   *
+   * Throws a [WKTError] if [wkt] isn't a valid representation of
+   * a [MultiPoint].
+   */
+  factory MultiPoint.wkt(String wkt) {
+    var g = parseWKT(wkt);
+    if (g is! MultiPoint) {
+      throw new WKTError("WKT string doesn't represent a MultiPoint");
+    }
+    return g;
+  }
+
   @override int get dimension => 0;
   @override String get geometryType => "MultiPoint";
   @override bool get isValid => true;
@@ -76,4 +90,28 @@ class MultiPoint extends GeometryCollection {
   /// The boundary of a [MultiPoint] is an empty [GeometryCollection]
   @override
   Geometry get boundary => new GeometryCollection.empty();
+
+  _writeTaggedWKT(writer, {bool withZ: false, bool withM: false}) {
+    writer.write("MULTIPOINT");
+    writer.blank();
+    if (!this.isEmpty) {
+      writer.ordinateSpecification(withZ: withZ, withM: withM);
+    }
+    if (this.isEmpty){
+      writer.empty();
+    } else {
+      writer..lparen()..newline();
+      writer..incIdent()..ident();
+      for(int i=0; i< length; i++) {
+        if (i > 0) writer..comma();
+        if (i % 10 == 0) writer..newline()..ident();
+        writer.lparen();
+        elementAt(i)._writeCoordinates(writer, withZ: withZ, withM: withM);
+        writer.rparen();
+      }
+      writer..newline();
+      writer..decIdent()..ident()..rparen();
+    }
+  }
 }
+

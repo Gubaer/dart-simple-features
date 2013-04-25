@@ -2,7 +2,7 @@ library test_multipolygon;
 
 import "dart:async";
 import "dart:collection";
-import "package:unittest/unittest.dart";
+import "package:unittest/unittest.dart" hide isEmpty;
 import "package:meta/meta.dart";
 
 part "../lib/src/util.dart";
@@ -110,5 +110,30 @@ main() {
     });
   });
 
+  /* --------------------------------------------------------------- */
+  group("asText -", () {
+    test("of an empty multipolygon", () {
+      var mp = new MultiPolygon.empty();
+      mp = parseWKT(mp.asText);
+      expect(mp.runtimeType, MultiPolygon);
+      expect(mp.isEmpty,true);
+    });
+
+    test("with a single polygon", () {
+      var p = parseWKT(POLYGON_1);
+      var mp = new MultiPolygon([p]);
+      mp = parseWKT(mp.asText);
+      expect(mp.runtimeType, MultiPolygon);
+      expect(mp.length,1);
+    });
+
+    test("with three polygons", () {
+      var p = parseWKT(POLYGON_1);
+      var mp = new MultiPolygon([p,p,p]);
+      mp = parseWKT(mp.asText);
+      expect(mp.runtimeType, MultiPolygon);
+      expect(mp.length,3);
+    });
+  });
 
 }

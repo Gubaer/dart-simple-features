@@ -32,6 +32,20 @@ class Point extends Geometry {
   }
 
   /**
+   * Creates a new point from the WKT string [wkt].
+   *
+   * Throws a [WKTError] if [wkt] isn't a valid representation of
+   * a [Point].
+   */
+  factory Point.wkt(String wkt) {
+    var p = parseWKT(wkt);
+    if (p is! Point) {
+      throw new WKTError("WKT string doesn't represent a Point");
+    }
+    return p;
+  }
+
+  /**
    * Creates a new point from a list of point values.
    *
    * [values] is a list with either 2 or 4 elements, otherwise an
@@ -62,25 +76,40 @@ class Point extends Geometry {
 
   @override bool get isMeasured => m != null;
 
-  @override
-  String get asText {
-    //TODO: introduce a WKT writer, simlar to the JTS library
-    var buffer = new StringBuffer();
-    buffer.write("point ");
-    if (z != null) buffer.write("z");
-    if (m != null) buffer.write("m");
-    if (isEmpty) {
-      buffer.write(" empty");
-      return buffer.toString();
+  _writeCoordinates(writer, {bool withZ:false, bool withM: false}) {
+    writer
+      ..position(x)
+      ..blank()
+      ..position(y);
+
+    if (withZ) {
+      writer
+        ..blank()
+        ..position(z);
     }
-    buffer.write(" ( ");
-    buffer..write(x);
-    buffer..write(", ")..write(y);
-    if (z != null) buffer..write(", ")..write(z);
-    if (m != null) buffer..write(", ")..write(m);
-    buffer.write(")");
-    return buffer.toString();
+    if (withM) {
+      writer
+        ..blank()
+        ..position(m);
+    }
   }
+
+  @override
+  _writeTaggedWKT(writer, {bool withZ: false, bool withM: false}){
+    writer.write("POINT");
+    writer.blank();
+    if (!isEmpty) {
+      writer.ordinateSpecification(withZ: withZ, withM: withM);
+    }
+    if (this.isEmpty) {
+      writer.empty();
+    } else {
+      writer.lparen();
+      _writeCoordinates(writer, withZ: is3D, withM: isMeasured);
+      writer.rparen();
+    }
+  }
+
   /**
    * The boundary of a point is the empty [GeometryCollection].
    *

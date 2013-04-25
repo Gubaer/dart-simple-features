@@ -19,6 +19,20 @@ class MultiLineString extends GeometryCollection{
    */
   factory MultiLineString.empty() => _EMPTY_MULTI_LINE_STRING;
 
+  /**
+   * Creates a new multilinestring from the WKT string [wkt].
+   *
+   * Throws a [WKTError] if [wkt] isn't a valid representation of
+   * a [MultiLineString].
+   */
+  factory MultiLineString.wkt(String wkt) {
+    var g = parseWKT(wkt);
+    if (g is! MultiLineString) {
+      throw new WKTError("WKT string doesn't represent a MultiLineString");
+    }
+    return g;
+  }
+
   @override int get dimension => 1;
   @override String get geometryType => "MultiLineString";
 
@@ -69,5 +83,25 @@ class MultiLineString extends GeometryCollection{
       points.add(new Point(pos.x, pos.y));
     });
     return new MultiPoint(points);
+  }
+
+  _writeTaggedWKT(writer, {bool withZ: false, bool withM: false}) {
+    writer.write("MULTILINESTRING");
+    writer.blank();
+    if (!this.isEmpty) {
+      writer.ordinateSpecification(withZ: withZ, withM: withM);
+    }
+    if (isEmpty){
+      writer.empty();
+    } else {
+      writer..lparen()..newline();
+      writer..incIdent()..ident();
+      for(int i=0; i< length; i++) {
+        if (i > 0) writer..comma()..newline()..ident();
+        elementAt(i)._writeWKT(writer, withZ: withZ, withM: withM);
+      }
+      writer..newline();
+      writer..decIdent()..ident()..rparen();
+    }
   }
 }

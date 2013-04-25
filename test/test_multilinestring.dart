@@ -2,7 +2,7 @@ library test_multilinestring;
 
 import "dart:async";
 import "dart:collection";
-import "package:unittest/unittest.dart";
+import "package:unittest/unittest.dart" hide isEmpty;
 import "package:meta/meta.dart";
 
 part "../lib/src/util.dart";
@@ -90,4 +90,25 @@ main() {
 
   });
 
+  group("asText -", () {
+    test("of an empty multilinestring", () {
+      var mls = new MultiLineString.empty();
+      mls = parseWKT(mls.asText);
+      expect(mls is MultiLineString, true);
+      expect(mls.isEmpty, true);
+    });
+
+    test("multi line string with three line strings", () {
+      var children = [
+         parseWKT("linestring empty"),
+         parseWKT("linestring (1 2, 3 4, 5 6, 7 8)"),
+         parseWKT("linestring (10 11, 20 21)")
+      ];
+      var mls = new MultiLineString(children);
+      mls = parseWKT(mls.asText);
+      expect(mls is MultiLineString, true);
+      expect(mls.length, 3);
+      expect(mls.first.isEmpty, true);
+    });
+  });
 }

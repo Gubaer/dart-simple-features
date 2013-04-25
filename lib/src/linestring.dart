@@ -70,6 +70,20 @@ class LineString extends Geometry
     //_require(this.isSimple, "a ring must be simple");
   }
 
+   /**
+   * Creates a new linestring from the WKT string [wkt].
+   *
+   * Throws a [WKTError] if [wkt] isn't a valid representation of
+   * a [LineString].
+   */
+  factory LineString.wkt(String wkt) {
+    var g = parseWKT(wkt);
+    if (g is! LineString) {
+      throw new WKTError("WKT string doesn't represent a LineString");
+    }
+    return g;
+  }
+
   /**
    * Creates an empty linestring.
    */
@@ -142,6 +156,28 @@ class LineString extends Geometry
   //TODO: implement
   bool get isRing {
     throw new UnimplementedError();
+  }
+
+  _writeWKT(writer, {bool withZ:false, bool withM:false}) {
+    if (isEmpty) {
+      writer.empty();
+    } else {
+      writer.lparen();
+      for (int i=0; i< length; i++) {
+        if (i > 0) {writer.comma(); writer.blank();}
+        this.elementAt(i)._writeCoordinates(writer, withZ: withZ, withM: withM);
+      }
+      writer.rparen();
+    }
+  }
+
+  _writeTaggedWKT(writer, {bool withZ:false, bool withM:false}) {
+    writer.write("LINESTRING");
+    writer.blank();
+    if (! isEmpty) {
+      writer.ordinateSpecification(withZ: withZ, withM: withM);
+    }
+    _writeWKT(writer, withZ: is3D, withM: isMeasured);
   }
 
   /**

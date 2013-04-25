@@ -2,7 +2,7 @@ library test_linestring;
 
 import "dart:async";
 import "dart:collection";
-import "package:unittest/unittest.dart";
+import "package:unittest/unittest.dart" hide isEmpty;
 import "package:meta/meta.dart";
 
 part "../lib/src/util.dart";
@@ -11,6 +11,7 @@ part "../lib/src/geometry.dart";
 part "../lib/src/geometry_collection.dart";
 part "../lib/src/linestring.dart";
 part "../lib/src/multipoint.dart";
+part "../lib/src/wkt.dart";
 
 main() {
   group("constructor -", () {
@@ -254,6 +255,40 @@ main() {
       expect(ls.boundary.length, 2);
       expect(ls.boundary.first.x, 11);
       expect(ls.boundary.last.y, 42);
+    });
+  });
+
+  group("asText -", () {
+    test("of an empty linestring", () {
+      var ls = new LineString.empty();
+      ls = parseWKT(ls.asText);
+      expect(ls.isEmpty, true);
+    });
+
+    test("of a 2D linestring with three points", () {
+      var ls = new LineString([
+         new Point(11,12),
+         new Point(21,22),
+         new Point(31.5,32.6)
+      ]);
+      ls = parseWKT(ls.asText);
+      expect(ls.length, 3);
+      expect(ls.first.x, 11);
+      expect(ls.last.y, 32.6);
+    });
+
+    test("of a 3D, measured linestring with three points", () {
+      var ls = new LineString([
+         new Point(11,12, z: 13, m: 14),
+         new Point(21,22, z: 23, m: 24),
+         new Point(31.5,32.6, z: 33.7, m: 34.8)
+      ]);
+      ls = parseWKT(ls.asText);
+      expect(ls.length, 3);
+      expect(ls.is3D, true);
+      expect(ls.isMeasured, true);
+      expect(ls.first.z, 13);
+      expect(ls.last.m, 34.8);
     });
   });
 }

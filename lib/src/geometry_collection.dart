@@ -1,6 +1,6 @@
 part of simple_features;
 
-/// the singleton empty geomtery collection
+/// the singleton empty geometry collection
 final _EMPTY_GEOMETRY_COLLECTION = new GeometryCollection(null);
 
 /**
@@ -13,9 +13,9 @@ final _EMPTY_GEOMETRY_COLLECTION = new GeometryCollection(null);
  * implements the [Iterable] interface.
  *
  */
-//TODO: abstract class?
 class GeometryCollection extends Geometry
   with IterableMixin<Geometry>, _GeometryContainerMixin {
+
   List<Geometry> _geometries;
 
   /**
@@ -46,7 +46,6 @@ class GeometryCollection extends Geometry
 
   /**
    * Replies the <em>n</em>-th geometry in this collection.
-   *
    */
   @specification(name="getGeometryN")
   Geometry getGeometryN(int n) => elementAt(n);
@@ -67,12 +66,28 @@ class GeometryCollection extends Geometry
   }
 
   /**
-   * A geometry collecton is simple if all its child geometries are
+   * A geometry collection is simple if all its child geometries are
    * simple.
    */
-  @override bool get isSimple =>
-    //NOTE: !any(!condition) probably more efficient than every(condition)
-    !_geometries.any((g) => !g.isSimple);
+  @override bool get isSimple => every((g) => g.isSimple);
+
+  @override
+  _writeTaggedWKT(writer, {bool withZ: false, bool withM: false}) {
+    writer.write("GEOMETRYCOLLECTION");
+    writer.blank();
+    if (isEmpty){
+      writer.empty();
+    } else {
+      writer..lparen()..newline();
+      writer..incIdent()..ident();
+      for(int i=0; i< length; i++) {
+        if (i > 0) writer..comma()..newline()..ident();
+        elementAt(i)._writeTaggedWKT(writer, withZ: withZ, withM: withM);
+      }
+      writer..newline();
+      writer..decIdent()..ident()..rparen();
+    }
+  }
 }
 
 class _GeometryContainerMixin {
@@ -81,8 +96,7 @@ class _GeometryContainerMixin {
     if (this.isEmpty) {
       _is3D = false;
     } else {
-      _is3D = this.firstWhere((p) => !p.is3D,
-          orElse: () => null) == null;
+      _is3D = every((g) => g.is3D);
     }
   }
 
@@ -105,8 +119,7 @@ class _GeometryContainerMixin {
     if (this.isEmpty) {
       _isMeasured = false;
     } else {
-      _isMeasured = firstWhere((p) => !p.isMeasured,
-          orElse: () => null) == null;
+      _isMeasured = every((g) => g.isMeasured);
     }
   }
 
@@ -132,6 +145,7 @@ class _GeometryContainerMixin {
   }
 
   operator [](int n) => this.elementAt(n);
+
 }
 
 

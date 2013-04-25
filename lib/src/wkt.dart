@@ -88,6 +88,8 @@ class _WKTTokenizer {
   static final CC_A = "A".codeUnitAt(0);
   static final CC_Z = "Z".codeUnitAt(0);
   static final CC_SPACE = " ".codeUnitAt(0);
+  static final CC_CR = "\n".codeUnitAt(0);
+  static final CC_LF = "\r".codeUnitAt(0);
   static final CC_LPAREN = "(".codeUnitAt(0);
   static final CC_RPAREN = ")".codeUnitAt(0);
   static final CC_DQUOTE = "\"".codeUnitAt(0);
@@ -105,7 +107,7 @@ class _WKTTokenizer {
   static bool isLowerCaseLetter(int c) => c >= CC_a && c <= CC_z;
   static bool isUpperCaseLetter(int c) => c >= CC_A && c <= CC_Z;
   static bool isLetter(int c) => isLowerCaseLetter(c) || isUpperCaseLetter(c);
-  static bool isWS(int c) => c == CC_SPACE;
+  static bool isWS(int c) => c == CC_SPACE || c == CC_CR || c == CC_LF;
   static bool isParen(int c) => c == CC_LPAREN || c == CC_RPAREN;
   static bool isDQuote(int c) => c == CC_DQUOTE;
   static bool isSpecial(int c) =>
@@ -179,7 +181,6 @@ class _WKTTokenizer {
       if (!isWS(cur)) break;
     }
     var token = consumeToken();
-    print("WS: <$token>");
     return wsToken(token);
   }
 
@@ -187,7 +188,6 @@ class _WKTTokenizer {
     assert(isComma(cur));
     advance();
     var token = consumeToken();
-    print("COMMA: <$token>");
     return commaToken(token);
   }
 
@@ -198,10 +198,10 @@ class _WKTTokenizer {
       if (isLetter(c)) continue;
       if (isWS(c)) break;
       if (isParen(c)) break;
+      if (isComma(c)) break;
       return errorToken("unexpected character in keyword at <${currentToken()}>");
     }
     var token = consumeToken();
-    print("KEYWORD: <$token>");
     return keywordToken(token);
   }
 
@@ -213,7 +213,6 @@ class _WKTTokenizer {
       if (isDQuote(c)) {
         advance();
         var token = consumeToken();
-        print("QUOTED NAME: <$token>");
         return quotedNameToken(token);
       }
       return errorToken("unexpected character in quoted name at  <${currentToken()}>");
@@ -274,7 +273,6 @@ class _WKTTokenizer {
     try {
       scanSignedNumericLiteral();
       var token = consumeToken();
-      print("NUMERIC_LITERaL: <$token>");
       return numericLiteralToken(token);
     } catch(e,st) {
       print(st);
@@ -540,7 +538,11 @@ class _WKTParser {
     if (coordSpec == null) return new MultiLineString.empty();
     advanceMandatory();
     var linestrings = parseCommaSeperatedList(() {
-      return new LineString(parseLineStringText(coordSpec));
+      if (token.matchKeyword("empty")) {
+        return new LineString.empty();
+      } else {
+        return new LineString(parseLineStringText(coordSpec));
+      }
     });
     return new MultiLineString(linestrings);
   }
@@ -564,7 +566,7 @@ class _WKTParser {
     token.ensureKeyword("polygon");
     advanceMandatory();
     var coordSpec = parseCoordSpecificationOrEmpty();
-    if (coordSpec == null) return new MultiLineString.empty();
+    if (coordSpec == null) return new Polygon.empty();
     var rings = parsePolygonText(coordSpec);
     return new Polygon(rings[0], rings.skip(1));
   }
@@ -633,6 +635,59 @@ class _WKTParser {
     });
     return new GeometryCollection(geometries);
   }
+}
+
+
+class _WKTWriter {
+  final StringSink _sink;
+  int _ident = 0;
+
+  _WKTWriter(this._sink);
+
+  lparen() => _sink.write("(");
+  rparen() => _sink.write(")");
+  comma() => _sink.write(",");
+  blank() => _sink.write(" ");
+  newline() => _sink.write("\n");
+  position(num pos){
+    if (pos.toInt() == pos) _sink.write(pos.toInt());
+    else _sink.write(pos);
+  }
+
+  incIdent() => _ident++;
+  decIdent() {
+    _ident--;
+    if (_ident < 0) _ident = 0;
+  }
+  ident() { for(int i=0; i< _ident; i++) _sink.write("  ");}
+
+  coordinates(Point point) {
+    position(point.x);
+    blank();
+    position(point.y);
+    if (point.is3D) {
+      blank();
+      position(point.z);
+    }
+    if (point.isMeasured) {
+      blank();
+      position(point.m);
+    }
+  }
+
+  ordinateSpecification({bool withZ: false,  bool withM: false}) {
+    var v = "";
+    if (withZ) v+="Z";
+    if (withM) v+="M";
+    if (!v.isEmpty) {
+      _sink.write(v);
+      blank();
+    }
+  }
+
+  empty() => _sink.write("EMPTY");
+
+  write(String s) => _sink.write(s);
 }
 
 

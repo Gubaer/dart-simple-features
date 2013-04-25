@@ -10,6 +10,7 @@ part "../lib/src/point.dart";
 part "../lib/src/geometry.dart";
 part "../lib/src/geometry_collection.dart";
 part "../lib/src/multipoint.dart";
+part "../lib/src/wkt.dart";
 
 main() {
   group("constructor - ", () {
@@ -37,6 +38,22 @@ main() {
       var mp = new MultiPoint(points);
       expect(mp.isEmpty, false);
       expect(mp.length, 3);
+    });
+
+    test("from wkt - empty multipoint", () {
+      var mp = new MultiPoint.wkt("multipoint empty");
+      expect(mp.isEmpty, true);
+    });
+
+    test("from wkt - two points", () {
+      var mp = new MultiPoint.wkt("multipoint ((1 2), (3 4))");
+      expect(mp.length, 2);
+    });
+
+    test("from wkt - don't accept wrong tagged WKT object", () {
+      var mp;
+      expect(() => new MultiPoint.wkt("point (1 2)"),
+          throwsA(new isInstanceOf<WKTError>()));
     });
   });
 
@@ -180,6 +197,26 @@ main() {
                     ];
       var mp = new MultiPoint(points);
       expect(mp.boundary.isEmpty, true);
+    });
+  });
+
+
+  group("asText -", () {
+    test("of an empty multipoint", () {
+      var mp = new MultiPoint.empty();
+      mp = parseWKT(mp.asText);
+      expect(mp.isEmpty, true);
+    });
+
+    test("of 3D multipoint with 2 points", () {
+      var points = [
+          new Point(21,22, z:23),
+          new Point(31,32, z:33)
+      ];
+      var mp = new MultiPoint(points);
+      mp = parseWKT(mp.asText);
+      expect(mp.length, 2);
+      expect(mp.is3D, true);
     });
   });
 }

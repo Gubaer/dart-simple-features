@@ -2,7 +2,7 @@ library test_polygon;
 
 import "dart:async";
 import "dart:collection";
-import "package:unittest/unittest.dart";
+import "package:unittest/unittest.dart" hide isEmpty;
 import "package:meta/meta.dart";
 
 part "../lib/src/util.dart";
@@ -166,5 +166,41 @@ main() {
       expect(() => p = new Polygon.triangle(null),
           throwsA(new isInstanceOf<ArgumentError>()));
     });
+  });
+
+  /* ---------------------------------------------------------------- */
+  group("asText -", () {
+    test("of an empty polygon", () {
+      var p = new Polygon.empty();
+      print(p.asText);
+
+      p = parseWKT(p.asText);
+
+      expect(p is Polygon, true);
+      expect(p.isEmpty, true);
+    });
+
+    test("of a polygon without holes", () {
+      var exterior = parseWKT("linestring (0 0, 100 0, 100 100, 0 100, 0 0)");
+      var p = new Polygon(exterior, null);
+      p = parseWKT(p.asText);
+      expect(p is Polygon, true);
+      expect(p.isEmpty, false);
+    });
+
+    test("of a polygon with holes", () {
+      var exterior = parseWKT("linestring (0 0, 100 0, 100 100, 0 100, 0 0)");
+      var interiors = [
+        parseWKT("linestring (1 1, 2 2, 3 3, 4 4, 1 1)"),
+        parseWKT("linestring (10 11, 20 21, 30 31, 40 41, 10 11)")
+      ];
+
+      var p = new Polygon(exterior, interiors);
+      p = parseWKT(p.asText);
+      expect(p is Polygon, true);
+      expect(p.isEmpty, false);
+      expect(p.interiorRings.length, 2);
+    });
+
   });
 }
