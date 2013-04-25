@@ -5,6 +5,7 @@ import "dart:collection";
 import "package:meta/meta.dart";
 import "computational_geometry.dart";
 
+part "src/annotations.dart";
 part "src/direct_position.dart";
 part "src/envelope.dart";
 part "src/util.dart";
