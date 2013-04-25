@@ -11,17 +11,7 @@ Geometry parseWKT(String wkt) {
   _require(wkt != null);
   var parser = new _WKTParser(wkt);
   parser.advanceMandatory();
-  parser.token.ensureKeyword();
-  switch(parser.token.value.toLowerCase()) {
-    case "point": return parser.parsePoint();
-    case "multipoint": return parser.parseMultiPoint();
-    case "linestring": return parser.parseLineString();
-    case "multilinestring": return parser.parseMultiLineString();
-    case "polygon": return parser.parsePolygon();
-    default:
-      throw new WKTError("WKT parsing for geometry '${parser.token.value}'"
-        " isn't supported yet");
-  }
+  return parser.parseWKTObject();
 }
 
 class _WKTTokenType {
@@ -522,19 +512,10 @@ class _WKTParser {
     return points;
   }
 
-  /**
-   * pre: token is 'multilinestring'
-   * post: token is ')'
-   */
-  parseMultiLineString() {
-    token.ensureKeyword("multilinestring");
-    advanceMandatory();
-    var coordSpec = parseCoordSpecificationOrEmpty();
-    if (coordSpec == null) return new MultiLineString.empty();
-    advanceMandatory();
-    var linestrings = [];
+  parseCommaSeperatedList(parse()) {
+    var elements = [];
     while(true) {
-      linestrings.add(new LineString(parseLineStringText(coordSpec)));
+      elements.add(parse());
       advanceMandatory();
       if (token.isComma) {
         advanceMandatory();
@@ -545,6 +526,22 @@ class _WKTParser {
         throw new WKTError("expected ',' or ')', got '${token.value}'");
       }
     }
+    return elements;
+  }
+
+  /**
+   * pre: token is 'multilinestring'
+   * post: token is ')'
+   */
+  parseMultiLineString() {
+    token.ensureKeyword("multilinestring");
+    advanceMandatory();
+    var coordSpec = parseCoordSpecificationOrEmpty();
+    if (coordSpec == null) return new MultiLineString.empty();
+    advanceMandatory();
+    var linestrings = parseCommaSeperatedList(() {
+      return new LineString(parseLineStringText(coordSpec));
+    });
     return new MultiLineString(linestrings);
   }
 
@@ -557,21 +554,9 @@ class _WKTParser {
   parsePolygonText(coordSpec) {
     token.ensureLParen();
     advanceMandatory();
-    var rings = [];
-    while(true) {
-      //TODO: validate that linestring is a ring, either here or
-      // in the polygon constructor
-      rings.add(new LineString(parseLineStringText(coordSpec)));
-      advanceMandatory();
-      if (token.isComma) {
-        advanceMandatory();
-        continue;
-      } else if (token.isRParen) {
-        break;
-      } else {
-        throw new WKTError("expected ',' or ')', got '${token.value}'");
-      }
-    }
+    var rings = parseCommaSeperatedList((){
+      return new LineString(parseLineStringText(coordSpec));
+    });
     return rings;
   }
 
@@ -584,8 +569,11 @@ class _WKTParser {
     return new Polygon(rings[0], rings.skip(1));
   }
 
+  /**
+   * pre: token is 'multipolygon'
+   */
   parseMultiPolygon() {
-    token.ensureKeyowrd("multipolygon");
+    token.ensureKeyword("multipolygon");
     advanceMandatory();
     var coordSpec = parseCoordSpecificationOrEmpty();
     if (coordSpec == null) return new MultiPolygon.empty();
@@ -595,6 +583,7 @@ class _WKTParser {
     while(true){
       var rings = parsePolygonText(coordSpec);
       polygons.add(new Polygon(rings[0], rings.skip(1)));
+      advanceMandatory();
       if (token.isComma) {
         advanceMandatory();
         continue;
@@ -605,6 +594,44 @@ class _WKTParser {
       }
     }
     return new MultiPolygon(polygons);
+  }
+
+  /**
+   * pre: token is one of the keywords
+   */
+  parseWKTObject() {
+    token.ensureKeyword();
+    switch(token.value.toLowerCase()) {
+      case "point": return parsePoint();
+      case "multipoint": return parseMultiPoint();
+      case "linestring": return parseLineString();
+      case "multilinestring": return parseMultiLineString();
+      case "polygon": return parsePolygon();
+      case "multipolygon": return parseMultiPolygon();
+      case "geometrycollection": return parseGeometryCollection();
+      default:
+        throw new WKTError("unsupported keyword '${token.value}'"
+        " in WKT string");
+    }
+  }
+
+  /**
+   * pre: token is 'geometrycollection'
+   */
+  parseGeometryCollection() {
+    token.ensureKeyword("geometrycollection");
+    advanceMandatory();
+    if (token.matchKeyword("empty")) {
+      return new GeometryCollection.empty();
+    } else {
+      token.ensureLParen();
+    }
+    advanceMandatory();
+    token.ensureKeyword();
+    var geometries = parseCommaSeperatedList(() {
+      return parseWKTObject();
+    });
+    return new GeometryCollection(geometries);
   }
 }
 

@@ -14,6 +14,7 @@ part "../lib/src/multilinestring.dart";
 part "../lib/src/wkt.dart";
 part "../lib/src/surface.dart";
 part "../lib/src/polygon.dart";
+part "../lib/src/multipolygon.dart";
 
 main() {
   group("elementary token type test - ", () {
@@ -378,10 +379,87 @@ main() {
       expect(p.exteriorRing, isNotNull);
       expect(p.is3D, true);
     });
-
-
   });
 
+  /* --------------------------------------------------------------------- */
+  group("parse multipolygon - ", () {
+    test("empty", () {
+      var wkt = "multipolygon empty";
+      var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
+      var g = parser.parseMultiPolygon();
+      expect(g.isEmpty, true);
+    });
+
+    test("a multipolygon with one polygon", () {
+      var wkt = "multipolygon ( ((1 2, 3 4, 5 6, 1 2)))";
+      var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
+      var g = parser.parseMultiPolygon();
+      expect(g.isEmpty, false);
+      expect(g.length, 1);
+    });
+
+    test("a multipolygon with one polygon with internal rings", () {
+      var wkt = "multipolygon ( ( (0 0, 0 100, 100 100, 100 0, 0 0), "
+                         " (1 1, 1 2, 2 2, 2 1, 1 1), "
+                         " (50 50, 50 60, 60 60, 60 50, 50 50) ) )";
+      var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
+      var g = parser.parseMultiPolygon();
+      expect(g.length, 1);
+    });
+
+    test("a 3D multipolygon with two polygons", () {
+      var wkt = "multipolygon z ("
+                         // polygon 1
+                         "( (1 2 0, 3 4 0, 5 6 0, 1 2 0) ),"
+                         // polygon 2
+                         "( (0 0 0, 0 100 0, 100 100 0, 100 0 0, 0 0 0), "
+                         "  (1 1 0, 1 2 0, 2 2 0, 2 1 0, 1 1 0), "
+                         "  (50 50 0, 50 60 0, 60 60 0, 60 50 0, 50 50 0) )"
+                         ")";
+      var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
+      var g = parser.parseMultiPolygon();
+      expect(g.length, 2);
+    });
+  });
+
+
+  /* --------------------------------------------------------------------- */
+  group("parse geometrycollection -", () {
+    test("empty", () {
+      var wkt = "geometrycollection empty";
+      var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
+      var g = parser.parseGeometryCollection();
+      expect(g.isEmpty, true);
+    });
+
+    test("geometry collection with a point", () {
+      var wkt = "geometrycollection ("
+                "  point (1 2)"
+                ")";
+      var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
+      var g = parser.parseGeometryCollection();
+      expect(g.isEmpty, false);
+      expect(g.length, 1);
+    });
+
+    test("geometry collection with a point and a 3D linestring", () {
+      var wkt = "geometrycollection ("
+                "  point (1 2),"
+                "  linestring z (1 2 0, 2 3 0, 4 5 0, 6 7 0)"
+                ")";
+      var parser = new _WKTParser(wkt);
+      parser.advanceMandatory();
+      var g = parser.parseGeometryCollection();
+      expect(g.isEmpty, false);
+      expect(g.length, 2);
+    });
+  });
 
   /* --------------------------------------------------------------------- */
   group("parse WKT - ", () {
@@ -406,6 +484,32 @@ main() {
       var g = parseWKT(wkt);
       expect(g is MultiLineString, true);
     });
+
+    test("with a polygon", () {
+      var wkt = "polygon ( (0 0, 0 100, 100 100, 100 0, 0 0), "
+          " (1 1, 1 2, 2 2, 2 1, 1 1), "
+          " (50 50, 50 60, 60 60, 60 50, 50 50) )";
+      var g = parseWKT(wkt);
+      expect(g is Polygon, true);
+    });
+
+    test("with a multipolygon", () {
+      var wkt = "multipolygon ( ( (0 0, 0 100, 100 100, 100 0, 0 0), "
+          " (1 1, 1 2, 2 2, 2 1, 1 1), "
+          " (50 50, 50 60, 60 60, 60 50, 50 50) ) )";
+      var g = parseWKT(wkt);
+      expect(g is MultiPolygon, true);
+    });
+
+    test("with a geometrycollection", () {
+      var wkt = "geometrycollection ("
+          "  point (1 2),"
+          "  linestring z (1 2 0, 2 3 0, 4 5 0, 6 7 0)"
+          ")";
+      var g = parseWKT(wkt);
+      expect(g is GeometryCollection, true);
+    });
+
   });
 }
 
