@@ -1,6 +1,5 @@
 part of simple_features;
 
-
 class DirectPosition2D implements Comparable {
   final double x;
   final double y;
