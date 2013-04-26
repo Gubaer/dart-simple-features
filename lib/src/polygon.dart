@@ -94,7 +94,7 @@ class Polygon extends Surface {
    *
    * Replies an empty linestring if this polygon is empty.
    */
-  @specification(name="exteriorRing()")
+  @specification(name:"exteriorRing()")
   LineString get exteriorRing => _exterior == null
     ? new LineString.empty()
     : _exterior;
@@ -108,7 +108,7 @@ class Polygon extends Surface {
       : _interiors;
 
   /// the number of interior rings
-  @specification(name="numInteriorRing()")
+  @specification(name:"numInteriorRing()")
   int get numInteriorRing => _interiors == null
     ? 0
     : _interiors.length;
@@ -118,7 +118,7 @@ class Polygon extends Surface {
    *
    * Throws a [RangeError] if [n] is out of range
    */
-  @specification(name="interiorRingN()")
+  @specification(name:"interiorRingN()")
   LineString interiorRingN(int n) => interiorRings.elementAt(n);
 
   @override String get geometryType => "Polygon";

@@ -1,11 +1,13 @@
 name:  simple_features
 description:  An implementation of the Simple Features Specification for Dart
 author: Karl Guggisberg <karl.guggisberg@guggis.ch>
-version: 0.0.1+1
+version: 0.0.1+2
 homepage: https://github.com/Gubaer/dart-simple-features.git
+documentation: http://gubaer.github.io/dart-simple-features/doc/index.html
 
 dependencies:
   meta: any
 
 dev_dependencies:
   unittest: any
+

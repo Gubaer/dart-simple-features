@@ -100,7 +100,7 @@ class LineString extends Geometry
    *
    * See also [length]
    */
-  @specification(name="numPoints()")
+  @specification(name:"numPoints()")
   int numPoints() => length;
 
   /**
@@ -108,13 +108,13 @@ class LineString extends Geometry
    *
    * See also [elementAt]
    */
-  @specification(name="pointN()")
+  @specification(name:"pointN()")
   Point pointN(int n) => elementAt(n);
 
   /**
    * Replies the (spatial) length of this line string.
    */
-  @specification(name="length()")
+  @specification(name:"length()")
   //TODO: implement
   num get spatialLength {
     throw new UnimplementedError();
@@ -127,7 +127,7 @@ class LineString extends Geometry
    *
    * Throws a [StateError] if this linestring is empty.
    */
-  @specification(name="StartPoint()")
+  @specification(name:"StartPoint()")
   Point get startPoint => first;
 
   /**
@@ -137,7 +137,7 @@ class LineString extends Geometry
    *
    * Throws a [StateError] if this linestring is empty.
    */
-  @specification(name="EndPoint()")
+  @specification(name:"EndPoint()")
   Point get endPoint => last;
 
   /**

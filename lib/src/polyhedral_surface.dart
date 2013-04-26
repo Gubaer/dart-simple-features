@@ -47,7 +47,7 @@ class PolyhedralSurface extends Geometry
    *
    * See also [length]
    */
-  @specification(name="numPatches()")
+  @specification(name:"numPatches()")
   int get numPatches => length;
 
   /**
@@ -55,14 +55,14 @@ class PolyhedralSurface extends Geometry
    *
    * See also [elementAt]
    */
-  @specification(name="patchN()")
+  @specification(name:"patchN()")
   Polygon patchN(int n) => elementAt(n);
 
   /**
    * Returns the collection of polygons in this surface that bounds the given
    * polygon “p” for any polygon “p” in the surface.
    */
-  @specification(name="boundingPolygons()")
+  @specification(name:"boundingPolygons()")
   MultiPolygon get boundingPolygons {
     throw new UnimplementedError();
   }
@@ -71,7 +71,7 @@ class PolyhedralSurface extends Geometry
    * Returns true  if the polygon closes on itself, and thus has no boundary
    * and encloses a solid
    */
-  @specification(name="isClosed()")
+  @specification(name:"isClosed()")
   bool get isClosed {
     throw new UnimplementedError();
   }

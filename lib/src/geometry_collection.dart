@@ -55,13 +55,13 @@ class GeometryCollection extends Geometry
    * This getter is equivaled to the method `getNumGeometries()`
    * in the SFS, but see also [length].
    */
-  @specification(name="getNumGeometries")
+  @specification(name:"getNumGeometries")
   int get numGeometries => length;
 
   /**
    * Replies the <em>n</em>-th geometry in this collection.
    */
-  @specification(name="getGeometryN")
+  @specification(name:"getGeometryN")
   Geometry getGeometryN(int n) => elementAt(n);
 
   /**
@@ -70,7 +70,7 @@ class GeometryCollection extends Geometry
    * This is the Dart'ish implemenation of `getGeometryN()` using
    * operator overloading.
    */
-  @specification(name="getGeometryN")
+  @specification(name:"getGeometryN")
   operator [](int n) => elementAt(n);
 
   /// the iterator to access the geometry objects
@@ -165,7 +165,6 @@ class _GeometryContainerMixin {
   }
 
   operator [](int n) => this.elementAt(n);
-
 }
 
 

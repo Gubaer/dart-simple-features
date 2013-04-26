@@ -7,6 +7,8 @@ geographical information systems. Most database systems mit spatial
 functionality as well as software frameworks for processing GIS data provide
 an implementation of the SFS. 
 
+## API documentation
+See [output from dartdoc](http://gubaer.github.io/dart-simple-features/doc/index.html)
 
 ## Status
 This is work in progress. 

@@ -27,32 +27,32 @@ abstract class Geometry {
   /**
    * Returns 1 true if this geometric object is the empty Geometry.
    */
-  @specification(name="isEmpty()")
+  @specification(name:"isEmpty()")
   bool get isEmpty;
 
   /**
    * Returns true if this geometric object has z coordinate values.
    */
-  @specification(name="is3D()")
+  @specification(name:"is3D()")
   bool get is3D;
 
   /**
    * Returns true if this geometric object has m coordinate values.
    */
-  @specification(name="isMeasured()")
+  @specification(name:"isMeasured()")
   bool get isMeasured;
 
   /**
    * Returns the closure of the combinatorial boundary of this geometric object
    */
-  @specification(name="boundary()")
+  @specification(name:"boundary()")
   Geometry get boundary;
 
   /**
    *  Returns true if this geometric object has no anomalous geometric points,
    *  such as self intersection or self tangency.
    */
-  @specification(name="isSimple()")
+  @specification(name:"isSimple()")
   bool get isSimple;
 
   /**
@@ -60,7 +60,7 @@ abstract class Geometry {
    * geometric object is an instantiable member. The name of the subtype of
    * Geometry is returned as a string.
    */
-  @specification(name="geometryType()")
+  @specification(name:"geometryType()")
   String get geometryType;
 
   /**
@@ -68,13 +68,13 @@ abstract class Geometry {
    * or equal to the coordinate dimension. In non-homogeneous collections,
    * this will return the largest topological dimension of the contained objects.
    */
-  @specification(name="dimension()")
+  @specification(name:"dimension()")
   int get dimension;
 
   /**
    * Returns the Spatial Reference System ID for this geometric object.
    */
-  @specification(name="srid()")
+  @specification(name:"srid()")
   int get SRID => _srid;
 
   /**
@@ -95,7 +95,7 @@ abstract class Geometry {
   /**
    * A WKT representation of the geometry
    */
-  @specification(name="asText()")
+  @specification(name:"asText()")
   String get asText {
     var buffer = new StringBuffer();
     var writer = new _WKTWriter(buffer);

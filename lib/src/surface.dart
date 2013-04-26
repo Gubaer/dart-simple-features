@@ -12,19 +12,19 @@ abstract class Surface extends Geometry {
    * is not guaranteed to be on this [Surface].
    *
    */
-  @specification(name="centroid()")
+  @specification(name:"centroid()")
   Point get centroid;
 
   /**
    * A [Point] guaranteed to be on this [Surface].
    */
-  @specification(name="pointOnSurface()")
+  @specification(name:"pointOnSurface()")
   Point get pointOnSurface;
 
   /**
    * The area of this [Surface], as measured in the spatial reference system
    * of this [Surface].
    */
-  @specification(name="area()")
+  @specification(name:"area()")
   double get area;
 }

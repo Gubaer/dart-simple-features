@@ -45,7 +45,7 @@ class MultiLineString extends GeometryCollection{
   /**
    * Replies the spatial length of this multilinestring.
    */
-  @specification(name="length()")
+  @specification(name:"length()")
   num get spatialLength {
     throw new UnimplementedError();
   }
