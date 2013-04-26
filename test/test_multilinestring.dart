@@ -4,6 +4,7 @@ import "dart:async";
 import "dart:collection";
 import "package:unittest/unittest.dart" hide isEmpty;
 import "package:meta/meta.dart";
+import "dart:json" as json;
 
 part "../lib/src/util.dart";
 part "../lib/src/point.dart";
@@ -14,7 +15,7 @@ part "../lib/src/multilinestring.dart";
 part "../lib/src/multipoint.dart";
 part "../lib/src/wkt.dart";
 part "../lib/src/direct_position.dart";
-
+part "../lib/src/geojson.dart";
 main() {
   group("constructor -", () {
     test("empty() constructor", () {
@@ -109,6 +110,34 @@ main() {
       expect(mls is MultiLineString, true);
       expect(mls.length, 3);
       expect(mls.first.isEmpty, true);
+    });
+  });
+
+  /* --------------------------------------------------------------------- */
+  group("geojson -", () {
+    test("- deserialize a multilinestring", () {
+      var gjson = """
+      {"type": "MultiLineString", "coordinates": [
+        [[1,2], [3,4], [5,6]],
+        [[11,12], [13,14], [15,16]],
+        [[21,22], [22,24], [25,26]]
+      ]}
+      """;
+      var o = parseGeoJson(gjson);
+      expect(o is MultiLineString, true);
+      expect(o.length, 3);
+      for (int i=0; i<o.length; i++) {
+        expect(o[i] is LineString, true);
+      }
+      expectPoints(ls, points) {
+        for (int i=0; i< points.length; i++) {
+          expect(ls[i].x, points[i][0]);
+          expect(ls[i].y, points[i][1]);
+        }
+      }
+      expectPoints(o[0], [[1,2], [3,4], [5,6]]);
+      expectPoints(o[1], [[11,12], [13,14], [15,16]]);
+      expectPoints(o[2], [[21,22], [22,24], [25,26]]);
     });
   });
 }

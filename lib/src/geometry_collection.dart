@@ -36,6 +36,20 @@ class GeometryCollection extends Geometry
   factory GeometryCollection.empty() => _EMPTY_GEOMETRY_COLLECTION;
 
   /**
+   * Creates a new geometry collection from the WKT string [wkt].
+   *
+   * Throws a [WKTError] if [wkt] isn't a valid representation of
+   * a [GeometryCollection].
+   */
+  factory GeometryCollection.wkt(String wkt) {
+    var g = parseWKT(wkt);
+    if (g is! GeometryCollection) {
+      throw new WKTError("WKT string doesn't represent a GeometryCollection");
+    }
+    return g;
+  }
+
+  /**
    * Replies the number of geometries in this collection.
    *
    * This getter is equivaled to the method `getNumGeometries()`
@@ -75,6 +89,9 @@ class GeometryCollection extends Geometry
   _writeTaggedWKT(writer, {bool withZ: false, bool withM: false}) {
     writer.write("GEOMETRYCOLLECTION");
     writer.blank();
+    if (! isEmpty) {
+      writer.ordinateSpecification(withZ: withZ, withM: withM);
+    }
     if (isEmpty){
       writer.empty();
     } else {

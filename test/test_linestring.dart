@@ -4,6 +4,7 @@ import "dart:async";
 import "dart:collection";
 import "package:unittest/unittest.dart" hide isEmpty;
 import "package:meta/meta.dart";
+import "dart:json" as json;
 
 part "../lib/src/util.dart";
 part "../lib/src/point.dart";
@@ -12,6 +13,8 @@ part "../lib/src/geometry_collection.dart";
 part "../lib/src/linestring.dart";
 part "../lib/src/multipoint.dart";
 part "../lib/src/wkt.dart";
+part "../lib/src/geojson.dart";
+part "../lib/src/direct_position.dart";
 
 main() {
   group("constructor -", () {
@@ -289,6 +292,23 @@ main() {
       expect(ls.isMeasured, true);
       expect(ls.first.z, 13);
       expect(ls.last.m, 34.8);
+    });
+  });
+
+  group("geojson", () {
+    test("- LineString", () {
+      var gjson = """
+      {"type": "LineString", "coordinates": [[1,2], [3,4], [5,6]]}
+      """;
+      var o = parseGeoJson(gjson);
+      expect(o is LineString, true);
+      expect(o.length, 3);
+      for (int i=0; i<o.length; i++) {
+        expect(o[i] is Point, true);
+      }
+      expect([o[0].x, o[0].y], [1,2]);
+      expect([o[1].x, o[1].y], [3,4]);
+      expect([o[2].x, o[2].y], [5,6]);
     });
   });
 }

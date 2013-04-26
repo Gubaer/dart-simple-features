@@ -4,6 +4,7 @@ import "dart:async";
 import "dart:collection";
 import "package:unittest/unittest.dart" hide isEmpty;
 import "package:meta/meta.dart";
+import "dart:json" as json;
 
 part "../lib/src/util.dart";
 part "../lib/src/point.dart";
@@ -16,6 +17,7 @@ part "../lib/src/wkt.dart";
 part "../lib/src/direct_position.dart";
 part "../lib/src/surface.dart";
 part "../lib/src/polygon.dart";
+part "../lib/src/geojson.dart";
 
 main() {
   group("constructor -", () {
@@ -200,6 +202,34 @@ main() {
       expect(p is Polygon, true);
       expect(p.isEmpty, false);
       expect(p.interiorRings.length, 2);
+    });
+  });
+
+  /* -------------------------------------------------------------------- */
+  group("geojson -", () {
+    expectPoints(ls, points) {
+      for (int i=0; i< points.length; i++) {
+        expect(ls[i].x, points[i][0]);
+        expect(ls[i].y, points[i][1]);
+      }
+    }
+
+    test("- Polygon", () {
+      var gjson = """
+      {"type": "Polygon", "coordinates": [
+        [[1,2], [3,4], [5,6], [1,2]],
+        [[11,12], [13,14], [15,16], [11,12]],
+        [[21,22], [22,24], [25,26], [21,22]]
+      ]}
+      """;
+      var o = parseGeoJson(gjson);
+      expect(o is Polygon, true);
+      o = (o as Polygon);
+      expect(o.exteriorRing, isNotNull);
+      expect(o.interiorRings.length, 2);
+      expectPoints(o.exteriorRing, [[1,2], [3,4], [5,6]]);
+      expectPoints(o.interiorRings[0], [[11,12], [13,14], [15,16]]);
+      expectPoints(o.interiorRings[1], [[21,22], [22,24], [25,26]]);
     });
 
   });

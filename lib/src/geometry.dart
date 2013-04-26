@@ -1,5 +1,8 @@
 part of simple_features;
 
+/**
+ * The abstract base class for all geometries.
+ */
 abstract class Geometry {
 
   int _srid;
@@ -10,6 +13,14 @@ abstract class Geometry {
    * Throws a [WKTError] if [wkt] isn't a valid WKT geometry.
    */
   factory Geometry.wkt(String wkt) => parseWKT(wkt);
+
+
+  /**
+   * Creates a geometry from a GeoJSON string [json].
+   *
+   * Throws a  [FormatError] if [json] isn't valid.
+   */
+  factory Geometry.geojson(String json) => parseGeoJson(json);
 
   Geometry();
 

@@ -4,12 +4,14 @@ import "dart:async";
 import "dart:collection";
 import "package:unittest/unittest.dart" hide isEmpty;
 import "package:meta/meta.dart";
+import "dart:json" as json;
 
 part "../lib/src/util.dart";
 part "../lib/src/point.dart";
 part "../lib/src/geometry.dart";
 part "../lib/src/geometry_collection.dart";
 part "../lib/src/wkt.dart";
+part "../lib/src/geojson.dart";
 
 
 main() {
@@ -97,6 +99,18 @@ main() {
       var p = new Point(1,2, m: 3.1, z: 4);
       expect(p.asText, "POINT ZM (1 2 4 3.1)");
       expect(parseWKT(p.asText) is Point, true);
+    });
+  });
+
+  group("geojson", () {
+    test("- deserialize a point", () {
+      var gjson = """
+      {"type": "Point", "coordinates": [1,2]}
+      """;
+      var o = new Geometry.geojson(gjson);
+      expect(o is Point, true);
+      expect(o.x, 1);
+      expect(o.y, 2);
     });
   });
 }
