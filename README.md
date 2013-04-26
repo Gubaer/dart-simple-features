@@ -10,6 +10,17 @@ an implementation of the SFS.
 ## API documentation
 See [output from dartdoc](http://gubaer.github.io/dart-simple-features/doc/index.html)
 
+## Depend on it
+`simple_features` is available from pub.dartlang.org. Add 
+
+```
+dependencies:
+  simple_features: 0.0.1+3
+```
+to your `pubspec.yaml`.
+
+See [version history](http://pub.dartlang.org/packages/simple_features).
+
 ## Status
 
 [![Build Status](https://drone.io/github.com/Gubaer/dart-simple-features/status.png)](https://drone.io/github.com/Gubaer/dart-simple-features/latest)
