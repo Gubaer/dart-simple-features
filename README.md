@@ -11,6 +11,9 @@ an implementation of the SFS.
 See [output from dartdoc](http://gubaer.github.io/dart-simple-features/doc/index.html)
 
 ## Status
+
+[![Build Status](https://drone.io/github.com/Gubaer/dart-simple-features/status.png)](https://drone.io/github.com/Gubaer/dart-simple-features/latest)
+
 This is work in progress. 
 
 As of the current version 0.0.1:
