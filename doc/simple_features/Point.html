@@ -1,0 +1,522 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>Point class / simple_features Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="simple_features" data-type="Point">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../simple_features.html">simple_features</a> &rsaquo; <a href="../simple_features/Point.html">Point</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../meta.html">meta</a></h2><h2><div class="icon-library"></div><a href="../simple_features.html">simple_features</a></h2><ul class="icon">
+<li><a href="../simple_features/DirectPosition2D.html"><div class="icon-class"></div>DirectPosition2D</a></li>
+<li><a href="../simple_features/Geometry.html"><div class="icon-class"></div>Geometry</a></li>
+<li><a href="../simple_features/GeometryCollection.html"><div class="icon-class"></div>GeometryCollection</a></li>
+<li><a href="../simple_features/Line.html"><div class="icon-class"></div>Line</a></li>
+<li><a href="../simple_features/LinearRing.html"><div class="icon-class"></div>LinearRing</a></li>
+<li><a href="../simple_features/LineString.html"><div class="icon-class"></div>LineString</a></li>
+<li><a href="../simple_features/MultiLineString.html"><div class="icon-class"></div>MultiLineString</a></li>
+<li><a href="../simple_features/MultiPoint.html"><div class="icon-class"></div>MultiPoint</a></li>
+<li><a href="../simple_features/MultiPolygon.html"><div class="icon-class"></div>MultiPolygon</a></li>
+<li><a href="../simple_features/MultiSurface.html"><div class="icon-class"></div>MultiSurface</a></li>
+<li><div class="icon-class"></div><strong>Point</strong></li>
+<li><a href="../simple_features/Polygon.html"><div class="icon-class"></div>Polygon</a></li>
+<li><a href="../simple_features/PolyhedralSurface.html"><div class="icon-class"></div>PolyhedralSurface</a></li>
+<li><a href="../simple_features/specification.html"><div class="icon-class"></div>specification</a></li>
+<li><a href="../simple_features/Surface.html"><div class="icon-class"></div>Surface</a></li>
+<li><a href="../simple_features/Tin.html"><div class="icon-class"></div>Tin</a></li>
+<li><a href="../simple_features/Triangle.html"><div class="icon-class"></div>Triangle</a></li>
+<li><a href="../simple_features/WKTError.html"><div class="icon-exception"></div>WKTError</a></li>
+</ul>
+</div>
+<div class="content">
+        <h2><strong>Point</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+class Point extends Geometry {
+
+ //TODO: z and m mostly unused. More efficient layout?
+ //Using a List&lt;num&gt;, similar to jts? Using decicated subclasses?
+ //
+ /// the x-coordinate. null, if this point [isEmpty]
+ final num x;
+ /// the y-coordinate. null, if this point [isEmpty]
+ final num y;
+ /// the z coordinate. null, if missing
+ final num z;
+ /// the measurement value. null, if missing
+ final num m;
+
+ /**
+  * Creates an empty point.
+  *
+  * [x], [y], [z], and [m] of an empty point are null.
+  */
+ Point.empty(): x=null, y=null, z = null, m = null;
+
+ /**
+  * Creates a point with coordinates [x], [y], and
+  * (optionally) [z]. The point can be a assigned an
+  * optional measurement value [m].
+  */
+ Point(this.x, this.y, {this.z, this.m}){
+   _require(x != null);
+   _require(y != null);
+ }
+
+ /**
+  * Creates a new point from the WKT string [wkt].
+  *
+  * Throws a [WKTError] if [wkt] isn't a valid representation of
+  * a [Point].
+  */
+ factory Point.wkt(String wkt) {
+   var p = parseWKT(wkt);
+   if (p is! Point) {
+     throw new WKTError("WKT string doesn't represent a Point");
+   }
+   return p;
+ }
+
+ /**
+  * Creates a new point from a list of point values.
+  *
+  * [values] is a list with either 2 or 4 elements, otherwise an
+  * [ArgumentError] is thrown.
+  *
+  * * [x,y] - an xy-point.
+  * * [x,y,z,m] - an xy-point with an z- and/or m-coordinate, if
+  *   the 3d and/or the 4th element isn't null.
+  *
+  * x and y must be a [num], otherwise an [ArgumentError] is thrown.
+  * z and m must be a [num] or null, otherwise an [ArgumentError] is thrown.
+  */
+ factory Point.from(List&lt;num&gt; values) {
+   _require(values is List);
+   _require(values.length == 2 &amp;&amp; values.length == 4);
+   _require(values.take(2).every((v) =&gt; v is num));
+   _require(values.skip(2).every((v) =&gt; v is num || v == null));
+   var x = values[0];
+   var y = values[1];
+   var z = values[2];
+   var m = values[3];
+   return new Point(x,y, m:m, z:z);
+ }
+
+ @override bool get isEmpty =&gt; x == null || y == null;
+
+ @override bool get is3D =&gt; z != null;
+
+ @override bool get isMeasured =&gt; m != null;
+
+ _writeCoordinates(writer, {bool withZ:false, bool withM: false}) {
+   writer
+     ..position(x)
+     ..blank()
+     ..position(y);
+
+   if (withZ) {
+     writer
+       ..blank()
+       ..position(z);
+   }
+   if (withM) {
+     writer
+       ..blank()
+       ..position(m);
+   }
+ }
+
+ @override
+ _writeTaggedWKT(writer, {bool withZ: false, bool withM: false}){
+   writer.write("POINT");
+   writer.blank();
+   if (!isEmpty) {
+     writer.ordinateSpecification(withZ: withZ, withM: withM);
+   }
+   if (this.isEmpty) {
+     writer.empty();
+   } else {
+     writer.lparen();
+     _writeCoordinates(writer, withZ: is3D, withM: isMeasured);
+     writer.rparen();
+   }
+ }
+
+ /**
+  * The boundary of a point is the empty [GeometryCollection].
+  *
+  * Note: According to the SFS the boundary of a [Point] is the
+  * empty set. Like the Java Topology Suite we reply an empty
+  * [GeometryCollection], not an empty [Point].
+  */
+ @override Geometry get boundary =&gt; new GeometryCollection.empty();
+ @override bool get isSimple =&gt; true;
+ @override String get geometryType =&gt; "Point";
+ @override int get dimension =&gt; 0;
+
+
+ @override
+ _Envelope _computeEnvelope() {
+   if (isEmpty) return new _Envelope.empty();
+   return new _Envelope.collapsed(x, y);
+ }
+
+ /**
+  * Replies true if the (x,y)-coordinates of this point are
+  * equal to the (x,y)-coordinates of [other].
+  *
+  * Replies false if [other] is null.
+  */
+ bool equals2D(Point other) {
+   if (other == null) return false;
+   return x == other.x &amp;&amp; y == other.y;
+ }
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../simple_features/Geometry.html">Geometry</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>Point</strong></span></p>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="Point">
+<button class="show-code">Code</button>
+new <strong>Point</strong>(<a href="http://api.dartlang.org/dart_core/num.html">num</a> x, <a href="http://api.dartlang.org/dart_core/num.html">num</a> y, {<a href="http://api.dartlang.org/dart_core/num.html">num</a> z, <a href="http://api.dartlang.org/dart_core/num.html">num</a> m}) <a class="anchor-link" href="#Point"
+              title="Permalink to Point.Point">#</a></h4>
+<div class="doc">
+<p>Creates a point with coordinates 
+<span class="param">x</span>, 
+<span class="param">y</span>, and
+(optionally) 
+<span class="param">z</span>. The point can be a assigned an
+optional measurement value 
+<span class="param">m</span>.</p>
+<pre class="source">
+Point(this.x, this.y, {this.z, this.m}){
+ _require(x != null);
+ _require(y != null);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="Point.empty">
+<button class="show-code">Code</button>
+new <strong>Point.empty</strong>() <a class="anchor-link" href="#Point.empty"
+              title="Permalink to Point.Point.empty">#</a></h4>
+<div class="doc">
+<p>Creates an empty point.</p>
+<p><a class="crossref" href="../simple_features/Point.html#x">x</a>, <a class="crossref" href="../simple_features/Point.html#y">y</a>, <a class="crossref" href="../simple_features/Point.html#z">z</a>, and <a class="crossref" href="../simple_features/Point.html#m">m</a> of an empty point are null.</p>
+<pre class="source">
+Point.empty(): x=null, y=null, z = null, m = null;
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="Point.from">
+<button class="show-code">Code</button>
+factory <strong>Point.from</strong>(<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/num.html">num</a>&gt; values) <a class="anchor-link" href="#Point.from"
+              title="Permalink to Point.Point.from">#</a></h4>
+<div class="doc">
+<p>Creates a new point from a list of point values.</p>
+<p>
+<span class="param">values</span> is a list with either 2 or 4 elements, otherwise an
+<code>ArgumentError</code> is thrown.</p><ul><li><code>x,y</code> - an xy-point.</li><li>
+<p><code>x,y,z,m</code> - an xy-point with an z- and/or m-coordinate, if
+  the 3d and/or the 4th element isn't null.</p></li></ul>
+<p>x and y must be a <code>num</code>, otherwise an <code>ArgumentError</code> is thrown.
+z and m must be a <code>num</code> or null, otherwise an <code>ArgumentError</code> is thrown.</p>
+<pre class="source">
+factory Point.from(List&lt;num&gt; values) {
+ _require(values is List);
+ _require(values.length == 2 &amp;&amp; values.length == 4);
+ _require(values.take(2).every((v) =&gt; v is num));
+ _require(values.skip(2).every((v) =&gt; v is num || v == null));
+ var x = values[0];
+ var y = values[1];
+ var z = values[2];
+ var m = values[3];
+ return new Point(x,y, m:m, z:z);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="Point.wkt">
+<button class="show-code">Code</button>
+factory <strong>Point.wkt</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> wkt) <a class="anchor-link" href="#Point.wkt"
+              title="Permalink to Point.Point.wkt">#</a></h4>
+<div class="doc">
+<p>Creates a new point from the WKT string 
+<span class="param">wkt</span>.</p>
+<p>Throws a <a class="crossref" href="../simple_features/WKTError.html">WKTError</a> if 
+<span class="param">wkt</span> isn't a valid representation of
+a <a class="crossref" href="../simple_features/Point.html#Point">Point</a>.</p>
+<pre class="source">
+factory Point.wkt(String wkt) {
+ var p = parseWKT(wkt);
+ if (p is! Point) {
+   throw new WKTError("WKT string doesn't represent a Point");
+ }
+ return p;
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field inherited"><h4 id="asText">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>asText</strong> <a class="anchor-link"
+            href="#asText"
+            title="Permalink to Point.asText">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div><div class="doc">
+<p>A WKT representation of the geometry</p>
+<pre class="source">
+@specification(name:"asText()")
+String get asText {
+ var buffer = new StringBuffer();
+ var writer = new _WKTWriter(buffer);
+ _writeTaggedWKT(writer, withZ: is3D, withM: isMeasured);
+ return buffer.toString();
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="boundary">
+<button class="show-code">Code</button>
+final <a href="../simple_features/Geometry.html">Geometry</a>         <strong>boundary</strong> <a class="anchor-link"
+            href="#boundary"
+            title="Permalink to Point.boundary">#</a>
+        </h4>
+        <div class="doc">
+<p>The boundary of a point is the empty <a class="crossref" href="../simple_features/GeometryCollection.html">GeometryCollection</a>.</p>
+<p>Note: According to the SFS the boundary of a <a class="crossref" href="../simple_features/Point.html#Point">Point</a> is the
+empty set. Like the Java Topology Suite we reply an empty
+<a class="crossref" href="../simple_features/GeometryCollection.html">GeometryCollection</a>, not an empty <a class="crossref" href="../simple_features/Point.html#Point">Point</a>.</p>
+<pre class="source">
+@override Geometry get boundary =&gt; new GeometryCollection.empty();
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="dimension">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>dimension</strong> <a class="anchor-link"
+            href="#dimension"
+            title="Permalink to Point.dimension">#</a>
+        </h4>
+        <div class="doc">
+<div class="inherited">
+<p>The inherent dimension of this geometric object, which must be less than
+or equal to the coordinate dimension. In non-homogeneous collections,
+this will return the largest topological dimension of the contained objects.</p>
+<div class="docs-inherited-from">docs inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div></div>
+<pre class="source">
+@override int get dimension =&gt; 0;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="geometryType">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>geometryType</strong> <a class="anchor-link"
+            href="#geometryType"
+            title="Permalink to Point.geometryType">#</a>
+        </h4>
+        <div class="doc">
+<div class="inherited">
+<p>Returns the name of the instantiable subtype of Geometry of which this
+geometric object is an instantiable member. The name of the subtype of
+Geometry is returned as a string.</p>
+<div class="docs-inherited-from">docs inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div></div>
+<pre class="source">
+@override String get geometryType =&gt; "Point";
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="is3D">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>is3D</strong> <a class="anchor-link"
+            href="#is3D"
+            title="Permalink to Point.is3D">#</a>
+        </h4>
+        <div class="doc">
+<div class="inherited">
+<p>Returns true if this geometric object has z coordinate values.</p>
+<div class="docs-inherited-from">docs inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div></div>
+<pre class="source">
+@override bool get is3D =&gt; z != null;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="isEmpty">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>isEmpty</strong> <a class="anchor-link"
+            href="#isEmpty"
+            title="Permalink to Point.isEmpty">#</a>
+        </h4>
+        <div class="doc">
+<div class="inherited">
+<p>Returns 1 true if this geometric object is the empty Geometry.</p>
+<div class="docs-inherited-from">docs inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div></div>
+<pre class="source">
+@override bool get isEmpty =&gt; x == null || y == null;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="isMeasured">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>isMeasured</strong> <a class="anchor-link"
+            href="#isMeasured"
+            title="Permalink to Point.isMeasured">#</a>
+        </h4>
+        <div class="doc">
+<div class="inherited">
+<p>Returns true if this geometric object has m coordinate values.</p>
+<div class="docs-inherited-from">docs inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div></div>
+<pre class="source">
+@override bool get isMeasured =&gt; m != null;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="isSimple">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>isSimple</strong> <a class="anchor-link"
+            href="#isSimple"
+            title="Permalink to Point.isSimple">#</a>
+        </h4>
+        <div class="doc">
+<div class="inherited">
+<p> Returns true if this geometric object has no anomalous geometric points,
+ such as self intersection or self tangency.</p>
+<div class="docs-inherited-from">docs inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div></div>
+<pre class="source">
+@override bool get isSimple =&gt; true;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="m">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/num.html">num</a>         <strong>m</strong> <a class="anchor-link"
+            href="#m"
+            title="Permalink to Point.m">#</a>
+        </h4>
+        <div class="doc">
+<p>the measurement value. null, if missing</p>
+<pre class="source">
+final num m
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="SRID">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/int.html">int</a> <strong>get SRID</strong> <a class="anchor-link" href="#SRID"
+              title="Permalink to Point.get SRID">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div><div class="doc">
+<p>Returns the Spatial Reference System ID for this geometric object.</p>
+<pre class="source">
+@specification(name:"srid()")
+int get SRID =&gt; _srid;
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="SRID=">
+<button class="show-code">Code</button>
+dynamic <strong>set SRID</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> value) <a class="anchor-link" href="#SRID="
+              title="Permalink to Point.set SRID">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div><div class="doc">
+<p>the Spatial Reference System ID for this geometric object.</p>
+<pre class="source">
+set SRID(int value) =&gt; _srid = value;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="x">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/num.html">num</a>         <strong>x</strong> <a class="anchor-link"
+            href="#x"
+            title="Permalink to Point.x">#</a>
+        </h4>
+        <div class="doc">
+<p>the x-coordinate. null, if this point <a class="crossref" href="../simple_features/Point.html#isEmpty">isEmpty</a></p>
+<pre class="source">
+final num x
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="y">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/num.html">num</a>         <strong>y</strong> <a class="anchor-link"
+            href="#y"
+            title="Permalink to Point.y">#</a>
+        </h4>
+        <div class="doc">
+<p>the y-coordinate. null, if this point <a class="crossref" href="../simple_features/Point.html#isEmpty">isEmpty</a></p>
+<pre class="source">
+final num y
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="z">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/num.html">num</a>         <strong>z</strong> <a class="anchor-link"
+            href="#z"
+            title="Permalink to Point.z">#</a>
+        </h4>
+        <div class="doc">
+<p>the z coordinate. null, if missing</p>
+<pre class="source">
+final num z
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="equals2D">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>equals2D</strong>(<a href="../simple_features/Point.html">Point</a> other) <a class="anchor-link" href="#equals2D"
+              title="Permalink to Point.equals2D">#</a></h4>
+<div class="doc">
+<p>Replies true if the (x,y)-coordinates of this point are
+equal to the (x,y)-coordinates of 
+<span class="param">other</span>.</p>
+<p>Replies false if 
+<span class="param">other</span> is null.</p>
+<pre class="source">
+bool equals2D(Point other) {
+ if (other == null) return false;
+ return x == other.x &amp;&amp; y == other.y;
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-04-26 16:03:41.072</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

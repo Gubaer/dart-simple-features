@@ -1,0 +1,291 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>Surface abstract class / simple_features Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="simple_features" data-type="Surface">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../simple_features.html">simple_features</a> &rsaquo; <a href="../simple_features/Surface.html">Surface</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../meta.html">meta</a></h2><h2><div class="icon-library"></div><a href="../simple_features.html">simple_features</a></h2><ul class="icon">
+<li><a href="../simple_features/DirectPosition2D.html"><div class="icon-class"></div>DirectPosition2D</a></li>
+<li><a href="../simple_features/Geometry.html"><div class="icon-class"></div>Geometry</a></li>
+<li><a href="../simple_features/GeometryCollection.html"><div class="icon-class"></div>GeometryCollection</a></li>
+<li><a href="../simple_features/Line.html"><div class="icon-class"></div>Line</a></li>
+<li><a href="../simple_features/LinearRing.html"><div class="icon-class"></div>LinearRing</a></li>
+<li><a href="../simple_features/LineString.html"><div class="icon-class"></div>LineString</a></li>
+<li><a href="../simple_features/MultiLineString.html"><div class="icon-class"></div>MultiLineString</a></li>
+<li><a href="../simple_features/MultiPoint.html"><div class="icon-class"></div>MultiPoint</a></li>
+<li><a href="../simple_features/MultiPolygon.html"><div class="icon-class"></div>MultiPolygon</a></li>
+<li><a href="../simple_features/MultiSurface.html"><div class="icon-class"></div>MultiSurface</a></li>
+<li><a href="../simple_features/Point.html"><div class="icon-class"></div>Point</a></li>
+<li><a href="../simple_features/Polygon.html"><div class="icon-class"></div>Polygon</a></li>
+<li><a href="../simple_features/PolyhedralSurface.html"><div class="icon-class"></div>PolyhedralSurface</a></li>
+<li><a href="../simple_features/specification.html"><div class="icon-class"></div>specification</a></li>
+<li><div class="icon-class"></div><strong>Surface</strong></li>
+<li><a href="../simple_features/Tin.html"><div class="icon-class"></div>Tin</a></li>
+<li><a href="../simple_features/Triangle.html"><div class="icon-class"></div>Triangle</a></li>
+<li><a href="../simple_features/WKTError.html"><div class="icon-exception"></div>WKTError</a></li>
+</ul>
+</div>
+<div class="content">
+        <h2><strong>Surface</strong>
+          abstract class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>A <a class="crossref" href="../simple_features/Surface.html">Surface</a> is a 2-dimensional geometric object.</p>
+<pre class="source">
+abstract class Surface extends Geometry {
+
+ @override get dimension =&gt; 2;
+
+ /**
+  * The mathematical centroid for this [Surface] as a [Point]. The result
+  * is not guaranteed to be on this [Surface].
+  *
+  */
+ @specification(name:"centroid()")
+ Point get centroid;
+
+ /**
+  * A [Point] guaranteed to be on this [Surface].
+  */
+ @specification(name:"pointOnSurface()")
+ Point get pointOnSurface;
+
+ /**
+  * The area of this [Surface], as measured in the spatial reference system
+  * of this [Surface].
+  */
+ @specification(name:"area()")
+ double get area;
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../simple_features/Geometry.html">Geometry</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>Surface</strong></span></p>
+<h3>Subclasses</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../simple_features/Polygon.html">Polygon</a></span></p>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="area">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/double.html">double</a>         <strong>area</strong> <a class="anchor-link"
+            href="#area"
+            title="Permalink to Surface.area">#</a>
+        </h4>
+        <div class="doc">
+<p>The area of this <a class="crossref" href="../simple_features/Surface.html">Surface</a>, as measured in the spatial reference system
+of this <a class="crossref" href="../simple_features/Surface.html">Surface</a>.</p>
+<pre class="source">
+@specification(name:"area()")
+double get area;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="asText">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>asText</strong> <a class="anchor-link"
+            href="#asText"
+            title="Permalink to Surface.asText">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div><div class="doc">
+<p>A WKT representation of the geometry</p>
+<pre class="source">
+@specification(name:"asText()")
+String get asText {
+ var buffer = new StringBuffer();
+ var writer = new _WKTWriter(buffer);
+ _writeTaggedWKT(writer, withZ: is3D, withM: isMeasured);
+ return buffer.toString();
+}
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="boundary">
+<button class="show-code">Code</button>
+final <a href="../simple_features/Geometry.html">Geometry</a>         <strong>boundary</strong> <a class="anchor-link"
+            href="#boundary"
+            title="Permalink to Surface.boundary">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div><div class="doc">
+<p>Returns the closure of the combinatorial boundary of this geometric object</p>
+<pre class="source">
+@specification(name:"boundary()")
+Geometry get boundary;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="centroid">
+<button class="show-code">Code</button>
+final <a href="../simple_features/Point.html">Point</a>         <strong>centroid</strong> <a class="anchor-link"
+            href="#centroid"
+            title="Permalink to Surface.centroid">#</a>
+        </h4>
+        <div class="doc">
+<p>The mathematical centroid for this <a class="crossref" href="../simple_features/Surface.html">Surface</a> as a <a class="crossref" href="../simple_features/Point.html">Point</a>. The result
+is not guaranteed to be on this <a class="crossref" href="../simple_features/Surface.html">Surface</a>.</p>
+<pre class="source">
+@specification(name:"centroid()")
+Point get centroid;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="dimension">
+<button class="show-code">Code</button>
+final         <strong>dimension</strong> <a class="anchor-link"
+            href="#dimension"
+            title="Permalink to Surface.dimension">#</a>
+        </h4>
+        <div class="doc">
+<div class="inherited">
+<p>The inherent dimension of this geometric object, which must be less than
+or equal to the coordinate dimension. In non-homogeneous collections,
+this will return the largest topological dimension of the contained objects.</p>
+<div class="docs-inherited-from">docs inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div></div>
+<pre class="source">
+@override get dimension =&gt; 2;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="geometryType">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>geometryType</strong> <a class="anchor-link"
+            href="#geometryType"
+            title="Permalink to Surface.geometryType">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div><div class="doc">
+<p>Returns the name of the instantiable subtype of Geometry of which this
+geometric object is an instantiable member. The name of the subtype of
+Geometry is returned as a string.</p>
+<pre class="source">
+@specification(name:"geometryType()")
+String get geometryType;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="is3D">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>is3D</strong> <a class="anchor-link"
+            href="#is3D"
+            title="Permalink to Surface.is3D">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div><div class="doc">
+<p>Returns true if this geometric object has z coordinate values.</p>
+<pre class="source">
+@specification(name:"is3D()")
+bool get is3D;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="isEmpty">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>isEmpty</strong> <a class="anchor-link"
+            href="#isEmpty"
+            title="Permalink to Surface.isEmpty">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div><div class="doc">
+<p>Returns 1 true if this geometric object is the empty Geometry.</p>
+<pre class="source">
+@specification(name:"isEmpty()")
+bool get isEmpty;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="isMeasured">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>isMeasured</strong> <a class="anchor-link"
+            href="#isMeasured"
+            title="Permalink to Surface.isMeasured">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div><div class="doc">
+<p>Returns true if this geometric object has m coordinate values.</p>
+<pre class="source">
+@specification(name:"isMeasured()")
+bool get isMeasured;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="isSimple">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>isSimple</strong> <a class="anchor-link"
+            href="#isSimple"
+            title="Permalink to Surface.isSimple">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div><div class="doc">
+<p> Returns true if this geometric object has no anomalous geometric points,
+ such as self intersection or self tangency.</p>
+<pre class="source">
+@specification(name:"isSimple()")
+bool get isSimple;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="pointOnSurface">
+<button class="show-code">Code</button>
+final <a href="../simple_features/Point.html">Point</a>         <strong>pointOnSurface</strong> <a class="anchor-link"
+            href="#pointOnSurface"
+            title="Permalink to Surface.pointOnSurface">#</a>
+        </h4>
+        <div class="doc">
+<p>A <a class="crossref" href="../simple_features/Point.html">Point</a> guaranteed to be on this <a class="crossref" href="../simple_features/Surface.html">Surface</a>.</p>
+<pre class="source">
+@specification(name:"pointOnSurface()")
+Point get pointOnSurface;
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="SRID">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/int.html">int</a> <strong>get SRID</strong> <a class="anchor-link" href="#SRID"
+              title="Permalink to Surface.get SRID">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div><div class="doc">
+<p>Returns the Spatial Reference System ID for this geometric object.</p>
+<pre class="source">
+@specification(name:"srid()")
+int get SRID =&gt; _srid;
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="SRID=">
+<button class="show-code">Code</button>
+dynamic <strong>set SRID</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> value) <a class="anchor-link" href="#SRID="
+              title="Permalink to Surface.set SRID">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div><div class="doc">
+<p>the Spatial Reference System ID for this geometric object.</p>
+<pre class="source">
+set SRID(int value) =&gt; _srid = value;
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-04-26 16:03:40.908</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

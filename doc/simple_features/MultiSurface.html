@@ -1,0 +1,932 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>MultiSurface abstract class / simple_features Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="simple_features" data-type="MultiSurface">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../simple_features.html">simple_features</a> &rsaquo; <a href="../simple_features/MultiSurface.html">MultiSurface</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../meta.html">meta</a></h2><h2><div class="icon-library"></div><a href="../simple_features.html">simple_features</a></h2><ul class="icon">
+<li><a href="../simple_features/DirectPosition2D.html"><div class="icon-class"></div>DirectPosition2D</a></li>
+<li><a href="../simple_features/Geometry.html"><div class="icon-class"></div>Geometry</a></li>
+<li><a href="../simple_features/GeometryCollection.html"><div class="icon-class"></div>GeometryCollection</a></li>
+<li><a href="../simple_features/Line.html"><div class="icon-class"></div>Line</a></li>
+<li><a href="../simple_features/LinearRing.html"><div class="icon-class"></div>LinearRing</a></li>
+<li><a href="../simple_features/LineString.html"><div class="icon-class"></div>LineString</a></li>
+<li><a href="../simple_features/MultiLineString.html"><div class="icon-class"></div>MultiLineString</a></li>
+<li><a href="../simple_features/MultiPoint.html"><div class="icon-class"></div>MultiPoint</a></li>
+<li><a href="../simple_features/MultiPolygon.html"><div class="icon-class"></div>MultiPolygon</a></li>
+<li><div class="icon-class"></div><strong>MultiSurface</strong></li>
+<li><a href="../simple_features/Point.html"><div class="icon-class"></div>Point</a></li>
+<li><a href="../simple_features/Polygon.html"><div class="icon-class"></div>Polygon</a></li>
+<li><a href="../simple_features/PolyhedralSurface.html"><div class="icon-class"></div>PolyhedralSurface</a></li>
+<li><a href="../simple_features/specification.html"><div class="icon-class"></div>specification</a></li>
+<li><a href="../simple_features/Surface.html"><div class="icon-class"></div>Surface</a></li>
+<li><a href="../simple_features/Tin.html"><div class="icon-class"></div>Tin</a></li>
+<li><a href="../simple_features/Triangle.html"><div class="icon-class"></div>Triangle</a></li>
+<li><a href="../simple_features/WKTError.html"><div class="icon-exception"></div>WKTError</a></li>
+</ul>
+</div>
+<div class="content">
+        <h2><strong>MultiSurface</strong>
+          abstract class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>A MultiSurface is a 2-dimensional <a class="crossref" href="../simple_features/GeometryCollection.html">GeometryCollection</a> whose elements
+are <a class="crossref" href="../simple_features/Surface.html">Surface</a>s, all using coordinates from the same coordinate reference
+system.</p>
+<pre class="source">
+abstract class MultiSurface extends GeometryCollection {
+ MultiSurface(Iterable&lt;Surface&gt; surfaces):super(surfaces);
+
+ /**
+  * The mathematical centroid for this [Surface] as a [Point]. The result
+  * is not guaranteed to be on this [Surface].
+  *
+  */
+ @specification(name:"centroid()")
+ Point get centroid;
+
+ /**
+  * A [Point] guaranteed to be on this [Surface].
+  */
+ @specification(name:"pointOnSurface()")
+ Point get pointOnSurface;
+
+ /**
+  * The area of this [Surface], as measured in the spatial reference system
+  * of this [Surface].
+  */
+ @specification(name:"area()")
+ double get area;
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../simple_features/Geometry.html">Geometry</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><a href="../simple_features/Geometry_IterableMixin__GeometryContainerMixin.html">Geometry_IterableMixin__GeometryContainerMixin</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><a href="../simple_features/GeometryCollection.html">GeometryCollection</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>MultiSurface</strong></span></p>
+<h3>Subclasses</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../simple_features/MultiPolygon.html">MultiPolygon</a></span></p>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="MultiSurface">
+<button class="show-code">Code</button>
+new <strong>MultiSurface</strong>(<a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/Surface.html">Surface</a>&gt; surfaces) <a class="anchor-link" href="#MultiSurface"
+              title="Permalink to MultiSurface.MultiSurface">#</a></h4>
+<div class="doc">
+<pre class="source">
+MultiSurface(Iterable&lt;Surface&gt; surfaces):super(surfaces);
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="area">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/double.html">double</a>         <strong>area</strong> <a class="anchor-link"
+            href="#area"
+            title="Permalink to MultiSurface.area">#</a>
+        </h4>
+        <div class="doc">
+<p>The area of this <a class="crossref" href="../simple_features/Surface.html">Surface</a>, as measured in the spatial reference system
+of this <a class="crossref" href="../simple_features/Surface.html">Surface</a>.</p>
+<pre class="source">
+@specification(name:"area()")
+double get area;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="asText">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>asText</strong> <a class="anchor-link"
+            href="#asText"
+            title="Permalink to MultiSurface.asText">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div><div class="doc">
+<p>A WKT representation of the geometry</p>
+<pre class="source">
+@specification(name:"asText()")
+String get asText {
+ var buffer = new StringBuffer();
+ var writer = new _WKTWriter(buffer);
+ _writeTaggedWKT(writer, withZ: is3D, withM: isMeasured);
+ return buffer.toString();
+}
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="boundary">
+<button class="show-code">Code</button>
+final <a href="../simple_features/Geometry.html">Geometry</a>         <strong>boundary</strong> <a class="anchor-link"
+            href="#boundary"
+            title="Permalink to MultiSurface.boundary">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div><div class="doc">
+<p>Returns the closure of the combinatorial boundary of this geometric object</p>
+<pre class="source">
+@specification(name:"boundary()")
+Geometry get boundary;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="centroid">
+<button class="show-code">Code</button>
+final <a href="../simple_features/Point.html">Point</a>         <strong>centroid</strong> <a class="anchor-link"
+            href="#centroid"
+            title="Permalink to MultiSurface.centroid">#</a>
+        </h4>
+        <div class="doc">
+<p>The mathematical centroid for this <a class="crossref" href="../simple_features/Surface.html">Surface</a> as a <a class="crossref" href="../simple_features/Point.html">Point</a>. The result
+is not guaranteed to be on this <a class="crossref" href="../simple_features/Surface.html">Surface</a>.</p>
+<pre class="source">
+@specification(name:"centroid()")
+Point get centroid;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="dimension">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>dimension</strong> <a class="anchor-link"
+            href="#dimension"
+            title="Permalink to MultiSurface.dimension">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../simple_features/GeometryCollection.html">GeometryCollection</a> </div><div class="doc">
+<div class="inherited">
+<p>The inherent dimension of this geometric object, which must be less than
+or equal to the coordinate dimension. In non-homogeneous collections,
+this will return the largest topological dimension of the contained objects.</p>
+<div class="docs-inherited-from">docs inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div></div>
+<pre class="source">
+@override int get dimension =&gt; fold(0, (prev, g) =&gt; max(prev, g.dimension));
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="first">
+<button class="show-code">Code</button>
+final <a href="../simple_features/MultiSurface.html">E</a>         <strong>first</strong> <a class="anchor-link"
+            href="#first"
+            title="Permalink to MultiSurface.first">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns the first element.</p>
+<p>If <code>this</code> is empty throws a <code>StateError</code>. Otherwise this method is
+equivalent to <code>this.elementAt(0)</code></p>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; </div></div>
+<pre class="source">
+E get first {
+ Iterator it = iterator;
+ if (!it.moveNext()) {
+   throw new StateError("No elements");
+ }
+ return it.current;
+}
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="geometryType">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>geometryType</strong> <a class="anchor-link"
+            href="#geometryType"
+            title="Permalink to MultiSurface.geometryType">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../simple_features/GeometryCollection.html">GeometryCollection</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns the name of the instantiable subtype of Geometry of which this
+geometric object is an instantiable member. The name of the subtype of
+Geometry is returned as a string.</p>
+<div class="docs-inherited-from">docs inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div></div>
+<pre class="source">
+@override String get geometryType =&gt; "GeometryCollection";
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="is3D">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>is3D</strong> <a class="anchor-link"
+            href="#is3D"
+            title="Permalink to MultiSurface.is3D">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin__GeometryContainerMixin.html">Geometry_IterableMixin__GeometryContainerMixin</a> </div><div class="doc">
+<p>A collection of geometries is considered 3D if <em>every</em> child geometry
+has a non-null z-component.</p>
+<p>The value of this property is computed upon first access and then
+cached. Subsequent reads of the property efficiently reply the cached
+value.</p>
+<pre class="source">
+@override
+bool get is3D {
+ if (_is3D == null) _computeIs3D();
+ return _is3D;
+}
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="isEmpty">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>isEmpty</strong> <a class="anchor-link"
+            href="#isEmpty"
+            title="Permalink to MultiSurface.isEmpty">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns 1 true if this geometric object is the empty Geometry.</p>
+<div class="docs-inherited-from">docs inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div></div>
+<pre class="source">
+bool get isEmpty =&gt; !iterator.moveNext();
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="isMeasured">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>isMeasured</strong> <a class="anchor-link"
+            href="#isMeasured"
+            title="Permalink to MultiSurface.isMeasured">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin__GeometryContainerMixin.html">Geometry_IterableMixin__GeometryContainerMixin</a> </div><div class="doc">
+<p>A collection of geometries is considered <em>measured</em> if <em>every</em> child
+geometry has an m-component.</p>
+<p>The value of this property is computed upon first access and then
+cached. Subsequent reads of the property efficiently reply the cached
+value.</p>
+<pre class="source">
+@override
+bool get isMeasured {
+ if (_isMeasured == null) _computeIsMeasured();
+ return _isMeasured;
+}
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="isSimple">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>isSimple</strong> <a class="anchor-link"
+            href="#isSimple"
+            title="Permalink to MultiSurface.isSimple">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../simple_features/GeometryCollection.html">GeometryCollection</a> </div><div class="doc">
+<p>A geometry collection is simple if all its child geometries are
+simple.</p>
+<pre class="source">
+@override bool get isSimple =&gt; every((g) =&gt; g.isSimple);
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="iterator">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/Iterator.html">Iterator</a>&lt;<a href="../simple_features/Geometry.html">Geometry</a>&gt;         <strong>iterator</strong> <a class="anchor-link"
+            href="#iterator"
+            title="Permalink to MultiSurface.iterator">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../simple_features/GeometryCollection.html">GeometryCollection</a> </div><div class="doc">
+<p>the iterator to access the geometry objects</p>
+<pre class="source">
+Iterator&lt;Geometry&gt; get iterator {
+ if (_geometries == null) return [].iterator;
+ else return _geometries.iterator;
+}
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="last">
+<button class="show-code">Code</button>
+final <a href="../simple_features/MultiSurface.html">E</a>         <strong>last</strong> <a class="anchor-link"
+            href="#last"
+            title="Permalink to MultiSurface.last">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns the last element.</p>
+<p>If <code>this</code> is empty throws a <code>StateError</code>.</p>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; </div></div>
+<pre class="source">
+E get last {
+ Iterator it = iterator;
+ if (!it.moveNext()) {
+   throw new StateError("No elements");
+ }
+ E result;
+ do {
+   result = it.current;
+ } while(it.moveNext());
+ return result;
+}
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="length">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>length</strong> <a class="anchor-link"
+            href="#length"
+            title="Permalink to MultiSurface.length">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns the number of elements in <code>this</code>.</p>
+<p>Counting all elements may be involve running through all elements and can
+therefore be slow.</p>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; </div></div>
+<pre class="source">
+int get length {
+ int count = 0;
+ Iterator it = iterator;
+ while (it.moveNext()) {
+   count++;
+ }
+ return count;
+}
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="numGeometries">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>numGeometries</strong> <a class="anchor-link"
+            href="#numGeometries"
+            title="Permalink to MultiSurface.numGeometries">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../simple_features/GeometryCollection.html">GeometryCollection</a> </div><div class="doc">
+<p>Replies the number of geometries in this collection.</p>
+<p>This getter is equivaled to the method <code>getNumGeometries()</code>
+in the SFS, but see also <code>length</code>.</p>
+<pre class="source">
+@specification(name:"getNumGeometries")
+int get numGeometries =&gt; length;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="pointOnSurface">
+<button class="show-code">Code</button>
+final <a href="../simple_features/Point.html">Point</a>         <strong>pointOnSurface</strong> <a class="anchor-link"
+            href="#pointOnSurface"
+            title="Permalink to MultiSurface.pointOnSurface">#</a>
+        </h4>
+        <div class="doc">
+<p>A <a class="crossref" href="../simple_features/Point.html">Point</a> guaranteed to be on this <a class="crossref" href="../simple_features/Surface.html">Surface</a>.</p>
+<pre class="source">
+@specification(name:"pointOnSurface()")
+Point get pointOnSurface;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="single">
+<button class="show-code">Code</button>
+final <a href="../simple_features/MultiSurface.html">E</a>         <strong>single</strong> <a class="anchor-link"
+            href="#single"
+            title="Permalink to MultiSurface.single">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns the single element in <code>this</code>.</p>
+<p>If <code>this</code> is empty or has more than one element throws a <code>StateError</code>.</p>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; </div></div>
+<pre class="source">
+E get single {
+ Iterator it = iterator;
+ if (!it.moveNext()) throw new StateError("No elements");
+ E result = it.current;
+ if (it.moveNext()) throw new StateError("More than one element");
+ return result;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="SRID">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/int.html">int</a> <strong>get SRID</strong> <a class="anchor-link" href="#SRID"
+              title="Permalink to MultiSurface.get SRID">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div><div class="doc">
+<p>Returns the Spatial Reference System ID for this geometric object.</p>
+<pre class="source">
+@specification(name:"srid()")
+int get SRID =&gt; _srid;
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="SRID=">
+<button class="show-code">Code</button>
+dynamic <strong>set SRID</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> value) <a class="anchor-link" href="#SRID="
+              title="Permalink to MultiSurface.set SRID">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry.html">Geometry</a> </div><div class="doc">
+<p>the Spatial Reference System ID for this geometric object.</p>
+<pre class="source">
+set SRID(int value) =&gt; _srid = value;
+</pre>
+</div>
+</div>
+</div>
+<div class="inherited">
+<h3>Operators</h3>
+<div class="method inherited"><h4 id="[]">
+<button class="show-code">Code</button>
+dynamic <strong>operator []</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> n) <a class="anchor-link" href="#[]"
+              title="Permalink to MultiSurface.operator []">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/GeometryCollection.html">GeometryCollection</a> </div><div class="doc">
+<p>Replies the &lt;em>n&lt;/em>-th geometry in this collection.</p>
+<p>This is the Dart'ish implemenation of <code>getGeometryN()</code> using
+operator overloading.</p>
+<pre class="source">
+@specification(name:"getGeometryN")
+operator [](int n) =&gt; elementAt(n);
+</pre>
+</div>
+</div>
+</div>
+<div class="inherited">
+<h3>Methods</h3>
+<div class="method inherited"><h4 id="any">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>any</strong>(<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> f(<a href="../simple_features/MultiSurface.html">E</a> element)) <a class="anchor-link" href="#any"
+              title="Permalink to MultiSurface.any">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns true if one element of this collection satisfies the
+predicate 
+<span class="param">f</span>. Returns false otherwise.</p>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; </div></div>
+<pre class="source">
+bool any(bool f(E element)) {
+ for (E element in this) {
+   if (f(element)) return true;
+ }
+ return false;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="contains">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>contains</strong>(<a href="../simple_features/MultiSurface.html">E</a> element) <a class="anchor-link" href="#contains"
+              title="Permalink to MultiSurface.contains">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a> </div><div class="doc">
+<div class="inherited">
+<p>Check whether the collection contains an element equal to 
+<span class="param">element</span>.</p>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; </div></div>
+<pre class="source">
+bool contains(E element) {
+ for (E e in this) {
+   if (e == element) return true;
+ }
+ return false;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="elementAt">
+<button class="show-code">Code</button>
+<a href="../simple_features/MultiSurface.html">E</a> <strong>elementAt</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> index) <a class="anchor-link" href="#elementAt"
+              title="Permalink to MultiSurface.elementAt">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns the 
+<span class="param">index</span>th element.</p>
+<p>If [this] [Iterable] has fewer than 
+<span class="param">index</span> elements throws a
+<code>RangeError</code>.</p>
+<p>Note: if <code>this</code> does not have a deterministic iteration order then the
+function may simply return any element without any iteration if there are
+at least 
+<span class="param">index</span> elements in <code>this</code>.</p>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; </div></div>
+<pre class="source">
+E elementAt(int index) {
+ if (index is! int || index &lt; 0) throw new RangeError.value(index);
+ int remaining = index;
+ for (E element in this) {
+   if (remaining == 0) return element;
+   remaining--;
+ }
+ throw new RangeError.value(index);
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="every">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>every</strong>(<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> f(<a href="../simple_features/MultiSurface.html">E</a> element)) <a class="anchor-link" href="#every"
+              title="Permalink to MultiSurface.every">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns true if every elements of this collection satisify the
+predicate 
+<span class="param">f</span>. Returns false otherwise.</p>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; </div></div>
+<pre class="source">
+bool every(bool f(E element)) {
+ for (E element in this) {
+   if (!f(element)) return false;
+ }
+ return true;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="expand">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a> <strong>expand</strong>(<a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a> f(<a href="../simple_features/MultiSurface.html">E</a> element)) <a class="anchor-link" href="#expand"
+              title="Permalink to MultiSurface.expand">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a> </div><div class="doc">
+<div class="inherited">
+<p>Expand each element of this <code>Iterable</code> into zero or more elements.</p>
+<p>The resulting Iterable will run through the elements returned
+by 
+<span class="param">f</span> for each element of this, in order.</p>
+<p>The returned <code>Iterable</code> is lazy, and will call 
+<span class="param">f</span> for each element
+of this every time it's iterated.</p>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; </div></div>
+<pre class="source">
+Iterable expand(Iterable f(E element)) =&gt;
+   new ExpandIterable&lt;E, dynamic&gt;(this, f);
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="firstWhere">
+<button class="show-code">Code</button>
+<a href="../simple_features/MultiSurface.html">E</a> <strong>firstWhere</strong>(<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> test(<a href="../simple_features/MultiSurface.html">E</a> value), {<a href="../simple_features/MultiSurface.html">E</a> orElse()}) <a class="anchor-link" href="#firstWhere"
+              title="Permalink to MultiSurface.firstWhere">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns the first element that satisfies the given predicate <code>f</code>.</p>
+<p>If none matches, the result of invoking the 
+<span class="param">orElse</span> function is
+returned. By default, when 
+<span class="param">orElse</span> is <code>null</code>, a <code>StateError</code> is
+thrown.</p>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; </div></div>
+<pre class="source">
+E firstWhere(bool test(E value), { E orElse() }) {
+ // TODO(floitsch): check that arguments are of correct type?
+ for (E element in this) {
+   if (test(element)) return element;
+ }
+ if (orElse != null) return orElse();
+ throw new StateError("No matching element");
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="fold">
+<button class="show-code">Code</button>
+dynamic <strong>fold</strong>(initialValue, combine(previousValue, <a href="../simple_features/MultiSurface.html">E</a> element)) <a class="anchor-link" href="#fold"
+              title="Permalink to MultiSurface.fold">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a> </div><div class="doc">
+<div class="inherited">
+<p>Reduces a collection to a single value by iteratively combining each
+element of the collection with an existing value using the provided
+function.</p>
+<p>Use 
+<span class="param">initialValue</span> as the initial value, and the function 
+<span class="param">combine</span> to
+create a new value from the previous one and an element.</p>
+<p>Example of calculating the sum of an iterable:</p>
+<pre><code>iterable.fold(0, (prev, element) =&gt; prev + element);
+</code></pre>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; </div></div>
+<pre class="source">
+dynamic fold(var initialValue,
+            dynamic combine(var previousValue, E element)) {
+ var value = initialValue;
+ for (E element in this) value = combine(value, element);
+ return value;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="forEach">
+<button class="show-code">Code</button>
+void <strong>forEach</strong>(void f(<a href="../simple_features/MultiSurface.html">E</a> element)) <a class="anchor-link" href="#forEach"
+              title="Permalink to MultiSurface.forEach">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a> </div><div class="doc">
+<div class="inherited">
+<p>Applies the function 
+<span class="param">f</span> to each element of this collection.</p>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; </div></div>
+<pre class="source">
+void forEach(void f(E element)) {
+ for (E element in this) f(element);
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="getGeometryN">
+<button class="show-code">Code</button>
+<a href="../simple_features/Geometry.html">Geometry</a> <strong>getGeometryN</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> n) <a class="anchor-link" href="#getGeometryN"
+              title="Permalink to MultiSurface.getGeometryN">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/GeometryCollection.html">GeometryCollection</a> </div><div class="doc">
+<p>Replies the &lt;em>n&lt;/em>-th geometry in this collection.</p>
+<pre class="source">
+@specification(name:"getGeometryN")
+Geometry getGeometryN(int n) =&gt; elementAt(n);
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="join">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/String.html">String</a> <strong>join</strong>([<a href="http://api.dartlang.org/dart_core/String.html">String</a> separator]) <a class="anchor-link" href="#join"
+              title="Permalink to MultiSurface.join">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a> </div><div class="doc">
+<div class="inherited">
+<p>Converts each element to a <code>String</code> and concatenates the strings.</p>
+<p>Converts each element to a <code>String</code> by calling <code>Object.toString</code> on it.
+Then concatenates the strings, optionally separated by the 
+<span class="param">separator</span>
+string.</p>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; </div></div>
+<pre class="source">
+String join([String separator]) {
+ Iterator&lt;E&gt; iterator = this.iterator;
+ if (!iterator.moveNext()) return "";
+ StringBuffer buffer = new StringBuffer();
+ if (separator == null || separator == "") {
+   do {
+     buffer.write("${iterator.current}");
+   } while (iterator.moveNext());
+ } else {
+   buffer.write("${iterator.current}");
+   while (iterator.moveNext()) {
+     buffer.write(separator);
+     buffer.write("${iterator.current}");
+   }
+ }
+ return buffer.toString();
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="lastWhere">
+<button class="show-code">Code</button>
+<a href="../simple_features/MultiSurface.html">E</a> <strong>lastWhere</strong>(<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> test(<a href="../simple_features/MultiSurface.html">E</a> value), {<a href="../simple_features/MultiSurface.html">E</a> orElse()}) <a class="anchor-link" href="#lastWhere"
+              title="Permalink to MultiSurface.lastWhere">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns the last element that satisfies the given predicate <code>f</code>.</p>
+<p>If none matches, the result of invoking the 
+<span class="param">orElse</span> function is
+returned. By default, when 
+<span class="param">orElse</span> is <code>null</code>, a <code>StateError</code> is
+thrown.</p>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; </div></div>
+<pre class="source">
+E lastWhere(bool test(E value), {E orElse()}) {
+ // TODO(floitsch): check that arguments are of correct type?
+ E result = null;
+ bool foundMatching = false;
+ for (E element in this) {
+   if (test(element)) {
+     result = element;
+     foundMatching = true;
+   }
+ }
+ if (foundMatching) return result;
+ if (orElse != null) return orElse();
+ throw new StateError("No matching element");
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="map">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a> <strong>map</strong>(f(<a href="../simple_features/MultiSurface.html">E</a> element)) <a class="anchor-link" href="#map"
+              title="Permalink to MultiSurface.map">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns a lazy <code>Iterable</code> where each element <code>e</code> of <code>this</code> is replaced
+by the result of <code>f(e)</code>.</p>
+<p>This method returns a view of the mapped elements. As long as the
+returned <code>Iterable</code> is not iterated over, the supplied function 
+<span class="param">f</span> will
+not be invoked. The transformed elements will not be cached. Iterating
+multiple times over the the returned <code>Iterable</code> will invoke the supplied
+function 
+<span class="param">f</span> multiple times on the same element.</p>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; </div></div>
+<pre class="source">
+Iterable map(f(E element)) =&gt; new MappedIterable&lt;E, dynamic&gt;(this, f);
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="reduce">
+<button class="show-code">Code</button>
+<a href="../simple_features/MultiSurface.html">E</a> <strong>reduce</strong>(<a href="../simple_features/MultiSurface.html">E</a> combine(<a href="../simple_features/MultiSurface.html">E</a> value, <a href="../simple_features/MultiSurface.html">E</a> element)) <a class="anchor-link" href="#reduce"
+              title="Permalink to MultiSurface.reduce">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a> </div><div class="doc">
+<div class="inherited">
+<p>Reduces a collection to a single value by iteratively combining elements
+of the collection using the provided function.</p>
+<p>Example of calculating the sum of an iterable:</p>
+<pre><code>iterable.reduce((value, element) =&gt; value + element);
+</code></pre>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; </div></div>
+<pre class="source">
+E reduce(E combine(E value, E element)) {
+ Iterator&lt;E&gt; iterator = this.iterator;
+ if (!iterator.moveNext()) {
+   throw new StateError("No elements");
+ }
+ E value = iterator.current;
+ while (iterator.moveNext()) {
+   value = combine(value, iterator.current);
+ }
+ return value;
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="singleWhere">
+<button class="show-code">Code</button>
+<a href="../simple_features/MultiSurface.html">E</a> <strong>singleWhere</strong>(<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> test(<a href="../simple_features/MultiSurface.html">E</a> value)) <a class="anchor-link" href="#singleWhere"
+              title="Permalink to MultiSurface.singleWhere">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns the single element that satisfies <code>f</code>. If no or more than one
+element match then a <code>StateError</code> is thrown.</p>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; </div></div>
+<pre class="source">
+E singleWhere(bool test(E value)) {
+ // TODO(floitsch): check that argument is of correct type?
+ E result = null;
+ bool foundMatching = false;
+ for (E element in this) {
+   if (test(element)) {
+     if (foundMatching) {
+       throw new StateError("More than one matching element");
+     }
+     result = element;
+     foundMatching = true;
+   }
+ }
+ if (foundMatching) return result;
+ throw new StateError("No matching element");
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="skip">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; <strong>skip</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> n) <a class="anchor-link" href="#skip"
+              title="Permalink to MultiSurface.skip">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns an <code>Iterable</code> that skips the first 
+<span class="param">n</span> elements.</p>
+<p>If <code>this</code> has fewer than 
+<span class="param">n</span> elements, then the resulting <code>Iterable</code> will
+be empty.</p>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; </div></div>
+<pre class="source">
+Iterable&lt;E&gt; skip(int n) {
+ return new SkipIterable&lt;E&gt;(this, n);
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="skipWhile">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; <strong>skipWhile</strong>(<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> test(<a href="../simple_features/MultiSurface.html">E</a> value)) <a class="anchor-link" href="#skipWhile"
+              title="Permalink to MultiSurface.skipWhile">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns an <code>Iterable</code> that skips elements while 
+<span class="param">test</span> is satisfied.</p>
+<p>The filtering happens lazily. Every new <code>Iterator</code> of the returned
+<code>Iterable</code> will iterate over all elements of <code>this</code>.
+As long as the iterator's elements do not satisfy 
+<span class="param">test</span> they are
+discarded. Once an element satisfies the 
+<span class="param">test</span> the iterator stops testing
+and uses every element unconditionally.</p>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; </div></div>
+<pre class="source">
+Iterable&lt;E&gt; skipWhile(bool test(E value)) {
+ return new SkipWhileIterable&lt;E&gt;(this, test);
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="take">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; <strong>take</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> n) <a class="anchor-link" href="#take"
+              title="Permalink to MultiSurface.take">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns an <code>Iterable</code> with at most 
+<span class="param">n</span> elements.</p>
+<p>The returned <code>Iterable</code> may contain fewer than 
+<span class="param">n</span> elements, if <code>this</code>
+contains fewer than 
+<span class="param">n</span> elements.</p>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; </div></div>
+<pre class="source">
+Iterable&lt;E&gt; take(int n) {
+ return new TakeIterable&lt;E&gt;(this, n);
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="takeWhile">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; <strong>takeWhile</strong>(<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> test(<a href="../simple_features/MultiSurface.html">E</a> value)) <a class="anchor-link" href="#takeWhile"
+              title="Permalink to MultiSurface.takeWhile">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns an <code>Iterable</code> that stops once 
+<span class="param">test</span> is not satisfied anymore.</p>
+<p>The filtering happens lazily. Every new <code>Iterator</code> of the returned
+<code>Iterable</code> will start iterating over the elements of <code>this</code>.
+When the iterator encounters an element <code>e</code> that does not satisfy 
+<span class="param">test</span>,
+it discards <code>e</code> and moves into the finished state. That is, it will not
+ask or provide any more elements.</p>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; </div></div>
+<pre class="source">
+Iterable&lt;E&gt; takeWhile(bool test(E value)) {
+ return new TakeWhileIterable&lt;E&gt;(this, test);
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="toList">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; <strong>toList</strong>({<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> growable: true}) <a class="anchor-link" href="#toList"
+              title="Permalink to MultiSurface.toList">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a> </div><div class="doc">
+<div class="inherited">
+<p>Creates a <code>List</code> containing the elements of this <code>Iterable</code>.</p>
+<p>The elements will be in iteration order. The list is fixed-length
+if 
+<span class="param">growable</span> is false.</p>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; </div></div>
+<pre class="source">
+List&lt;E&gt; toList({ bool growable: true }) =&gt;
+   new List&lt;E&gt;.from(this, growable: growable);
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="toSet">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/Set.html">Set</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; <strong>toSet</strong>() <a class="anchor-link" href="#toSet"
+              title="Permalink to MultiSurface.toSet">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a> </div><div class="doc">
+<div class="inherited">
+<p>Creates a <code>Set</code> containing the elements of this <code>Iterable</code>.</p>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; </div></div>
+<pre class="source">
+Set&lt;E&gt; toSet() =&gt; new Set&lt;E&gt;.from(this);
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="where">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; <strong>where</strong>(<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> f(<a href="../simple_features/MultiSurface.html">E</a> element)) <a class="anchor-link" href="#where"
+              title="Permalink to MultiSurface.where">#</a></h4>
+<div class="inherited-from">inherited from <a href="../simple_features/Geometry_IterableMixin.html">Geometry_IterableMixin</a> </div><div class="doc">
+<div class="inherited">
+<p>Returns a lazy <code>Iterable</code> with all elements that satisfy the
+predicate 
+<span class="param">f</span>.</p>
+<p>This method returns a view of the mapped elements. As long as the
+returned <code>Iterable</code> is not iterated over, the supplied function 
+<span class="param">f</span> will
+not be invoked. Iterating will not cache results, and thus iterating
+multiple times over the the returned <code>Iterable</code> will invoke the supplied
+function 
+<span class="param">f</span> multiple times on the same element.</p>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>&lt;<a href="../simple_features/MultiSurface.html">E</a>&gt; </div></div>
+<pre class="source">
+Iterable&lt;E&gt; where(bool f(E element)) =&gt; new WhereIterable&lt;E&gt;(this, f);
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-04-26 16:03:40.872</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        

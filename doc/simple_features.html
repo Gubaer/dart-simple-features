@@ -1,0 +1,293 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>simple_features Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="favicon.ico">
+        
+        </head>
+        <body data-library="simple_features">
+        <div class="page">
+        <div class="header">
+          <a href="index.html"><div class="logo"></div></a>
+          <a href="index.html">Dart Documentation</a>
+         &rsaquo; <a href="simple_features.html">simple_features</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="meta.html">meta</a></h2><h2><div class="icon-library"></div><strong>simple_features</strong></h2><ul class="icon">
+<li><a href="simple_features/DirectPosition2D.html"><div class="icon-class"></div>DirectPosition2D</a></li>
+<li><a href="simple_features/Geometry.html"><div class="icon-class"></div>Geometry</a></li>
+<li><a href="simple_features/GeometryCollection.html"><div class="icon-class"></div>GeometryCollection</a></li>
+<li><a href="simple_features/Line.html"><div class="icon-class"></div>Line</a></li>
+<li><a href="simple_features/LinearRing.html"><div class="icon-class"></div>LinearRing</a></li>
+<li><a href="simple_features/LineString.html"><div class="icon-class"></div>LineString</a></li>
+<li><a href="simple_features/MultiLineString.html"><div class="icon-class"></div>MultiLineString</a></li>
+<li><a href="simple_features/MultiPoint.html"><div class="icon-class"></div>MultiPoint</a></li>
+<li><a href="simple_features/MultiPolygon.html"><div class="icon-class"></div>MultiPolygon</a></li>
+<li><a href="simple_features/MultiSurface.html"><div class="icon-class"></div>MultiSurface</a></li>
+<li><a href="simple_features/Point.html"><div class="icon-class"></div>Point</a></li>
+<li><a href="simple_features/Polygon.html"><div class="icon-class"></div>Polygon</a></li>
+<li><a href="simple_features/PolyhedralSurface.html"><div class="icon-class"></div>PolyhedralSurface</a></li>
+<li><a href="simple_features/specification.html"><div class="icon-class"></div>specification</a></li>
+<li><a href="simple_features/Surface.html"><div class="icon-class"></div>Surface</a></li>
+<li><a href="simple_features/Tin.html"><div class="icon-class"></div>Tin</a></li>
+<li><a href="simple_features/Triangle.html"><div class="icon-class"></div>Triangle</a></li>
+<li><a href="simple_features/WKTError.html"><div class="icon-exception"></div>WKTError</a></li>
+</ul>
+</div>
+<div class="content">
+<h2><strong>simple_features</strong> library</h2>
+<div>
+<h3>Functions</h3>
+<div class="method"><h4 id="parseGeoJson">
+<button class="show-code">Code</button>
+dynamic <strong>parseGeoJson</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> geoJson) <a class="anchor-link" href="#parseGeoJson"
+              title="Permalink to parseGeoJson">#</a></h4>
+<div class="doc">
+<p>Parses GeoJSON.</p>
+<p>Returns a <a class="crossref" href="simple_features/Geometry.html">Geometry</a>.</p>
+<p>Doesn't support GeoJSONs <code>Feature</code> or  <code>FeatureCollection</code>
+yet.</p>
+<pre class="source">
+parseGeoJson(String geoJson) {
+ var value = json.parse(geoJson);
+ assert(value is Map);
+
+ Point pos(coord) =&gt; new Point(coord[0], coord[1]);
+ List&lt;DirectPosition2D&gt; poslist(l) =&gt; l.map(pos).toList();
+
+ deserializePoint(Map gj) =&gt;
+     pos(gj["coordinates"]);
+
+ deserializeMultiPoint(Map gj) =&gt;
+     new MultiPoint(poslist(gj["coordinates"]));
+
+ deserializeLineString(Map gj) =&gt;
+     new LineString(poslist(gj["coordinates"]));
+
+ deserializeMultiLineString(Map gj) =&gt;
+   new MultiLineString(
+     gj["coordinates"]
+     .map((ls) =&gt; new LineString(poslist(ls)))
+     .toList()
+   );
+
+ polygonFromCoordinates(coords) {
+   var rings = coords
+     .map((l) =&gt; poslist(l))
+     .map((poslist) =&gt; new LineString(poslist))
+     .toList();
+   return new Polygon(rings.first, rings.skip(1));
+ }
+
+ deserializePolygon(Map gj) =&gt;
+   polygonFromCoordinates(gj["coordinates"]);
+
+ deserializeMultipolygon(Map gj) =&gt;
+     new MultiPolygon(
+         gj["coordinates"]
+         .map((coords) =&gt; polygonFromCoordinates(coords))
+         .toList()
+     );
+
+ var deserialize;
+
+ deserializeGeometryCollection(Map gj) =&gt;
+     new GeometryCollection(gj["geometries"]
+       .map((o) =&gt; deserialize(o))
+       .toList()
+     );
+
+ deserializeFeature(Map gj) {
+   var geometry = deserialize(gj["geometry"]);
+   var properties = gj["properties"];
+   return new Feature(geometry, properties);
+ }
+
+ deserializeFeatureCollection(Map gj) {
+   var features = gj["features"]
+     .map((f) =&gt; deserializeFeature(f))
+     .toList();
+   return new FeatureCollection(features);
+ }
+
+ deserialize = (Map gj) {
+   switch(gj["type"]) {
+     case "Point":      return deserializePoint(gj);
+     case "MultiPoint": return deserializeMultiPoint(gj);
+     case "LineString": return deserializeLineString(gj);
+     case "MultiLineString": return deserializeMultiLineString(gj);
+     case "Polygon":    return deserializePolygon(gj);
+     case "MultiPolygon": return deserializeMultipolygon(gj);
+     case "GeometryCollection": return deserializeGeometryCollection(gj);
+//      case "Feature": return deserializeFeature(gj);
+//      case "FeatureCollection" : return deserializeFeatureCollection(gj);
+     default:
+       throw new FormatException(
+           "unknown GeoJson object type '${gj['type']}"
+       );
+   }
+ };
+
+ return deserialize(value);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="parseWKT">
+<button class="show-code">Code</button>
+<a href="simple_features/Geometry.html">Geometry</a> <strong>parseWKT</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> wkt) <a class="anchor-link" href="#parseWKT"
+              title="Permalink to parseWKT">#</a></h4>
+<div class="doc">
+<p>Parses the WKT string 
+<span class="param">wkt</span> and replies the parsed <a class="crossref" href="simple_features/Geometry.html">Geometry</a>.</p>
+<p>
+<span class="param">wkt</span> must not be null.</p>
+<p>Throws a <a class="crossref" href="simple_features/WKTError.html">WKTError</a> if parsing fails.</p>
+<pre class="source">
+Geometry parseWKT(String wkt) {
+ _require(wkt != null);
+ var parser = new _WKTParser(wkt);
+ parser.advanceMandatory();
+ return parser.parseWKTObject();
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Abstract Classes</h3>
+          <div class="type">
+          <h4>
+            <a href="simple_features/Geometry.html"><strong>Geometry</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="simple_features/MultiSurface.html"><strong>MultiSurface</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="simple_features/Surface.html"><strong>Surface</strong></a>
+          </h4>
+          </div>
+          
+</div>
+<div>
+<h3>Classes</h3>
+          <div class="type">
+          <h4>
+            <a href="simple_features/DirectPosition2D.html"><strong>DirectPosition2D</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="simple_features/GeometryCollection.html"><strong>GeometryCollection</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="simple_features/Line.html"><strong>Line</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="simple_features/LinearRing.html"><strong>LinearRing</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="simple_features/LineString.html"><strong>LineString</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="simple_features/MultiLineString.html"><strong>MultiLineString</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="simple_features/MultiPoint.html"><strong>MultiPoint</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="simple_features/MultiPolygon.html"><strong>MultiPolygon</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="simple_features/Point.html"><strong>Point</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="simple_features/Polygon.html"><strong>Polygon</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="simple_features/PolyhedralSurface.html"><strong>PolyhedralSurface</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="simple_features/specification.html"><strong>specification</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="simple_features/Tin.html"><strong>Tin</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="simple_features/Triangle.html"><strong>Triangle</strong></a>
+          </h4>
+          </div>
+          
+</div>
+<div>
+<h3>Exceptions</h3>
+          <div class="type">
+          <h4>
+            <a href="simple_features/WKTError.html"><strong>WKTError</strong></a>
+          </h4>
+          </div>
+          
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-04-26 16:03:40.610</div>
+        </div>
+        <script async src="client-static.js"></script>
+        </body></html>
+        

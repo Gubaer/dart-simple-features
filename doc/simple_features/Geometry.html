@@ -1,0 +1,361 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>Geometry abstract class / simple_features Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="simple_features" data-type="Geometry">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../simple_features.html">simple_features</a> &rsaquo; <a href="../simple_features/Geometry.html">Geometry</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+<h2><div class="icon-library"></div><a href="../meta.html">meta</a></h2><h2><div class="icon-library"></div><a href="../simple_features.html">simple_features</a></h2><ul class="icon">
+<li><a href="../simple_features/DirectPosition2D.html"><div class="icon-class"></div>DirectPosition2D</a></li>
+<li><div class="icon-class"></div><strong>Geometry</strong></li>
+<li><a href="../simple_features/GeometryCollection.html"><div class="icon-class"></div>GeometryCollection</a></li>
+<li><a href="../simple_features/Line.html"><div class="icon-class"></div>Line</a></li>
+<li><a href="../simple_features/LinearRing.html"><div class="icon-class"></div>LinearRing</a></li>
+<li><a href="../simple_features/LineString.html"><div class="icon-class"></div>LineString</a></li>
+<li><a href="../simple_features/MultiLineString.html"><div class="icon-class"></div>MultiLineString</a></li>
+<li><a href="../simple_features/MultiPoint.html"><div class="icon-class"></div>MultiPoint</a></li>
+<li><a href="../simple_features/MultiPolygon.html"><div class="icon-class"></div>MultiPolygon</a></li>
+<li><a href="../simple_features/MultiSurface.html"><div class="icon-class"></div>MultiSurface</a></li>
+<li><a href="../simple_features/Point.html"><div class="icon-class"></div>Point</a></li>
+<li><a href="../simple_features/Polygon.html"><div class="icon-class"></div>Polygon</a></li>
+<li><a href="../simple_features/PolyhedralSurface.html"><div class="icon-class"></div>PolyhedralSurface</a></li>
+<li><a href="../simple_features/specification.html"><div class="icon-class"></div>specification</a></li>
+<li><a href="../simple_features/Surface.html"><div class="icon-class"></div>Surface</a></li>
+<li><a href="../simple_features/Tin.html"><div class="icon-class"></div>Tin</a></li>
+<li><a href="../simple_features/Triangle.html"><div class="icon-class"></div>Triangle</a></li>
+<li><a href="../simple_features/WKTError.html"><div class="icon-exception"></div>WKTError</a></li>
+</ul>
+</div>
+<div class="content">
+        <h2><strong>Geometry</strong>
+          abstract class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>The abstract base class for all geometries.</p>
+<pre class="source">
+abstract class Geometry {
+
+ int _srid;
+
+ /**
+  * Creates a geometry from the WKT string [wkt].
+  *
+  * Throws a [WKTError] if [wkt] isn't a valid WKT geometry.
+  */
+ factory Geometry.wkt(String wkt) =&gt; parseWKT(wkt);
+
+
+ /**
+  * Creates a geometry from a GeoJSON string [json].
+  *
+  * Throws a  [FormatError] if [json] isn't valid.
+  */
+ factory Geometry.geojson(String json) =&gt; parseGeoJson(json);
+
+ Geometry();
+
+ /**
+  * Returns 1 true if this geometric object is the empty Geometry.
+  */
+ @specification(name:"isEmpty()")
+ bool get isEmpty;
+
+ /**
+  * Returns true if this geometric object has z coordinate values.
+  */
+ @specification(name:"is3D()")
+ bool get is3D;
+
+ /**
+  * Returns true if this geometric object has m coordinate values.
+  */
+ @specification(name:"isMeasured()")
+ bool get isMeasured;
+
+ /**
+  * Returns the closure of the combinatorial boundary of this geometric object
+  */
+ @specification(name:"boundary()")
+ Geometry get boundary;
+
+ /**
+  *  Returns true if this geometric object has no anomalous geometric points,
+  *  such as self intersection or self tangency.
+  */
+ @specification(name:"isSimple()")
+ bool get isSimple;
+
+ /**
+  * Returns the name of the instantiable subtype of Geometry of which this
+  * geometric object is an instantiable member. The name of the subtype of
+  * Geometry is returned as a string.
+  */
+ @specification(name:"geometryType()")
+ String get geometryType;
+
+ /**
+  * The inherent dimension of this geometric object, which must be less than
+  * or equal to the coordinate dimension. In non-homogeneous collections,
+  * this will return the largest topological dimension of the contained objects.
+  */
+ @specification(name:"dimension()")
+ int get dimension;
+
+ /**
+  * Returns the Spatial Reference System ID for this geometric object.
+  */
+ @specification(name:"srid()")
+ int get SRID =&gt; _srid;
+
+ /**
+  * the Spatial Reference System ID for this geometric object.
+  */
+ set SRID(int value) =&gt; _srid = value;
+
+ _Envelope get _envelope {
+   if (_cachedEnvelope == null) {
+     _cachedEnvelope = _computeEnvelope();
+   }
+   return _cachedEnvelope;
+ }
+
+ _Envelope _cachedEnvelope;
+ _Envelope _computeEnvelop();
+
+ /**
+  * A WKT representation of the geometry
+  */
+ @specification(name:"asText()")
+ String get asText {
+   var buffer = new StringBuffer();
+   var writer = new _WKTWriter(buffer);
+   _writeTaggedWKT(writer, withZ: is3D, withM: isMeasured);
+   return buffer.toString();
+ }
+
+ _writeTaggedWKT(writer, {bool withZ: false, bool withM: false});
+}
+</pre>
+</div>
+<h3>Subclasses</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../simple_features/Point.html">Point</a></span>, <span class="type-box"><span class="icon-class"></span><a href="../simple_features/Surface.html">Surface</a></span></p>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="Geometry">
+<button class="show-code">Code</button>
+new <strong>Geometry</strong>() <a class="anchor-link" href="#Geometry"
+              title="Permalink to Geometry.Geometry">#</a></h4>
+<div class="doc">
+<pre class="source">
+Geometry();
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="Geometry.geojson">
+<button class="show-code">Code</button>
+factory <strong>Geometry.geojson</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> json) <a class="anchor-link" href="#Geometry.geojson"
+              title="Permalink to Geometry.Geometry.geojson">#</a></h4>
+<div class="doc">
+<p>Creates a geometry from a GeoJSON string 
+<span class="param">json</span>.</p>
+<p>Throws a  <code>FormatError</code> if 
+<span class="param">json</span> isn't valid.</p>
+<pre class="source">
+factory Geometry.geojson(String json) =&gt; parseGeoJson(json);
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="Geometry.wkt">
+<button class="show-code">Code</button>
+factory <strong>Geometry.wkt</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> wkt) <a class="anchor-link" href="#Geometry.wkt"
+              title="Permalink to Geometry.Geometry.wkt">#</a></h4>
+<div class="doc">
+<p>Creates a geometry from the WKT string 
+<span class="param">wkt</span>.</p>
+<p>Throws a <a class="crossref" href="../simple_features/WKTError.html">WKTError</a> if 
+<span class="param">wkt</span> isn't a valid WKT geometry.</p>
+<pre class="source">
+factory Geometry.wkt(String wkt) =&gt; parseWKT(wkt);
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="asText">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>asText</strong> <a class="anchor-link"
+            href="#asText"
+            title="Permalink to Geometry.asText">#</a>
+        </h4>
+        <div class="doc">
+<p>A WKT representation of the geometry</p>
+<pre class="source">
+@specification(name:"asText()")
+String get asText {
+ var buffer = new StringBuffer();
+ var writer = new _WKTWriter(buffer);
+ _writeTaggedWKT(writer, withZ: is3D, withM: isMeasured);
+ return buffer.toString();
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="boundary">
+<button class="show-code">Code</button>
+final <a href="../simple_features/Geometry.html">Geometry</a>         <strong>boundary</strong> <a class="anchor-link"
+            href="#boundary"
+            title="Permalink to Geometry.boundary">#</a>
+        </h4>
+        <div class="doc">
+<p>Returns the closure of the combinatorial boundary of this geometric object</p>
+<pre class="source">
+@specification(name:"boundary()")
+Geometry get boundary;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="dimension">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>dimension</strong> <a class="anchor-link"
+            href="#dimension"
+            title="Permalink to Geometry.dimension">#</a>
+        </h4>
+        <div class="doc">
+<p>The inherent dimension of this geometric object, which must be less than
+or equal to the coordinate dimension. In non-homogeneous collections,
+this will return the largest topological dimension of the contained objects.</p>
+<pre class="source">
+@specification(name:"dimension()")
+int get dimension;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="geometryType">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/String.html">String</a>         <strong>geometryType</strong> <a class="anchor-link"
+            href="#geometryType"
+            title="Permalink to Geometry.geometryType">#</a>
+        </h4>
+        <div class="doc">
+<p>Returns the name of the instantiable subtype of Geometry of which this
+geometric object is an instantiable member. The name of the subtype of
+Geometry is returned as a string.</p>
+<pre class="source">
+@specification(name:"geometryType()")
+String get geometryType;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="is3D">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>is3D</strong> <a class="anchor-link"
+            href="#is3D"
+            title="Permalink to Geometry.is3D">#</a>
+        </h4>
+        <div class="doc">
+<p>Returns true if this geometric object has z coordinate values.</p>
+<pre class="source">
+@specification(name:"is3D()")
+bool get is3D;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="isEmpty">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>isEmpty</strong> <a class="anchor-link"
+            href="#isEmpty"
+            title="Permalink to Geometry.isEmpty">#</a>
+        </h4>
+        <div class="doc">
+<p>Returns 1 true if this geometric object is the empty Geometry.</p>
+<pre class="source">
+@specification(name:"isEmpty()")
+bool get isEmpty;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="isMeasured">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>isMeasured</strong> <a class="anchor-link"
+            href="#isMeasured"
+            title="Permalink to Geometry.isMeasured">#</a>
+        </h4>
+        <div class="doc">
+<p>Returns true if this geometric object has m coordinate values.</p>
+<pre class="source">
+@specification(name:"isMeasured()")
+bool get isMeasured;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="isSimple">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>isSimple</strong> <a class="anchor-link"
+            href="#isSimple"
+            title="Permalink to Geometry.isSimple">#</a>
+        </h4>
+        <div class="doc">
+<p> Returns true if this geometric object has no anomalous geometric points,
+ such as self intersection or self tangency.</p>
+<pre class="source">
+@specification(name:"isSimple()")
+bool get isSimple;
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="SRID">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/int.html">int</a> <strong>get SRID</strong> <a class="anchor-link" href="#SRID"
+              title="Permalink to Geometry.get SRID">#</a></h4>
+<div class="doc">
+<p>Returns the Spatial Reference System ID for this geometric object.</p>
+<pre class="source">
+@specification(name:"srid()")
+int get SRID =&gt; _srid;
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="SRID=">
+<button class="show-code">Code</button>
+dynamic <strong>set SRID</strong>(<a href="http://api.dartlang.org/dart_core/int.html">int</a> value) <a class="anchor-link" href="#SRID="
+              title="Permalink to Geometry.set SRID">#</a></h4>
+<div class="doc">
+<p>the Spatial Reference System ID for this geometric object.</p>
+<pre class="source">
+set SRID(int value) =&gt; _srid = value;
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          <div>This page was generated at 2013-04-26 16:03:41.082</div>
+        </div>
+        <script async src="../client-static.js"></script>
+        </body></html>
+        
