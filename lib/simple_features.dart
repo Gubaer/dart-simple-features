@@ -18,8 +18,6 @@ part "src/geometry_collection.dart";
 part "src/multipoint.dart";
 part "src/linestring.dart";
 part "src/multilinestring.dart";
-part "src/topology.dart";
-part "src/line_intersection.dart";
 part "src/surface.dart";
 part "src/polygon.dart";
 part "src/multipolygon.dart";
