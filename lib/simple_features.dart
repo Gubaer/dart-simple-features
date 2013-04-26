@@ -4,6 +4,7 @@ import "dart:async";
 import "dart:collection";
 import "package:meta/meta.dart";
 import "dart:math";
+import "dart:json" as json;
 
 
 part "src/annotations.dart";
@@ -23,5 +24,6 @@ part "src/surface.dart";
 part "src/polygon.dart";
 part "src/multipolygon.dart";
 part "src/polyhedral_surface.dart";
+part "src/geojson.dart";
 
 
