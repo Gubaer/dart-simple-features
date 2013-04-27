@@ -34,15 +34,15 @@ As of the current version 0.0.1:
   (WKT). Support for GeoJSON is provided too. 
 * Basic properties of a Geometry like `dimension`, `geometryType`, `isMeasured`,
   or `is3D` are implemented.
-* Some more complicated properties like `isSimple` or `bounary` are so far
+* Some more complicated properties like `isSimple` or `boundary` are so far
   implemented on a subset of the geometry types only.
 * The [Dimensionally Extended nine-Intesection Model](http://en.wikipedia.org/wiki/DE-9IM)
   (DE-9IM) isn't implemented yet. It isn't possible yet to relate one geometry
-  to another, for instance in order to test, whether one geometry *crosses* or
-  *overlaps* the other.  
+  to another, for instance in order to test, whether one geometry *intersects* or
+  *overlaps* with the other.  
 
 
 ## License 
-`simple_features` is license under the Apache 2.0 license, see files LICENSE and NOTICE.
+`simple_features` is licensed under the Apache 2.0 license, see files LICENSE and NOTICE.
 
 	
