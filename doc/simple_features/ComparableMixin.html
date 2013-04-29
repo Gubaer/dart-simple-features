@@ -2,19 +2,19 @@
         <html>
         <head>
                 <meta charset="utf-8">
-        <title>DirectPosition2D class / simple_features Library / Dart Documentation</title>
+        <title>ComparableMixin class / simple_features Library / Dart Documentation</title>
         <link rel="stylesheet" type="text/css"
             href="../styles.css">
         <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
         <link rel="shortcut icon" href="../favicon.ico">
         
         </head>
-        <body data-library="simple_features" data-type="DirectPosition2D">
+        <body data-library="simple_features" data-type="ComparableMixin">
         <div class="page">
         <div class="header">
           <a href="../index.html"><div class="logo"></div></a>
           <a href="../index.html">Dart Documentation</a>
-         &rsaquo; <a href="../simple_features.html">simple_features</a> &rsaquo; <a href="../simple_features/DirectPosition2D.html">DirectPosition2D</a>        <div id="search-box">
+         &rsaquo; <a href="../simple_features.html">simple_features</a> &rsaquo; <a href="../simple_features/ComparableMixin.html">ComparableMixin</a>        <div id="search-box">
           <input type="search" name="q" id="q" autocomplete="off"
               class="search-input" placeholder="Search API">
         </div>
@@ -25,8 +25,8 @@
         <div class="nav">
         
 <h2><div class="icon-library"></div><a href="../meta.html">meta</a></h2><h2><div class="icon-library"></div><a href="../simple_features.html">simple_features</a></h2><ul class="icon">
-<li><a href="../simple_features/ComparableMixin.html"><div class="icon-class"></div>ComparableMixin</a></li>
-<li><div class="icon-class"></div><strong>DirectPosition2D</strong></li>
+<li><div class="icon-class"></div><strong>ComparableMixin</strong></li>
+<li><a href="../simple_features/DirectPosition2D.html"><div class="icon-class"></div>DirectPosition2D</a></li>
 <li><a href="../simple_features/Feature.html"><div class="icon-class"></div>Feature</a></li>
 <li><a href="../simple_features/FeatureCollection.html"><div class="icon-class"></div>FeatureCollection</a></li>
 <li><a href="../simple_features/Geometry.html"><div class="icon-class"></div>Geometry</a></li>
@@ -49,117 +49,31 @@
 </ul>
 </div>
 <div class="content">
-        <h2><strong>DirectPosition2D</strong>
+        <h2><strong>ComparableMixin</strong>
           class
         </h2>
         
 <button id="show-inherited" class="show-inherited">Hide inherited</button>
 <div class="doc">
 <pre class="source">
-class DirectPosition2D {
- final double x;
- final double y;
- const DirectPosition2D(num x, num y):
-   this.x= x.toDouble(), this.y=y.toDouble();
-
- int compareTo(other) {
-   _require(other is DirectPosition2D);
-   int ret = x.compareTo(other.x);
-   return ret != 0 ? ret : y.compareTo(other.y);
- }
- String toString() =&gt; "($x, $y)";
-
- int get hashCode {
-   const prime = 31;
-   int result = 1;
-   result = prime * result + x.hashCode;
-   result = prime * result + y.hashCode;
-   return result;
- }
-
+class ComparableMixin implements Comparable {
  bool operator ==(other) =&gt; compareTo(other) == 0;
  bool operator &lt;(other) =&gt; compareTo(other) == -1;
  bool operator &lt;=(other) =&gt; compareTo(other) &lt;= 0;
  bool operator &gt;(other) =&gt; compareTo(other) == 1;
- bool operator &gt;=(other) =&gt; compareTo(other) &gt;= 0;
+ bool operator &gt;=(other) =&gt; compareTo(other) &gt; 0;
 }
 </pre>
 </div>
-<div>
-<h3>Constructors</h3>
-<div class="method"><h4 id="DirectPosition2D">
-<button class="show-code">Code</button>
-const <strong>DirectPosition2D</strong>(<a href="http://api.dartlang.org/dart_core/num.html">num</a> x, <a href="http://api.dartlang.org/dart_core/num.html">num</a> y) <a class="anchor-link" href="#DirectPosition2D"
-              title="Permalink to DirectPosition2D.DirectPosition2D">#</a></h4>
-<div class="doc">
-<pre class="source">
-const DirectPosition2D(num x, num y):
- this.x= x.toDouble(), this.y=y.toDouble();
-</pre>
-</div>
-</div>
-</div>
-<div>
-<h3>Properties</h3>
-<div class="field"><h4 id="hashCode">
-<button class="show-code">Code</button>
-final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>hashCode</strong> <a class="anchor-link"
-            href="#hashCode"
-            title="Permalink to DirectPosition2D.hashCode">#</a>
-        </h4>
-        <div class="doc">
-<div class="inherited">
-<p>Get a hash code for this object.</p>
-<p>All objects have hash codes. Hash codes are guaranteed to be the
-same for objects that are equal when compared using the equality
-operator <code>==</code>. Other than that there are no guarantees about
-the hash codes. They will not be consistent between runs and
-there are no distribution guarantees.</p>
-<p>If a subclass overrides <a class="crossref" href="../simple_features/DirectPosition2D.html#hashCode">hashCode</a> it should override the
-equality operator as well to maintain consistency.</p>
-<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Object.html">Object</a> </div></div>
-<pre class="source">
-int get hashCode {
- const prime = 31;
- int result = 1;
- result = prime * result + x.hashCode;
- result = prime * result + y.hashCode;
- return result;
-}
-</pre>
-</div>
-</div>
-<div class="field"><h4 id="x">
-<button class="show-code">Code</button>
-final <a href="http://api.dartlang.org/dart_core/double.html">double</a>         <strong>x</strong> <a class="anchor-link"
-            href="#x"
-            title="Permalink to DirectPosition2D.x">#</a>
-        </h4>
-        <div class="doc">
-<pre class="source">
-final double x
-</pre>
-</div>
-</div>
-<div class="field"><h4 id="y">
-<button class="show-code">Code</button>
-final <a href="http://api.dartlang.org/dart_core/double.html">double</a>         <strong>y</strong> <a class="anchor-link"
-            href="#y"
-            title="Permalink to DirectPosition2D.y">#</a>
-        </h4>
-        <div class="doc">
-<pre class="source">
-final double y
-</pre>
-</div>
-</div>
-</div>
+<h3>Implements</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../dart_core/Comparable.html">Comparable</a></span></p>
 <div>
 <h3>Operators</h3>
 <div class="method"><h4 id="<">
 <button class="show-code">Code</button>
 <a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>operator <</strong>(other) <a class="anchor-link" href="#<"
-              title="Permalink to DirectPosition2D.operator <">#</a></h4>
+              title="Permalink to ComparableMixin.operator <">#</a></h4>
 <div class="doc">
 <pre class="source">
 bool operator &lt;(other) =&gt; compareTo(other) == -1;
@@ -169,7 +83,7 @@ bool operator &lt;(other) =&gt; compareTo(other) == -1;
 <div class="method"><h4 id="<=">
 <button class="show-code">Code</button>
 <a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>operator <=</strong>(other) <a class="anchor-link" href="#<="
-              title="Permalink to DirectPosition2D.operator <=">#</a></h4>
+              title="Permalink to ComparableMixin.operator <=">#</a></h4>
 <div class="doc">
 <pre class="source">
 bool operator &lt;=(other) =&gt; compareTo(other) &lt;= 0;
@@ -179,7 +93,7 @@ bool operator &lt;=(other) =&gt; compareTo(other) &lt;= 0;
 <div class="method"><h4 id=">">
 <button class="show-code">Code</button>
 <a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>operator ></strong>(other) <a class="anchor-link" href="#>"
-              title="Permalink to DirectPosition2D.operator >">#</a></h4>
+              title="Permalink to ComparableMixin.operator >">#</a></h4>
 <div class="doc">
 <pre class="source">
 bool operator &gt;(other) =&gt; compareTo(other) == 1;
@@ -189,17 +103,17 @@ bool operator &gt;(other) =&gt; compareTo(other) == 1;
 <div class="method"><h4 id=">=">
 <button class="show-code">Code</button>
 <a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>operator >=</strong>(other) <a class="anchor-link" href="#>="
-              title="Permalink to DirectPosition2D.operator >=">#</a></h4>
+              title="Permalink to ComparableMixin.operator >=">#</a></h4>
 <div class="doc">
 <pre class="source">
-bool operator &gt;=(other) =&gt; compareTo(other) &gt;= 0;
+bool operator &gt;=(other) =&gt; compareTo(other) &gt; 0;
 </pre>
 </div>
 </div>
 <div class="method"><h4 id="==">
 <button class="show-code">Code</button>
 <a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>operator ==</strong>(other) <a class="anchor-link" href="#=="
-              title="Permalink to DirectPosition2D.operator ==">#</a></h4>
+              title="Permalink to ComparableMixin.operator ==">#</a></h4>
 <div class="doc">
 <div class="inherited">
 <p>The equality operator.</p>
@@ -207,7 +121,7 @@ bool operator &gt;=(other) =&gt; compareTo(other) &gt;= 0;
 only if <code>this</code> and 
 <span class="param">other</span> are the same object.</p>
 <p>If a subclass overrides the equality operator it should override
-the <a class="crossref" href="../simple_features/DirectPosition2D.html#hashCode">hashCode</a> method as well to maintain consistency.</p>
+the <code>hashCode</code> method as well to maintain consistency.</p>
 <div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Object.html">Object</a> </div></div>
 <pre class="source">
 bool operator ==(other) =&gt; compareTo(other) == 0;
@@ -215,33 +129,18 @@ bool operator ==(other) =&gt; compareTo(other) == 0;
 </div>
 </div>
 </div>
-<div>
-<h3>Methods</h3>
-<div class="method"><h4 id="compareTo">
-<button class="show-code">Code</button>
-<a href="http://api.dartlang.org/dart_core/int.html">int</a> <strong>compareTo</strong>(other) <a class="anchor-link" href="#compareTo"
-              title="Permalink to DirectPosition2D.compareTo">#</a></h4>
-<div class="doc">
-<pre class="source">
-int compareTo(other) {
- _require(other is DirectPosition2D);
- int ret = x.compareTo(other.x);
- return ret != 0 ? ret : y.compareTo(other.y);
-}
-</pre>
-</div>
-</div>
-<div class="method"><h4 id="toString">
-<button class="show-code">Code</button>
-<a href="http://api.dartlang.org/dart_core/String.html">String</a> <strong>toString</strong>() <a class="anchor-link" href="#toString"
-              title="Permalink to DirectPosition2D.toString">#</a></h4>
-<div class="doc">
 <div class="inherited">
-<p>Returns a string representation of this object.</p>
-<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Object.html">Object</a> </div></div>
-<pre class="source">
-String toString() =&gt; "($x, $y)";
-</pre>
+<h3>Methods</h3>
+<div class="method inherited"><h4 id="compareTo">
+abstract <a href="http://api.dartlang.org/dart_core/int.html">int</a> <strong>compareTo</strong>(<a href="../simple_features/ComparableMixin.html">T</a> other) <a class="anchor-link" href="#compareTo"
+              title="Permalink to ComparableMixin.compareTo">#</a></h4>
+<div class="inherited-from">inherited from <a href="http://api.dartlang.org/dart_core/Comparable.html">Comparable</a> </div><div class="doc">
+<p>Compares this object to another <code>Comparable</code></p>
+<p>Returns a value like a <code>Comparator</code> when comparing <code>this</code> to 
+<span class="param">other</span>.</p>
+<p>May throw an <code>ArgumentError</code> if 
+<span class="param">other</span> is of a type that
+is not comparable to <code>this</code>.</p>
 </div>
 </div>
 </div>
@@ -249,7 +148,7 @@ String toString() =&gt; "($x, $y)";
         <div class="clear"></div>
         </div>
         <div class="footer">
-          <div>This page was generated at 2013-04-29 22:57:35.402</div>
+          <div>This page was generated at 2013-04-29 22:57:35.399</div>
         </div>
         <script async src="../client-static.js"></script>
         </body></html>

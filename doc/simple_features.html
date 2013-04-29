@@ -25,7 +25,10 @@
         <div class="nav">
         
 <h2><div class="icon-library"></div><a href="meta.html">meta</a></h2><h2><div class="icon-library"></div><strong>simple_features</strong></h2><ul class="icon">
+<li><a href="simple_features/ComparableMixin.html"><div class="icon-class"></div>ComparableMixin</a></li>
 <li><a href="simple_features/DirectPosition2D.html"><div class="icon-class"></div>DirectPosition2D</a></li>
+<li><a href="simple_features/Feature.html"><div class="icon-class"></div>Feature</a></li>
+<li><a href="simple_features/FeatureCollection.html"><div class="icon-class"></div>FeatureCollection</a></li>
 <li><a href="simple_features/Geometry.html"><div class="icon-class"></div>Geometry</a></li>
 <li><a href="simple_features/GeometryCollection.html"><div class="icon-class"></div>GeometryCollection</a></li>
 <li><a href="simple_features/Line.html"><div class="icon-class"></div>Line</a></li>
@@ -55,9 +58,7 @@ dynamic <strong>parseGeoJson</strong>(<a href="http://api.dartlang.org/dart_core
               title="Permalink to parseGeoJson">#</a></h4>
 <div class="doc">
 <p>Parses GeoJSON.</p>
-<p>Returns a <a class="crossref" href="simple_features/Geometry.html">Geometry</a>.</p>
-<p>Doesn't support GeoJSONs <code>Feature</code> or  <code>FeatureCollection</code>
-yet.</p>
+<p>Returns a <a class="crossref" href="simple_features/Geometry.html">Geometry</a>, a <a class="crossref" href="simple_features/Feature.html">Feature</a>, or a <a class="crossref" href="simple_features/FeatureCollection.html">FeatureCollection</a>.</p>
 <pre class="source">
 parseGeoJson(String geoJson) {
  var value = json.parse(geoJson);
@@ -130,8 +131,8 @@ parseGeoJson(String geoJson) {
      case "Polygon":    return deserializePolygon(gj);
      case "MultiPolygon": return deserializeMultipolygon(gj);
      case "GeometryCollection": return deserializeGeometryCollection(gj);
-//      case "Feature": return deserializeFeature(gj);
-//      case "FeatureCollection" : return deserializeFeatureCollection(gj);
+     case "Feature": return deserializeFeature(gj);
+     case "FeatureCollection" : return deserializeFeatureCollection(gj);
      default:
        throw new FormatException(
            "unknown GeoJson object type '${gj['type']}"
@@ -169,6 +170,12 @@ Geometry parseWKT(String wkt) {
 <h3>Abstract Classes</h3>
           <div class="type">
           <h4>
+            <a href="simple_features/Feature.html"><strong>Feature</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
             <a href="simple_features/Geometry.html"><strong>Geometry</strong></a>
           </h4>
           </div>
@@ -190,7 +197,19 @@ Geometry parseWKT(String wkt) {
 <h3>Classes</h3>
           <div class="type">
           <h4>
+            <a href="simple_features/ComparableMixin.html"><strong>ComparableMixin</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
             <a href="simple_features/DirectPosition2D.html"><strong>DirectPosition2D</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="simple_features/FeatureCollection.html"><strong>FeatureCollection</strong></a>
           </h4>
           </div>
           
@@ -286,7 +305,7 @@ Geometry parseWKT(String wkt) {
         <div class="clear"></div>
         </div>
         <div class="footer">
-          <div>This page was generated at 2013-04-26 16:03:40.610</div>
+          <div>This page was generated at 2013-04-29 22:57:34.921</div>
         </div>
         <script async src="client-static.js"></script>
         </body></html>
