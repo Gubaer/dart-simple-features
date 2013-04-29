@@ -3,12 +3,12 @@ part of simple_features;
 /**
  * Parses GeoJSON.
  *
- * Returns a [Geometry].
+ * Returns a [Geometry], a [Feature], or a [FeatureCollection].
  *
- * Doesn't support GeoJSONs [Feature] or  [FeatureCollection]
- * yet.
  */
 //TODO: more checks, throw FormatException on error
+//TODO: provide an optional factory object, in particular for Features
+//  and FeatureCollection
 parseGeoJson(String geoJson) {
   var value = json.parse(geoJson);
   assert(value is Map);
@@ -80,8 +80,8 @@ parseGeoJson(String geoJson) {
       case "Polygon":    return deserializePolygon(gj);
       case "MultiPolygon": return deserializeMultipolygon(gj);
       case "GeometryCollection": return deserializeGeometryCollection(gj);
-//      case "Feature": return deserializeFeature(gj);
-//      case "FeatureCollection" : return deserializeFeatureCollection(gj);
+      case "Feature": return deserializeFeature(gj);
+      case "FeatureCollection" : return deserializeFeatureCollection(gj);
       default:
         throw new FormatException(
             "unknown GeoJson object type '${gj['type']}"

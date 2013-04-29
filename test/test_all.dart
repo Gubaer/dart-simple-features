@@ -7,6 +7,7 @@ import "test_multipolygon.dart" as test_multipolygon;
 import "test_polyhedral_surface.dart" as test_polyhedral_surface;
 import "test_wkt.dart" as test_wkt;
 import "test_geometry_collection.dart" as test_geometry_collection;
+import "test_feature.dart" as test_feature;
 
 main() {
   test_envelope.main();
@@ -18,5 +19,6 @@ main() {
   test_wkt.main();
   test_polyhedral_surface.main();
   test_geometry_collection.main();
+  test_feature.main();
 }
 

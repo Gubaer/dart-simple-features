@@ -23,5 +23,5 @@ part "src/polygon.dart";
 part "src/multipolygon.dart";
 part "src/polyhedral_surface.dart";
 part "src/geojson.dart";
-
+part "src/feature.dart";
 
