@@ -3,7 +3,7 @@
 [Simple Feature Specification](http://www.opengeospatial.org/standards/sfa) (SFS).
 
 The SFS defines a hierarchy of geometry types which are used in 
-geographical information systems. Most database systems mit spatial
+geographical information systems. Most database systems with spatial
 functionality as well as software frameworks for processing GIS data provide
 an implementation of the SFS. 
 
@@ -15,7 +15,7 @@ See [output from dartdoc](http://gubaer.github.io/dart-simple-features/doc/index
 
 ```
 dependencies:
-  simple_features: 0.0.1+3
+  simple_features: 0.0.2+1
 ```
 to your `pubspec.yaml`.
 
@@ -27,9 +27,11 @@ See [version history](http://pub.dartlang.org/packages/simple_features).
 
 This is work in progress. 
 
-As of the current version 0.0.1:
+As of the current version 0.0.2+1:
 
-* The geometry type hierarchy is implemented in a matching class hierarchy
+* The geometry type hierarchy is implemented in a matching class hierarchy. For
+  compatibily with GeoJSON it is extended with a `Feature` and a 
+  `FeatureCollection` class.
 * Geometries can be read from an serialized into Well-Known Text Representation
   (WKT). Support for GeoJSON is provided too. 
 * Basic properties of a Geometry like `dimension`, `geometryType`, `isMeasured`,
