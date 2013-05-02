@@ -34,7 +34,7 @@ main() {
   group("an int tree with inverse ordering -", () {
     test("using a custom compare function", () {
       var compare = (a, b) => b.compareTo(a);
-      var tree = new AvlTree<int>(compare);
+      var tree = new AvlTree<int>(compare:compare);
       tree.add(2);
       tree.add(1);
       tree.add(0);
@@ -202,16 +202,113 @@ main() {
 
   /* ------------------------------------------------------------------- */
   group("custom comparison -", () {
-    int stringLowerCaseCompare(String s, String t)
-      => s.toLowerCase().compareTo(t.toLowerCase());
+    int inverseStringCompare(String s, String t)
+      => t.compareTo(s);
 
     test("of a tree with custom compare function", () {
-      var tree = new AvlTree<String>(stringLowerCaseCompare);
-      tree.add("abc");
-      tree.add("A");
+      var tree = new AvlTree<String>(compare:inverseStringCompare);
+      tree.add("a");
+      tree.add("bCD");
       var values = tree.inorder.toList();
-      expect(values[0], "A");
-      expect(values[1], "abc");
+      expect(values[0], "bCD");
+      expect(values[1], "a");
+    });
+  });
+
+  int lowerCaseStringCompare(String s, String t)
+  => s.toLowerCase().compareTo(t.toLowerCase());
+
+
+  /* ------------------------------------------------------------------- */
+  group("tree with equivalence classes -", () {
+
+    test("identical", () {
+      expect(identical("abc", "abc"), true);
+    });
+
+
+    test("adding two equal, but non-identical values", () {
+      var tree = new AvlTree<String>(
+          compare:lowerCaseStringCompare,
+          allowEquivalenceClasses: true
+      );
+      tree.add("abc");
+      tree.add("ABC");
+      expect(tree.size, 2);
+      expect(tree.contains("abc"), true);
+      expect(tree.contains("ABC"), true);
+      expect(tree.contains("aBC"), false);
+    });
+
+    test("removing an equal, but non-identical value", () {
+      var tree = new AvlTree<String>(
+          compare:lowerCaseStringCompare,
+          allowEquivalenceClasses: true
+      );
+      tree.add("abc");
+      tree.add("ABC");
+      expect(tree.size, 2);
+      expect(tree.contains("abc"), true);
+      expect(tree.contains("ABC"), true);
+
+      expect(tree.remove("abc"), true);
+      expect(tree.remove("AbC"), false); // "AbC" isn't in tree
+      expect(tree.size, 1);
+    });
+  });
+
+
+  group("smallest -", () {
+    test("of an empty tree is an empty iterator", () {
+      var tree = new AvlTree();
+      expect(tree.smallest.isEmpty, true);
+    });
+
+    test("of a tree with >0 elements is an iterator with one value", () {
+      var tree = new AvlTree<int>();
+      tree.add(0);
+      expect(tree.smallest.length, 1);
+      expect(tree.smallest.first, 0);
+    });
+
+    test("of a tree with equivalence classes with >0 elements is an "
+        "iterator with multiple value", () {
+      var tree = new AvlTree<String>(
+          compare:lowerCaseStringCompare,
+          allowEquivalenceClasses: true
+      );
+      tree.add("abc");
+      tree.add("ABC");
+      expect(tree.smallest.length, 2);
+      expect(tree.smallest.contains("abc"), true);
+      expect(tree.smallest.contains("ABC"), true);
+    });
+  });
+
+  group("largest -", () {
+    test("of an empty tree is an empty iterator", () {
+      var tree = new AvlTree();
+      expect(tree.largest.isEmpty, true);
+    });
+
+    test("of a tree with >0 elements is an iterator with one value", () {
+      var tree = new AvlTree<int>();
+      tree.add(0);
+      expect(tree.largest.length, 1);
+      expect(tree.largest.first, 0);
+    });
+
+    test("of a tree with equivalence classes with >0 elements is an "
+        "iterator with multiple values", () {
+      var tree = new AvlTree<String>(
+          compare:lowerCaseStringCompare,
+          allowEquivalenceClasses: true
+      );
+      tree.add("abc");
+      tree.add("ABC");
+      expect(tree.largest.length, 2);
+      expect(tree.largest.contains("abc"), true);
+      expect(tree.largest.contains("ABC"), true);
     });
   });
 }
