@@ -327,11 +327,25 @@ main() {
       expect(tree.leftNeighbour(10).first, 9);
       expect(tree.leftNeighbour(11).first, 9);
     });
+
+    test("in an int tree with custom predicate", () {
+      var tree = new AvlTree<int>();
+      buildComparator(int value) => (int other) => value.compareTo(other);
+
+      for(int i=0; i<10; i++) tree.add(i);
+      expect(tree.leftNeighbour(buildComparator(-1)).isEmpty, true);
+      expect(tree.leftNeighbour(buildComparator(0)).isEmpty, true);
+      for (int i=1; i < 10; i++) {
+        expect(tree.leftNeighbour(buildComparator(i)).first, i-1, reason: "left neighour $i failed");
+      }
+      expect(tree.leftNeighbour(buildComparator(10)).first, 9);
+      expect(tree.leftNeighbour(buildComparator(11)).first, 9);
+    });
   });
 
   /* ------------------------------------------------------------------- */
   group("reightNeighbour -", () {
-    solo_test("in an int tree", () {
+    test("in an int tree", () {
       var tree = new AvlTree<int>();
       for(int i=0; i<10; i++) tree.add(i);
       expect(tree.rightNeighbour(10).isEmpty, true);
@@ -341,6 +355,19 @@ main() {
       }
       expect(tree.rightNeighbour(-1).first, 0);
       expect(tree.rightNeighbour(-2).first, 0);
+    });
+
+    test("in an int tree with custom predicate", () {
+      var tree = new AvlTree<int>();
+      for(int i=0; i<10; i++) tree.add(i);
+      buildComparator(int value) => (int other) => value.compareTo(other);
+      expect(tree.rightNeighbour(buildComparator(10)).isEmpty, true);
+       expect(tree.rightNeighbour(buildComparator(10)).isEmpty, true);
+      for (int i=8; i >= 0; i--) {
+        expect(tree.rightNeighbour(buildComparator(i)).first, i+1, reason: "reight neighour $i failed");
+      }
+      expect(tree.rightNeighbour(buildComparator(-1)).first, 0);
+      expect(tree.rightNeighbour(buildComparator(-2)).first, 0);
     });
   });
 }
