@@ -600,6 +600,133 @@ class AvlTree<T> {
    * sorted values in the tree.
    */
   Iterable<T> get inorder => new _InorderIterable<T>(this);
+
+
+  /**
+   * Returns the equivalence class of values which are the
+   * immediate reight neighbour of value [value].
+   *
+   * If [value] is greator or equal than every value in the tree,
+   * then it returns an empty iterable.
+   */
+  Iterable<T> rightNeighbour(T value) {
+    leftmostLeafInSubtree(_AvlTreeNode<T> subtree) {
+      if (subtree == null) return null;
+      while(subtree.left != null) subtree = subtree.left;
+      return subtree;
+    }
+
+    firstGreaterParent(_AvlTreeNode<T> subtree, T value) {
+      while(subtree.parent != null) {
+        subtree = subtree.parent;
+        if (this._compare(value, subtree.compareValue) == -1) return subtree;
+      }
+      return null;
+    }
+
+    rightNeighbourInSubtree(_AvlTreeNode<T> subtree, T value) {
+      if (subtree == null) return null;
+      int c = this._compare(value, subtree.compareValue);
+      switch(c) {
+        case 0: // value == subtree.value
+          if (subtree.right != null) {
+            return leftmostLeafInSubtree(subtree.right);
+          } else  {
+            return firstGreaterParent(subtree, value);
+          }
+
+        case -1: // value < subtree.value
+          if (subtree.left != null) {
+            return rightNeighbourInSubtree(subtree.left, value);
+          } else {
+            return subtree;
+          }
+
+        case 1: // value > subtree.value
+          if (subtree.right != null) {
+            return rightNeighbourInSubtree(subtree.right, value);
+          } else {
+            return null;
+          }
+      }
+    }
+
+    var n = rightNeighbourInSubtree(_root, value);
+    if (n == null) return _EMPTY_ITERABLE;
+    return n.valuesAsIterable;
+  }
+
+  /**
+   * Returns the equivalence class of values which are the
+   * immediate left neighbour of value [value].
+   *
+   * If [value] is smaller or equal than every value in the tree,
+   * then it returns an empty iterable.
+   */
+  Iterable<T> leftNeighbour(T value) {
+    rightmostLeafInSubtree(_AvlTreeNode<T> subtree) {
+      if (subtree == null) return null;
+      while(subtree.right != null) subtree = subtree.right;
+      return subtree;
+    }
+
+    firstSmallerParent(_AvlTreeNode<T> subtree, T value) {
+      while(subtree.parent != null) {
+        subtree = subtree.parent;
+        if (this._compare(value, subtree.compareValue) == 1) return subtree;
+      }
+      return null;
+    }
+
+    leftNeighbourInSubtree(_AvlTreeNode<T> subtree, T value){
+      if (subtree == null) return null;
+      int c = this._compare(value, subtree.compareValue);
+      switch(c) {
+        case 0: // value == subtree.value
+          if (subtree.left != null) {
+            return rightmostLeafInSubtree(subtree.left);
+          } else  {
+            return firstSmallerParent(subtree, value);
+          }
+
+        case -1: // value < subtree.value
+          if (subtree.left != null) {
+            return leftNeighbourInSubtree(subtree.left, value);
+          } else {
+            return firstSmallerParent(subtree, value);
+          }
+
+        case 1: // value > subtree.value
+          if (subtree.right != null) {
+            return leftNeighbourInSubtree(subtree.right, value);
+          } else {
+            return subtree;
+          }
+      }
+    }
+    var n = leftNeighbourInSubtree(_root, value);
+    if (n == null) return _EMPTY_ITERABLE;
+    return n.valuesAsIterable;
+  }
+
+  dump() {
+    ident(n) {
+      var ret = "";
+      for (int i=0; i< n; i++) ret += "  ";
+      return ret;
+    }
+    dumptree(root, level) {
+      var space = ident(level);
+      if (root != null) {
+        print("${space}${root.value}");
+        dumptree(root.left, level+1);
+        dumptree(root.right, level+1);
+      } else {
+        print("${space}NIL");
+      }
+    }
+    dumptree(_root, 0);
+  }
 }
 
 

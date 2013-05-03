@@ -257,7 +257,7 @@ main() {
     });
   });
 
-
+  /* ------------------------------------------------------------------- */
   group("smallest -", () {
     test("of an empty tree is an empty iterator", () {
       var tree = new AvlTree();
@@ -285,6 +285,7 @@ main() {
     });
   });
 
+  /* ------------------------------------------------------------------- */
   group("largest -", () {
     test("of an empty tree is an empty iterator", () {
       var tree = new AvlTree();
@@ -309,6 +310,37 @@ main() {
       expect(tree.largest.length, 2);
       expect(tree.largest.contains("abc"), true);
       expect(tree.largest.contains("ABC"), true);
+    });
+  });
+
+
+  /* ------------------------------------------------------------------- */
+  group("leftNeighbour -", () {
+    test("in an int tree", () {
+      var tree = new AvlTree<int>();
+      for(int i=0; i<10; i++) tree.add(i);
+      expect(tree.leftNeighbour(-1).isEmpty, true);
+      expect(tree.leftNeighbour(0).isEmpty, true);
+      for (int i=1; i < 10; i++) {
+        expect(tree.leftNeighbour(i).first, i-1, reason: "left neighour $i failed");
+      }
+      expect(tree.leftNeighbour(10).first, 9);
+      expect(tree.leftNeighbour(11).first, 9);
+    });
+  });
+
+  /* ------------------------------------------------------------------- */
+  group("reightNeighbour -", () {
+    solo_test("in an int tree", () {
+      var tree = new AvlTree<int>();
+      for(int i=0; i<10; i++) tree.add(i);
+      expect(tree.rightNeighbour(10).isEmpty, true);
+      expect(tree.rightNeighbour(9).isEmpty, true);
+      for (int i=8; i >= 0; i--) {
+        expect(tree.rightNeighbour(i).first, i+1, reason: "reight neighour $i failed");
+      }
+      expect(tree.rightNeighbour(-1).first, 0);
+      expect(tree.rightNeighbour(-2).first, 0);
     });
   });
 }
