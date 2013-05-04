@@ -80,10 +80,11 @@ class _AvlTreeNode<T> {
  * This implementation provides two custom features usually not present in
  * AVL trees:
  *
- * 1. The method `add` not only accepts the value to be added to the tree,
- *    but also a compare function to be used in this very invocation only.
+ * 1. The methods `add`, `remove`, or `contains` not only accept a value to be
+ *    added, removed, or tested,
+ *    but optionally also a compare function to be used in this very invocation only.
  *    This comes in handy, if a more efficient compare function can be
- *    used in a specific invocation of `add`. For instance, it can be used
+ *    used in a specific invocation. For instance, it can be used
  *    to maintain the dynamically changing search tree of intersecting
  *    line segments in the [Bentley-Ottman-Algorithm](http://en.wikipedia.org/wiki/Bentley%E2%80%93Ottmann_algorithm).
  *
@@ -94,16 +95,23 @@ class _AvlTreeNode<T> {
  *
  * ## Example
  * [:
- * // create a tree, add three values and remove one
+ * // create a tree, and use some methods
  * var tree = new AvlTree<int>();
  * tree.add(0);
  * tree.add(1);
  * tree.add(2);
- * print tree.inorder.toList()  // -> [0,1,2]
+ * print(tree.inorder.toList());  // -> [0,1,2]
  * tree.remove(2);
+ * print(tree.inorder.toList());  // -> [0,1]
+ * print(tree.contains(0));       // true
  * :]
  */
 class AvlTree<T> {
+
+  static _require(cond, [msg]) {
+    if (msg == null) msg = "";
+    if (!cond) throw new ArgumentError(msg);
+  }
 
   static const _LEFT_LEFT = 1;
   static const _LEFT_RIGHT = 2;
@@ -116,7 +124,6 @@ class AvlTree<T> {
 
   _AvlTreeNode<T> _root;
   int _size = 0;
-  int _modifications = 0;
 
   var _compare = null;
   var _allowEquivalenceClasses = false;
@@ -145,32 +152,37 @@ class AvlTree<T> {
   /// returns the size of the tree
   int get size => _size;
 
+  /// Return true if the tree is empty
+  bool get isEmpty => _size == 0;
+
   /**
    * Adds a [value] to the tree.
    *
-   * If supplied, [customCompare] is used to compare values during this
-   * add operation instead of the standard compare function.
-   * [customCompare] should be consistent with the ordering of values already
+   * If supplied, [compare] is used to compare [value] with values already
+   * present in the tree. [compare]
+   * [compare] must be consistent with the ordering of values already
    * present in this tree, but it may supply a more efficient implementation
    * of the comparison operation for this very invocation of [add].
+   *
    */
-  add(T value, [int customCompare(T v1, T v2)]) {
-    var localCompare = customCompare;
-    if (localCompare == null) localCompare = _compare;
+  add(T value, {int compare(T v1, T v2):null}) {
+    var localCompare;
+    if (compare == null) {
+      localCompare = this._compare;
+    } else {
+      localCompare = compare;
+    }
 
-    _AvlTreeNode<T> addValue(T value) {
-      var newNode = new _AvlTreeNode(value, null);
+    var newNode = new _AvlTreeNode(value, null);
 
-      // If root is null, assign
-      if (_root == null) {
-        _root = newNode;
-        _size++;
-        return newNode;
-      }
-
+    // If root is null, assign
+    if (_root == null) {
+      _root = newNode;
+      _size++;
+    } else {
       var  node = _root;
-      while (node != null) {
-        var c = localCompare(newNode.compareValue, node.compareValue);
+      loop: while (node != null) {
+        var c = localCompare(value,node.compareValue);
         switch(c) {
           case -1:
             if (node.left != null) {
@@ -181,7 +193,7 @@ class AvlTree<T> {
             node.left = newNode;
             newNode.parent = node;
             _size++;
-            return newNode;
+            break loop;
 
           case 1:
             if (node.right != null) {
@@ -192,7 +204,7 @@ class AvlTree<T> {
             node.right = newNode;
             newNode.parent = node;
             _size++;
-            return newNode;
+            break loop;
 
           case 0:
             if (!_allowEquivalenceClasses) {
@@ -207,14 +219,12 @@ class AvlTree<T> {
             }
             node.addEquivalent(value);
             _size++;
-            return null;
-
+            newNode = null;
+            break loop;
         }
       }
-      return newNode;
     }
 
-    var newNode = addValue(value);
     _forEachAncestor(newNode, (n) {
       n._updateHeight();
       _balanceAfterInsert(n);
@@ -351,10 +361,21 @@ class AvlTree<T> {
    * Removes the [value] from the tree.
    *
    * Returns true if the [value] was removed, false otherwise.
+   *
+   * If supplied, [compare] is used to compare [value] with values already
+   * present in the tree.
+   * [compare] must be consistent with the ordering of values already
+   * present in this tree, but it may supply a more efficient implementation
+   * of the comparison operation for this very invocation of [remove].
    */
-  bool remove(T value) {
+  bool remove(T value, {int compare(T v1, T v2): null}) {
+    if (compare == null) {
+      compare = this._compare;
+    }
+    _require(compare is Function);
+
     // Find node to remove
-    var nodeToRemove = this._lookupNode(value);
+    var nodeToRemove = this._lookupNode(value, compare);
     if (nodeToRemove == null) return false;
     if (_allowEquivalenceClasses) {
       if (!nodeToRemove.containsIdentical(value)) return false;
@@ -448,15 +469,27 @@ class AvlTree<T> {
 
   /**
    * Returns true, if the tree contains [value].
+   *
+   * If supplied, [compare] is used to compare [value] with values already
+   * present in the tree.
+   * [compare] must be consistent with the ordering of values already
+   * present in this tree, but it may supply a more efficient implementation
+   * of the comparison operation for this very invocation of [contains].
    */
-  bool contains(T value) => _lookupNode(value) != null;
+  bool contains(T value, {int compare(T v1, T v2):null}) {
+    if (compare == null) {
+      compare = this._compare;
+    }
+    _require(compare is Function);
+    return _lookupNode(value, compare) != null;
+  }
 
   /**
-   * Returns the smallest value in the tree or null, if
-   * the tree is empty.
+   * Returns the smallest value in the tree or an empty iteralbe, if
+   * no such value exists (because the tree is empty).
    *
    * In the standard case, the returned iterable has either 0 or
-   * 1 values, but if this tree is created with the flag
+   * 1 value, but if this tree is created with the flag
    * `allowEquivalenceClasses` it may consist of more than one value.
    */
   Iterable<T> get smallest {
@@ -469,7 +502,7 @@ class AvlTree<T> {
   static final _EMPTY_ITERABLE = [];
   /**
    * Returns the largest equivalence class of values or an empty
-   * iterable, if the tree is null.
+   * iterable, if no such value exists (because the tree is empty).
    *
    * In the standard case, the returned iterable has either 0 or
    * 1 values, but if this tree is created with the flag
@@ -485,10 +518,10 @@ class AvlTree<T> {
   /**
    * Locate the node with [value] in the tree.
    */
-  _lookupNode(T value) {
+  _lookupNode(T value, compare) {
     var node = _root;
     while (node != null) {
-      var c = this._compare(value, node.compareValue);
+      var c = compare(value, node.compareValue);
       switch(c) {
         case 0:
           if (!_allowEquivalenceClasses) return node;
@@ -501,6 +534,7 @@ class AvlTree<T> {
     return null;
   }
 
+  bool _lookupRightMost = true;
   /**
    * Get the proper replacement node according to the binary search tree
    * algorithm from the tree.
@@ -515,12 +549,12 @@ class AvlTree<T> {
       // Add some randomness to deletions, so we don't always use the
       // greatest/least on deletion
       var replacement;
-      if (_modifications % 2 != 0) {
-        replacement = this._lookupRightMostLeaf(node.left);
+      if (_lookupRightMost) {
+        replacement = _lookupRightMostLeaf(node.left);
       } else {
-        replacement = this._lookupLeftMostLeaf(node.right);
+        replacement = _lookupLeftMostLeaf(node.right);
       }
-      _modifications++;
+      _lookupRightMost = !_lookupRightMost;
       return replacement;
     } else {
       return null;
@@ -528,22 +562,22 @@ class AvlTree<T> {
   }
 
   /**
-   * Get greatest node in sub-tree rooted at startingNode. Returns
+   * Get greatest node in sub-tree rooted at [node]. Returns
    * [node] if [node] has no right subtree. Returns null, if
    * [node] is null.
    */
-  _lookupRightMostLeaf(_AvlTreeNode<T> node) {
+  static _lookupRightMostLeaf(node) {
     if (node == null) return null;
     while (node.right != null) node = node.right;
     return node;
   }
 
   /**
-   * Get smallest node in sub-tree rooted at startingNode. Returns
+   * Get smallest node in sub-tree rooted at [node]. Returns
    * [node] if [node] has no left subtree. Returns null, if
    * [node] is null.
    */
-  _lookupLeftMostLeaf(_AvlTreeNode<T> node) {
+  static _lookupLeftMostLeaf(node) {
     if (node == null) return null;
     while (node.left != null) node = node.left;
     return node;
@@ -624,13 +658,7 @@ class AvlTree<T> {
     } else if (reference is Function) {
       localCompare = reference;
     } else {
-      throw new ArgumentError("expected value or function, got $reference");
-    }
-
-    leftmostLeafInSubtree(_AvlTreeNode<T> subtree) {
-      if (subtree == null) return null;
-      while(subtree.left != null) subtree = subtree.left;
-      return subtree;
+      _require(false, "expected value or function, got $reference");
     }
 
     firstGreaterParent(_AvlTreeNode<T> subtree) {
@@ -647,7 +675,7 @@ class AvlTree<T> {
       switch(c) {
         case 0: // value == subtree.value
           if (subtree.right != null) {
-            return leftmostLeafInSubtree(subtree.right);
+            return _lookupLeftMostLeaf(subtree.right);
           } else  {
             return firstGreaterParent(subtree);
           }
@@ -699,12 +727,6 @@ class AvlTree<T> {
       throw new ArgumentError("expected value or function, got $reference");
     }
 
-    rightmostLeafInSubtree(_AvlTreeNode<T> subtree) {
-      if (subtree == null) return null;
-      while(subtree.right != null) subtree = subtree.right;
-      return subtree;
-    }
-
     firstSmallerParent(_AvlTreeNode<T> subtree) {
       while(subtree.parent != null) {
         subtree = subtree.parent;
@@ -719,7 +741,7 @@ class AvlTree<T> {
       switch(c) {
         case 0: // value == subtree.value
           if (subtree.left != null) {
-            return rightmostLeafInSubtree(subtree.left);
+            return _lookupRightMostLeaf(subtree.left);
           } else  {
             return firstSmallerParent(subtree);
           }

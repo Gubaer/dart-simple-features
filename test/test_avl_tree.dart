@@ -45,15 +45,17 @@ main() {
     });
 
     test("using a custom compare function in the add operation", () {
-      var compare = (a, b) => b.compareTo(a);
       var tree = new AvlTree<int>();
-      tree.add(2, compare);
-      tree.add(1, compare);
-      tree.add(0, compare);
+      // not realy useful in this case, but tests whether we can
+      // pass in a specific comparator
+      compare(int a, int b) => a.compareTo(b);
+      tree.add(2, compare: compare);
+      tree.add(1, compare: compare);
+      tree.add(0, compare: compare);
       expect(tree.size, 3);
       expect(tree._root.value, 1);
-      expect(tree._root.left.value, 2);
-      expect(tree._root.right.value, 0);
+      expect(tree._root.left.value, 0);
+      expect(tree._root.right.value, 2);
     });
   });
 
