@@ -1,0 +1,42 @@
+<svg
+   xmlns:sf="urn:simple-features"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 100 100"
+   width="100%"
+   height="100%"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="scene-03.svg">
+  <sodipodi:namedview
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     showgrid="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid2991" />
+  </sodipodi:namedview>
+  <style
+     id="style4">
+  line {
+    stroke: black;
+    stroke-width: 1;
+  }
+  </style>
+  <g transform="scale(1,-1) translate(0,-100)">
+    <line id="s1" x1="10" y1="5" x2="10" y2="95" /> <!-- vertical line left -->
+    <line id="s2" x1="30" y1="5" x2="30" y2="95" /> <!-- second vertical line -->
+    <line id="s3" x1="5" y1="50" x2="95" y2="50" /> <!-- horizontal line in the middle -->
+  </g>
+  <sf:intersection x="10" y="50">
+    <sf:segment ref="s1" />
+    <sf:segment ref="s3" />
+  </sf:intersection>
+  <sf:intersection x="30" y="50">
+    <sf:segment ref="s2" />
+    <sf:segment ref="s3" />
+  </sf:intersection>
+</svg>

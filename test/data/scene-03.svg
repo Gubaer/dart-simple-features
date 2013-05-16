@@ -1,0 +1,54 @@
+<svg
+   xmlns:sf="urn:simple-features"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 100 100"
+   width="100%"
+   height="100%"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="scene-03.svg">
+  <sodipodi:namedview
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     showgrid="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid2991" />
+  </sodipodi:namedview>
+  <style
+     id="style4">
+  line {
+    stroke: black;
+    stroke-width: 1;
+  }
+  </style>
+  <g
+     transform="scale(1,-1) translate(0,-100)"
+     id="g6">
+    <!-- s2 touches s1 at (60,60) -> should lead to an intersection at (60,60) -->
+    <line
+       id="s1"
+       x1="20"
+       y1="20"
+       x2="80"
+       y2="80" />
+    <line
+       id="s2"
+       x1="60"
+       y1="60"
+       x2="70"
+       y2="30" />
+  </g>
+  <sf:intersection
+     x="60"
+     y="60">
+    <sf:segment
+       ref="s1" />
+    <sf:segment
+       ref="s2" />
+  </sf:intersection>
+</svg>
