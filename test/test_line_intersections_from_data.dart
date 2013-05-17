@@ -38,9 +38,9 @@ intersections(svg) {
 
 main(){
   runTest(filename) {
-    var svg = svg(filename);
-    var linesMap = linesegments(svg);
-    var expectedIntersectionsMap = intersections(svg);
+    var markup = svg(filename);
+    var linesMap = linesegments(markup);
+    var expectedIntersectionsMap = intersections(markup);
     var intersections = computeLineIntersections(linesMap.keys);
     hasIntersectionAt(pos) => expectedIntersectionsMap.containsKey(pos);
 

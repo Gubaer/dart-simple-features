@@ -141,25 +141,6 @@ class LineSegment {
 
   bool get isHorizontal => _start.y == _end.y;
 
-  /**
-   * Returns the intersection point with the horizontal sweep line
-   * given by "height" [y] or null, if this segment doesn't intersect
-   * with the sweep line.
-   *
-   * Throws [StateError] if this segment is horizontal.
-   */
-  DirectPosition2D intersectionWithSweepline(num y) {
-    if (isHorizontal) {
-      throw new StateError("intersection with horizontal line not possible");
-    }
-    // note: start.y > end.y is an invariant
-    if (y > _start.y || y < _end.y) return null;
-    if (y == _start.y) return _start;
-    if (y == _end.y) return _end;
-    var slope = 1 / slope;
-    var dx = slope * (y - _start.y);
-    return new DirectPosition2D(_start.x + dx, y);
-  }
 
   /**
    * Returns the intersection point of this segment with the segment
