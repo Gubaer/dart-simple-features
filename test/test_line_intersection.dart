@@ -4,6 +4,7 @@ import "package:avl_tree/avl_tree.dart";
 import "package:unittest/unittest.dart";
 import "dart:collection";
 import "dart:math" as math;
+import "package:log4dart/log4dart.dart";
 
 part "../lib/src/direct_position.dart";
 part "../lib/src/line_intersection.dart";
@@ -161,29 +162,6 @@ main() {
     });
   });
 
-  group("interesection with sweep line -", () {
-    test("of a vertical line", () {
-       var s1 = new LineSegment.from([0,0], [0,10]);
-       var p = s1.intersectionWithSweepline(5);
-       expect(p.x, 0);
-       expect(p.y, 5);
-    });
-
-    test("of a line with positive slope", () {
-      var s1 = new LineSegment.from([0,0], [6,6]);
-      var p = s1.intersectionWithSweepline(3);
-      expect(p.x, 3);
-      expect(p.y, 3);
-    });
-
-    test("of a line with negative slope", () {
-      var s1 = new LineSegment.from([0,0], [6,-6]);
-      var p = s1.intersectionWithSweepline(-3);
-      expect(p.x, 3);
-      expect(p.y,-3);
-    });
-  });
-
 
   group("_EventQueue -", () {
     group("constructor -", () {
@@ -289,6 +267,17 @@ main() {
       expect(intersections.length, 1);
       expect(intersections.first.pos, equals(new DirectPosition2D(5, 0)));
       expect(intersections.first.intersecting.toSet(), equals([s1, s2].toSet()));
+    });
+
+    test("two overlapping lines", () {
+      var s1 = new LineSegment.from([5,5], [3,3]);
+      var s2 = new LineSegment.from([4,4], [2,2]);
+      var intersections = computeLineIntersections([s1,s2]);
+      expect(intersections.length, 2);
+      expect(intersections[0].pos, equals(new DirectPosition2D(4, 4)));
+      expect(intersections[0].intersecting.toSet(), equals([s1, s2].toSet()));
+      expect(intersections[1].pos, equals(new DirectPosition2D(3, 3)));
+      expect(intersections[1].intersecting.toSet(), equals([s1, s2].toSet()));
     });
   });
 }

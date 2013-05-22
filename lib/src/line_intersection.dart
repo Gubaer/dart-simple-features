@@ -380,7 +380,9 @@ Iterable<LineIntersection> computeLineIntersections(Iterable<LineSegment> segmen
    */
 
 
-  final AvlTree<LineSegment> sweepLine = new AvlTree<LineSegment>();
+  final AvlTree<LineSegment> sweepLine = new AvlTree<LineSegment>(
+      withEquivalenceClasses: true
+  );
   final eventQueue = new _EventQueue();
   final intersections = new List<LineIntersection>();
 
@@ -396,16 +398,24 @@ Iterable<LineIntersection> computeLineIntersections(Iterable<LineSegment> segmen
       ? e.expand(flatten)
       : new List.filled(1, e);
 
+  /**
+   * [sl] the left neighbours to look for intersections
+   * [sr] the right neighbours to look for intersections
+   *
+   * This methods finds all intersections between line segments
+   * in sl and line segments in sr. If an identified intersection
+   * is identified as "future" event in the line sweeping algorithm,
+   * it is added to the event queue.
+   */
   findAndRememberEvent(sl, sr, pos) {
-    if (sl is Iterable) sl = sl.isEmpty ? null : sl.first;
-    if (sr is Iterable) sr = sr.isEmpty ? null : sr.first;
-    if (sl == null) return;
-    if (sr == null) return;
-    var intersection = sl.intersectionWith(sr);
-    if (intersection == null) return;
-    if (_comparePositionsInEventOrder(intersection, pos) > 0) {
-      eventQueue.addEvent(intersection);
-    }
+    if (sl == null || sr == null) return;
+    sl.forEach((left) => sr.forEach((right) {
+      var intersection = left.intersectionWith(right);
+      if (intersection == null) return;
+      if (_comparePositionsInEventOrder(intersection, pos) > 0) {
+        eventQueue.addEvent(intersection);
+      }
+    }));
   }
 
   handleEvent(_Event event) {
@@ -416,7 +426,8 @@ Iterable<LineIntersection> computeLineIntersections(Iterable<LineSegment> segmen
     // event.pos
     var t = sweepLine
         .inorderEqualOrLarger((s) => _orientation(s.start, s.end, event.pos))
-        .takeWhile((s) => _orientation(s.start, s.end, event.pos) == 0)
+        .takeWhile((s) => _orientation(s.first.start, s.first.end, event.pos) == 0)
+        .expand((s) => s)         // 'unwrap' the lists
         .toList(growable:false);
 
     // the segments ending in event.pos
@@ -435,8 +446,12 @@ Iterable<LineIntersection> computeLineIntersections(Iterable<LineSegment> segmen
 
     var compare = new _SweepLineCompareFunction.atMinusEpsilon(event.pos);
 
+//    L = flatten(L).toList(growable: false);
+//    C = flatten(C).toList(growable:false);
+//    U = flatten(U).toList(growable: false);
+    //_logger.info("C flattened: ${C}");
     L.forEach((s) => sweepLine.remove(s, compare: compare));
-    C.forEach((s) =>sweepLine.remove(s, compare: compare));
+    C.forEach((s) => sweepLine.remove(s, compare: compare));
 
     compare = new _SweepLineCompareFunction.atPlusEpsilon(event.pos);
     U.forEach((s) => sweepLine.add(s, compare:compare));
@@ -447,13 +462,6 @@ Iterable<LineIntersection> computeLineIntersections(Iterable<LineSegment> segmen
     if (U.length + C.length == 0) {
       var sl = sweepLine.leftNeighbour(compare);
       var sr = sweepLine.rightNeighbour(compare);
-        findAndRememberEvent(sl, sr, event.pos);
-    } else {
-
-    }
-    if (U.length + C.length == 0) {
-      var sl = sweepLine.leftNeighbour(compare);
-      var sr = sweepLine.rightNeighbour(compare);
       findAndRememberEvent(sl, sr, event.pos);
     } else {
       var UC = flatten([U, C]).toList(growable: false);
@@ -461,8 +469,8 @@ Iterable<LineIntersection> computeLineIntersections(Iterable<LineSegment> segmen
       var sr = sweepLine.rightNeighbour(compare);
       compare = new _SweepLineCompareFunction.atPlusEpsilon(event.pos);
       UC.sort(compare);
-      findAndRememberEvent(sl, UC.first, event.pos);
-      findAndRememberEvent(sr, UC.last, event.pos);
+      findAndRememberEvent(sl, [UC.first], event.pos);
+      findAndRememberEvent(sr, [UC.last], event.pos);
     }
   }
 
