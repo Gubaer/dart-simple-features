@@ -12,6 +12,7 @@ part "../lib/src/geometry.dart";
 part "../lib/src/geometry_collection.dart";
 part "../lib/src/wkt.dart";
 part "../lib/src/geojson.dart";
+part "../lib/src/direct_position.dart";
 
 
 main() {
@@ -111,6 +112,19 @@ main() {
       expect(o is Point, true);
       expect(o.x, 1);
       expect(o.y, 2);
+    });
+  });
+
+  group("toDirectPosition2D -", () {
+    test("of an non-empty point should work", () {
+      var p = new Point(1,2);
+      var pos = p.toDirectPosition2D();
+      expect(pos, const DirectPosition2D(1,2));
+    });
+
+    test("throws error if point is empty", () {
+      var p = new Point.empty();
+      expect(() => p.toDirectPosition2D(), throwsStateError);
     });
   });
 }

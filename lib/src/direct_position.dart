@@ -1,10 +1,9 @@
 part of simple_features;
 
-class DirectPosition2D {
-  final double x;
-  final double y;
-  const DirectPosition2D(num x, num y):
-    this.x= x.toDouble(), this.y=y.toDouble();
+class DirectPosition2D implements Comparable {
+  final num  x;
+  final num y;
+  const DirectPosition2D(this.x, this.y);
 
   int compareTo(other) {
     _require(other is DirectPosition2D);
@@ -26,4 +25,19 @@ class DirectPosition2D {
   bool operator <=(other) => compareTo(other) <= 0;
   bool operator >(other) => compareTo(other) == 1;
   bool operator >=(other) => compareTo(other) >= 0;
+
+  /// Returns the (vector-) difference of this and [other].
+  DirectPosition2D operator -(DirectPosition2D other) {
+    return new DirectPosition2D(x - other.x, y - other.y);
+  }
+
+  /// Returns the (vector-) sum of this and [other].
+  DirectPosition2D operator +(DirectPosition2D other) {
+    return new DirectPosition2D(x + other.x, y + other.y);
+  }
+
+  /// Replies this position scaled by [factor]
+  DirectPosition2D scale(num factor) {
+    return new DirectPosition2D(x * factor, y * factor);
+  }
 }

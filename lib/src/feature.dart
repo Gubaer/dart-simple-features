@@ -7,7 +7,7 @@ part of simple_features;
  * properties and one dedicated spatial property called [geometry].
  *
  * It is is mainly used to
- * deserialized GeoJSON objects with `type: "Feature"`.
+ * deserialize GeoJSON objects with `type: "Feature"`.
  */
 
 abstract class Feature {
@@ -44,7 +44,7 @@ class _FeatureImpl implements Feature {
 /**
  * A [FeatureCollection] isn't a standard class in the SFS.
  *
- * It represents a collection of [Features] and is mainly used to
+ * It represents a collection of [Feature] and is mainly used to
  * deserialized GeoJSON objects with `type: "FeatureCollection"`.
  */
 class FeatureCollection extends Object with IterableMixin<Feature> {

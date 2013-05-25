@@ -20,6 +20,11 @@ class LineString extends Geometry
           "illegal number of points, got ${points.length}");
       _require(points.every((p) => p != null && !p.isEmpty),
           "points must not contain null values or empty points");
+      for (int i=1; i< points.length; i++) {
+        _require(!points[i-1].equals2D(points[i]),
+            "idenical consequtive point ${points[i-1]} at index ${i-1}");
+
+      }
       _points = new List.from(points,growable:false);
     }
   }
@@ -29,8 +34,11 @@ class LineString extends Geometry
    *
    * Creates an empty linestring if [points] is null or empty.
    *
-   * Throws an [ArgumentError] if [points] contains only one
-   * point or if it contains null values or empty points.
+   * Throws an [ArgumentError] if
+   * * [points] contains only one point
+   * * or if it contains null values or empty points
+   * * or if it contains a run of 2 or more consequtive, identical
+   *   points
    */
   LineString(List<Point> points) {
     _init(points);
@@ -66,8 +74,7 @@ class LineString extends Geometry
     _require(!this.isEmpty, "a ring can't be empty");
     _require(this.length >= 4, "a ring must have at least four nodes");
     _require(this.isClosed, "a ring must be closed");
-    //TODO: not yet implemented
-    //_require(this.isSimple, "a ring must be simple");
+    _require(this._checkIsSimple(), "a ring must be simple");
   }
 
    /**
@@ -191,6 +198,37 @@ class LineString extends Geometry
     if (this.isClosed) return new GeometryCollection.empty();
     return new MultiPoint([first, last]);
   }
+
+  bool _checkIsSimple() {
+    //TODO: check spec - an empty linestring is always simple?
+    if (isEmpty) return true;
+    var pos =
+        _points.map((p) => p.toDirectPosition2D())
+        .toList(growable:false);
+    var segments = new List.generate(length - 1,
+        (i) => new LineSegment(pos[i], pos[i+1]),
+        growable: false
+    );
+
+    var intersections = computeLineIntersections(segments);
+    return intersections.every((intersection) {
+       // only linesegment points can be intersections in order to be
+       // simple
+       if (!pos.contains(intersection.pos)) return false;
+       // max. 2 segments can intersect in any point in order to be
+       // simple
+       if (intersection.intersecting.length > 2) return false;
+       return true;
+    });
+  }
+
+  /**
+   * This linesegment is simple if it doesn't have self intersections.
+   *
+   * An empty linestring is simple.
+   */
+  //TODO: cache value for isSimple?
+  @override bool get isSimple => _checkIsSimple();
 }
 
 /**
@@ -198,6 +236,9 @@ class LineString extends Geometry
  */
 class Line extends LineString {
   Line(List<Point> points) : super.line(points);
+
+  // a line is always simple
+  @override bool get isSimple => true;
 }
 
 /**
@@ -205,4 +246,7 @@ class Line extends LineString {
  */
 class LinearRing extends LineString {
   LinearRing(List<Point> points) : super.ring(points);
+
+  // a ring is always simple, simplicity is enforced in the constructor
+  @override bool get isSimple => true;
 }
