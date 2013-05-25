@@ -8,6 +8,8 @@ import "test_polyhedral_surface.dart" as test_polyhedral_surface;
 import "test_wkt.dart" as test_wkt;
 import "test_geometry_collection.dart" as test_geometry_collection;
 import "test_feature.dart" as test_feature;
+import "test_line_intersection.dart" as test_line_intersection;
+import "test_line_intersections_from_data.dart" as test_line_intersections_from_data;
 
 main() {
   test_envelope.main();
@@ -20,5 +22,7 @@ main() {
   test_polyhedral_surface.main();
   test_geometry_collection.main();
   test_feature.main();
+  test_line_intersection.main();
+  test_line_intersections_from_data.main();
 }
 

@@ -139,5 +139,16 @@ class Point extends Geometry {
     if (other == null) return false;
     return x == other.x && y == other.y;
   }
+
+  /**
+   * Returns [DirectPosition2D] given by the [x] and [y] coordinates of
+   * this point.
+   *
+   * Throws [StateError] if this point [isEmpty].
+   */
+  DirectPosition2D toDirectPosition2D() {
+    if (isEmpty) throw new StateError("not supported on empty point");
+    return new DirectPosition2D(x,y);
+  }
 }
 

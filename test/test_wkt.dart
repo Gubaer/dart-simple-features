@@ -314,7 +314,7 @@ main() {
     });
 
     test("a multilinestring with two 3D linestrings", () {
-      var wkt = "multilinestring z ( (1 2 3, 4.0 +5 -6E1, 4 5 6), (1 2 3, 4 5 6, 7 8 9))";
+      var wkt = "multilinestring z ( (1 2 3, 4.0 +5 -6E1, 4 7 6), (1 2 3, 4 5 6, 7 8 9))";
       var parser = new _WKTParser(wkt);
       parser.advanceMandatory();
       var mls = parser.parseMultiLineString();

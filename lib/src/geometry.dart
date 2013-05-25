@@ -104,5 +104,75 @@ abstract class Geometry {
   }
 
   _writeTaggedWKT(writer, {bool withZ: false, bool withM: false});
+
+  /* ------------------------------------------------------------------- */
+  //TODO: implement these
+  /**
+   * Returns true if this geometric object is “spatially equal” to
+   * [other].
+   */
+  @specification(name: "equals()")
+  bool equals(Geometry other);
+
+  /**
+   * Returns true if this geometric object is “spatially disjoint”
+   * from [other].
+   */
+  @specification(name: "disjoint()")
+  bool disjoint(Geometry other);
+
+  /**
+   * Returns true if this geometric object “spatially intersects”
+   * [other].
+   */
+  @specification(name: "intersects()")
+  bool intersects(Geometry other);
+
+  /**
+   * Returns true if this geometric object is “spatially touches”
+   * [other].
+   */
+  @specification(name: "touches()")
+  bool touches(Geometry other);
+
+  /**
+   * Returns true if this geometric object is “spatially crosses”
+   * [other].
+   */
+  @specification(name: "crosses()")
+  bool crosses(Geometry other);
+
+  /**
+   * Returns true if this geometric object is “spatially within”
+   * [other].
+   */
+  @specification(name: "within()")
+  bool within(Geometry other);
+
+  /**
+   * Returns true if this geometric object is “spatially contains”
+   * [other].
+   */
+  @specification(name: "contains()")
+  bool contains(Geometry other);
+
+  /**
+   * Returns true if this geometric object is “spatially overlaps”
+   * with [other].
+   */
+  @specification(name: "overlaps()")
+  bool overlaps(Geometry other);
+
+  /**
+   *  Returns true if this geometric object is spatially related to
+   *  [other] by testing for intersections between the interior, boundary
+   *  and exterior of the two geometric objects as specified by the values
+   *  in the [pattern].
+   *
+   *  This returns false if all the tested intersections are empty except
+   *  exterior (this) intersect exterior (another).
+   */
+  @specification(name: "relate()")
+  bool relate(Geometry other, String pattern);
 }
 
