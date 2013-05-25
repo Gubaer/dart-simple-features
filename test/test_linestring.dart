@@ -5,6 +5,8 @@ import "dart:collection";
 import "package:unittest/unittest.dart" hide isEmpty;
 import "package:meta/meta.dart";
 import "dart:json" as json;
+import "package:avl_tree/avl_tree.dart";
+import "dart:math" as math;
 
 part "../lib/src/util.dart";
 part "../lib/src/point.dart";
@@ -15,6 +17,7 @@ part "../lib/src/multipoint.dart";
 part "../lib/src/wkt.dart";
 part "../lib/src/geojson.dart";
 part "../lib/src/direct_position.dart";
+part "../lib/src/line_intersection.dart";
 
 main() {
   group("constructor -", () {
@@ -46,6 +49,12 @@ main() {
       var q = new Point(3,4);
       var ls = new LineString([p,q]);
       expect(ls.length, 2);
+    });
+
+    test("reject linestrings with identical consequtive points", () {
+      expect(() => new LineString([new Point(0,0), new Point(1,1),
+                                   new Point(1,1), new Point(2,2)]),
+          throwsA(new isInstanceOf<ArgumentError>()));
     });
   });
 
@@ -309,6 +318,58 @@ main() {
       expect([o[0].x, o[0].y], [1,2]);
       expect([o[1].x, o[1].y], [3,4]);
       expect([o[2].x, o[2].y], [5,6]);
+    });
+  });
+
+  group("isSimple -", () {
+    test("a linestring with two segments is simple", () {
+      var ls = new LineString([new Point(0,0), new Point(1,1), new Point(2,2)]);
+      expect(ls.isSimple, true);
+    });
+
+    test("a closed ring is simple", () {
+      var ls = new LineString([
+         new Point(0,0),
+         new Point(0,1),
+         new Point(1,0),
+         new Point(0,0)
+      ]);
+      expect(ls.isSimple, true);
+    });
+
+    test("a 'butterfly' isn't simple", () {
+      var ls = new LineString([
+         new Point(0,0),
+         new Point(-1,1),
+         new Point(1,1),
+         new Point(0,0),    // self-intersection at this point
+         new Point(-1,-1),
+         new Point(-1,1),
+         new Point(0,0)
+      ]);
+      expect(ls.isSimple, false);
+    });
+
+    test("a line self intersecting between points isn't simple", () {
+      var ls = new LineString([
+         new Point(0,0),
+         new Point(5,5),
+         new Point(5,0),
+         new Point(0,5)
+      ]);
+      expect(ls.isSimple, false);
+    });
+
+    test("a line with an overlapping segment isn't simple", () {
+      var ls = new LineString([
+         new Point(0,0),
+         new Point(5,0),
+         new Point(5,1),
+         new Point(4,1),
+         new Point(4,0), // overlaps with fist segment
+         new Point(6,0)
+      ]);
+      expect(ls.isSimple, false);
     });
   });
 }

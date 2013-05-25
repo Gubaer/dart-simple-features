@@ -1,9 +1,5 @@
 part of line_intersection;
 
-_require(cond, [msg]) {
-    if (!cond) throw new ArgumentError(msg == null ? "" : msg);
-}
-
 /**
  * Computes the counterclockwise orientation of point [r] with respect
  * to the line given by the start and end points [p] and [q].
