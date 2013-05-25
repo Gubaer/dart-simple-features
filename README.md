@@ -11,11 +11,12 @@ an implementation of the SFS.
 See [output from dartdoc](http://gubaer.github.io/dart-simple-features/doc/index.html)
 
 ## Depend on it
-`simple_features` is available from pub.dartlang.org. Add 
+`simple_features` is available from http://pub.dartlang.org. 
 
+Add 
 ```
 dependencies:
-  simple_features: 0.0.2+1
+  simple_features: 0.0.3
 ```
 to your `pubspec.yaml`.
 
@@ -27,7 +28,7 @@ See [version history](http://pub.dartlang.org/packages/simple_features).
 
 This is work in progress. 
 
-As of the current version 0.0.2+1:
+As of the current version 0.0.3:
 
 * The geometry type hierarchy is implemented in a matching class hierarchy. For
   compatibily with GeoJSON it is extended with a `Feature` and a 
@@ -36,8 +37,10 @@ As of the current version 0.0.2+1:
   (WKT). Support for GeoJSON is provided too. 
 * Basic properties of a Geometry like `dimension`, `geometryType`, `isMeasured`,
   or `is3D` are implemented.
-* Some more complicated properties like `isSimple` or `boundary` are so far
-  implemented on a subset of the geometry types only.
+* There is an implementation of the Bentley-Ottman-Algorithm for line intersection
+  tests. `LineString`s and  `LinearRing`s can efficiently be tested for
+  simplicity. 
+* `isSimple` or `boundary` are so far   implemented on a subset of the geometry types only.
 * The [Dimensionally Extended nine-Intesection Model](http://en.wikipedia.org/wiki/DE-9IM)
   (DE-9IM) isn't implemented yet. It isn't possible yet to relate one geometry
   to another, for instance in order to test, whether one geometry *intersects* or
