@@ -8,6 +8,7 @@ import "package:log4dart/log4dart.dart";
 
 part "../lib/src/direct_position.dart";
 part "../lib/src/line_intersection.dart";
+part "../lib/src/util.dart";
 
 main() {
   group("orientation -", () {

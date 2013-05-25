@@ -4,6 +4,7 @@ import "package:unittest/unittest.dart";
 import "package:xml/xml.dart";
 import "dart:io";
 import "../lib/line_intersection.dart";
+part "../lib/src/util.dart";
 
 svg(filename) {
   filename = "test/data/${filename}";

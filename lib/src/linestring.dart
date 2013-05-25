@@ -74,8 +74,7 @@ class LineString extends Geometry
     _require(!this.isEmpty, "a ring can't be empty");
     _require(this.length >= 4, "a ring must have at least four nodes");
     _require(this.isClosed, "a ring must be closed");
-    //TODO: not yet implemented
-    //_require(this.isSimple, "a ring must be simple");
+    _require(this.isSimple, "a ring must be simple");
   }
 
    /**

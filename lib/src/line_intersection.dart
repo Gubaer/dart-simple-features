@@ -1,5 +1,7 @@
 part of line_intersection;
 
+// tolerance interval [-_EPSILON .. _EPSILON]  ~ 0
+const _EPSILON = 10E-10;
 /**
  * Computes the counterclockwise orientation of point [r] with respect
  * to the line given by the start and end points [p] and [q].
@@ -9,13 +11,13 @@ part of line_intersection;
  */
 int _orientation(DirectPosition2D p, DirectPosition2D q, DirectPosition2D r) {
   var v = (p.x - r.x) * (q.y - r.y) - (q.x - r.x) * (p.y - r.y);
-  if (v < 0) return -1;
-  if (v == 0) return 0;
-  return 1;
+  if (v < -_EPSILON) return -1;
+  if (v > _EPSILON) return 1;
+  return 0;
 }
 
 /// determinante
-num det(p, q) => p.x * q.y - p.y * q.x;
+num _det(p, q) => p.x * q.y - p.y * q.x;
 
 /**
  * Represents closed line segment given by two 2D points.
@@ -150,7 +152,7 @@ class LineSegment {
     var r = end - start;
     var q = other.start;
     var s = other.end - other.start;
-    var rs = det(r,s);
+    var rs = _det(r,s);
     if (rs == 0) {
       if (isEndPoint(other.start)) return other.start;
       if (isEndPoint(other.end)) return other.end;
@@ -164,8 +166,8 @@ class LineSegment {
     if (isEndPoint(other.end)) return other.end;
 
     // properly compute the intersection point, if any.
-    var t = det(q-p, s) / rs;
-    var u = det(q-p, r) / rs;
+    var t = _det(q-p, s) / rs;
+    var u = _det(q-p, r) / rs;
     if (t < 0 || t > 1 || u < 0 || u > 1) {
       // no intersection
       return null;
@@ -418,20 +420,20 @@ Iterable<LineIntersection> computeLineIntersections(Iterable<LineSegment> segmen
     // the list of events starting at this point
     var U = new List.from(event.segments, growable:false);
 
-    // the list of segments interesecting with the sweepline at point
+    // the list of segments intersecting with the sweepline at point
     // event.pos
     var t = sweepLine
-        .inorderEqualOrLarger((s) => _orientation(s.start, s.end, event.pos))
-        .takeWhile((s) => _orientation(s.first.start, s.first.end, event.pos) == 0)
+        .inorder
+        .where((s) => _orientation(s.first.start, s.first.end, event.pos) == 0)
         .expand((s) => s)         // 'unwrap' the lists
         .toList(growable:false);
 
     // the segments ending in event.pos
-    var L = t.where((s) => s.end == event.pos);
+    var L = t.where((s) => s.end == event.pos).toList(growable:false);
 
     // the segments properly containing event.pos (event.pos is neither
     // the start nor the end point)
-    var C = t.where((s) => s.end != event.pos);
+    var C = t.where((s) => s.end != event.pos).toList(growable:false);
 
     if (U.length + L.length + C.length > 1) {
       // create a new line intersection at position event.pos
@@ -442,10 +444,6 @@ Iterable<LineIntersection> computeLineIntersections(Iterable<LineSegment> segmen
 
     var compare = new _SweepLineCompareFunction.atMinusEpsilon(event.pos);
 
-//    L = flatten(L).toList(growable: false);
-//    C = flatten(C).toList(growable:false);
-//    U = flatten(U).toList(growable: false);
-    //_logger.info("C flattened: ${C}");
     L.forEach((s) => sweepLine.remove(s, compare: compare));
     C.forEach((s) => sweepLine.remove(s, compare: compare));
 

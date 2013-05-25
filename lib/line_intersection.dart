@@ -14,4 +14,5 @@ import "package:avl_tree/avl_tree.dart";
 import "package:log4dart/log4dart.dart";
 
 part "src/line_intersection.dart";
+part "src/util.dart";
 

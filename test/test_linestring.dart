@@ -7,6 +7,7 @@ import "package:meta/meta.dart";
 import "dart:json" as json;
 import "package:avl_tree/avl_tree.dart";
 import "dart:math" as math;
+import "package:log4dart/log4dart.dart";
 
 part "../lib/src/util.dart";
 part "../lib/src/point.dart";
@@ -55,6 +56,49 @@ main() {
       expect(() => new LineString([new Point(0,0), new Point(1,1),
                                    new Point(1,1), new Point(2,2)]),
           throwsA(new isInstanceOf<ArgumentError>()));
+    });
+
+  });
+
+  group("creating a ring -", () {
+    test("from a closed, simple line string should work", () {
+      var points  = [
+         new Point(0,0),
+         new Point(1,0),
+         new Point(1,1),
+         new Point(0,1),
+         new Point(0,0)
+      ];
+      // should work
+      var ls = new LineString.ring(points);
+      expect(ls.length, 5);
+    });
+
+    test("from an open line string should fail", () {
+      var points  = [
+         new Point(0,0),
+         new Point(1,0),
+         new Point(1,1),
+         new Point(0,1)
+      ];
+      expect(
+          () => new LineString.ring(points),
+          throwsArgumentError
+      );
+    });
+
+    test("from a non simple, closed line string should fail", () {
+      var points  = [
+         new Point(0,0),
+         new Point(2,0),
+         new Point(2,2),
+         new Point(3,1), // intersects with another segment
+         new Point(0,0)
+      ];
+      expect(
+          () => new LineString.ring(points),
+          throwsArgumentError
+      );
     });
   });
 
@@ -213,31 +257,39 @@ main() {
     });
   });
 
-  group("line -", () {
+  group("linear ring -", () {
     test("a simple closed linestring with four points is a LinearRing", () {
       var ls = new LinearRing([
-           new Point(11,12),
-           new Point(21,22),
-           new Point(31,32),
-           new Point(11,12)
+           new Point(0,0),
+           new Point(5,0),
+           new Point(5,5),
+           new Point(0,5),
+           new Point(0,0)
       ]);
-      expect(ls.length, 4);
+      expect(ls.length, 5);
     });
-    test("a open linestring with four points isn't a LinearRing", () {
-      var ls;
-      expect((){
-        ls = new Line([
+    test("an open linestring with four points isn't a LinearRing", () {
+      expect(() => new LinearRing([
              new Point(11,12),
              new Point(21,22),
              new Point(31,32),
              new Point(41,42)
-        ]);
-        },
-        throwsA(new isInstanceOf<ArgumentError>())
+        ]),
+        throwsArgumentError
       );
     });
     test("a non simple linestring isn't a LinearRing", () {
-      //TODO: test for simplicity not implemented yet
+      expect(() => new LinearRing([
+               new Point(0,0),
+               new Point(-1,1),
+               new Point(1,1),
+               new Point(0,0),    // self-intersection at this point
+               new Point(-1,-1),
+               new Point(-1,1),
+               new Point(0,0)
+           ]),
+           throwsArgumentError
+     );
     });
   });
 
@@ -357,6 +409,18 @@ main() {
          new Point(5,0),
          new Point(0,5)
       ]);
+      expect(ls.isSimple, false);
+    });
+
+    test("another line with intersecting segments", () {
+      var points  = [
+           new Point(0,0),
+           new Point(2,0),
+           new Point(2,2),
+           new Point(3,1), // intersects with another segment
+           new Point(0,0)
+      ];
+      var ls = new LineString(points);
       expect(ls.isSimple, false);
     });
 
