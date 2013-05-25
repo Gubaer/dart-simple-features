@@ -475,5 +475,3 @@ Iterable<LineIntersection> computeLineIntersections(Iterable<LineSegment> segmen
   }
   return intersections;
 }
-
-

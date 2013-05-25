@@ -74,7 +74,7 @@ class LineString extends Geometry
     _require(!this.isEmpty, "a ring can't be empty");
     _require(this.length >= 4, "a ring must have at least four nodes");
     _require(this.isClosed, "a ring must be closed");
-    _require(this.isSimple, "a ring must be simple");
+    _require(this._checkIsSimple(), "a ring must be simple");
   }
 
    /**
@@ -199,14 +199,7 @@ class LineString extends Geometry
     return new MultiPoint([first, last]);
   }
 
-
-  /**
-   * This linesegment is simple if it doesn't have self intersections.
-   *
-   * An empty linestring is simple.
-   */
-  //TODO: cache value for isSimple?
-  @override bool get isSimple {
+  bool _checkIsSimple() {
     //TODO: check spec - an empty linestring is always simple?
     if (isEmpty) return true;
     var pos =
@@ -228,6 +221,14 @@ class LineString extends Geometry
        return true;
     });
   }
+
+  /**
+   * This linesegment is simple if it doesn't have self intersections.
+   *
+   * An empty linestring is simple.
+   */
+  //TODO: cache value for isSimple?
+  @override bool get isSimple => _checkIsSimple();
 }
 
 /**
@@ -235,6 +236,9 @@ class LineString extends Geometry
  */
 class Line extends LineString {
   Line(List<Point> points) : super.line(points);
+
+  // a line is always simple
+  @override bool get isSimple => true;
 }
 
 /**
@@ -242,4 +246,7 @@ class Line extends LineString {
  */
 class LinearRing extends LineString {
   LinearRing(List<Point> points) : super.ring(points);
+
+  // a ring is always simple, simplicity is enforced in the constructor
+  @override bool get isSimple => true;
 }
