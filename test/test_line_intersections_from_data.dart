@@ -26,7 +26,7 @@ linesegments(svg) {
   return ret;
 }
 
-intersections(svg) {
+lookupIntersections(svg) {
     var ret = new Map<DirectPosition2D, List<String>>();
     svg.queryAll("sf:intersection").forEach((i) {
        var references = i.queryAll("sf:segment").map((s) => s.attributes["ref"]).toList();
@@ -41,7 +41,7 @@ main(){
   runTest(filename) {
     var markup = svg(filename);
     var linesMap = linesegments(markup);
-    var expectedIntersectionsMap = intersections(markup);
+    var expectedIntersectionsMap = lookupIntersections(markup);
     var intersections = computeLineIntersections(linesMap.keys);
     hasIntersectionAt(pos) => expectedIntersectionsMap.containsKey(pos);
 
