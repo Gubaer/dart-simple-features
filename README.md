@@ -16,7 +16,7 @@ See [output from dartdoc](http://gubaer.github.io/dart-simple-features/doc/index
 Add 
 ```
 dependencies:
-  simple_features: 0.0.3
+  simple_features: 0.0.4
 ```
 to your `pubspec.yaml`.
 
@@ -28,7 +28,7 @@ See [version history](http://pub.dartlang.org/packages/simple_features).
 
 This is work in progress. 
 
-As of the current version 0.0.3:
+As of the current version 0.0.4:
 
 * The geometry type hierarchy is implemented in a matching class hierarchy. For
   compatibily with GeoJSON it is extended with a `Feature` and a 
