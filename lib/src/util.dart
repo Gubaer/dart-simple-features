@@ -4,10 +4,11 @@ _require(cond, [msg]) {
   if (!cond) throw new ArgumentError(msg);
 }
 
-class ComparableMixin implements Comparable {
-  bool operator ==(other) => compareTo(other) == 0;
-  bool operator <(other) => compareTo(other) == -1;
-  bool operator <=(other) => compareTo(other) <= 0;
-  bool operator >(other) => compareTo(other) == 1;
-  bool operator >=(other) => compareTo(other) > 0;
+abstract class ComparableMixin<T> implements Comparable {
+  bool operator ==(T other) => compareTo(other) == 0;
+  bool operator <(T other) => compareTo(other) == -1;
+  bool operator <=(T other) => compareTo(other) <= 0;
+  bool operator >(T other) => compareTo(other) == 1;
+  bool operator >=(T other) => compareTo(other) > 0;
+  int compareTo(T other);
 }
