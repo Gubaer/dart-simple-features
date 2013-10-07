@@ -10,7 +10,7 @@ part of simple_features;
 //TODO: provide an optional factory object, in particular for Features
 //  and FeatureCollection
 parseGeoJson(String geoJson) {
-  var value = json.parse(geoJson);
+  var value = JSON.decode(geoJson);
   assert(value is Map);
 
   Point pos(coord) => new Point(coord[0], coord[1]);

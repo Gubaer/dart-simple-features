@@ -137,8 +137,14 @@ class LineSegment {
   bool operator==(LineSegment other) =>
       start == other.start && end == other.end;
 
-  bool get isHorizontal => _start.y == _end.y;
+  int get hashCode {
+    var result = 17;
+    result = 37 * result + start.hashCode;
+    result = 37 * result + end.hashCode;
+    return result;
+  }
 
+  bool get isHorizontal => _start.y == _end.y;
 
   /**
    * Returns the intersection point of this segment with the segment
@@ -207,7 +213,6 @@ class LineSegment {
     _ccwOrientation = dx / c;
     return _ccwOrientation;
   }
-
 
   String toString() => "{LineSegment: start=$start, end=$end}";
 }

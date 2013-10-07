@@ -1,10 +1,9 @@
 library test_linestring;
 
-import "dart:async";
 import "dart:collection";
 import "package:unittest/unittest.dart" hide isEmpty;
 import "package:meta/meta.dart";
-import "dart:json" as json;
+import "dart:convert";
 import "package:avl_tree/avl_tree.dart";
 import "dart:math" as math;
 import "package:log4dart/log4dart.dart";

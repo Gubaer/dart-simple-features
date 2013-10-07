@@ -1,6 +1,5 @@
 library test_polyhedral_surface;
 
-import "dart:async";
 import "dart:collection";
 import "package:unittest/unittest.dart" hide isEmpty;
 import "package:meta/meta.dart";

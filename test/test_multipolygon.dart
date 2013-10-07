@@ -1,10 +1,9 @@
 library test_multipolygon;
 
-import "dart:async";
 import "dart:collection";
 import "package:unittest/unittest.dart" hide isEmpty;
 import "package:meta/meta.dart";
-import "dart:json" as json;
+import "dart:convert";
 
 part "../lib/src/util.dart";
 part "../lib/src/point.dart";

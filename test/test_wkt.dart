@@ -1,6 +1,5 @@
 library test_wkt;
 
-import "dart:async";
 import "dart:collection";
 import "package:unittest/unittest.dart" hide isEmpty;
 
