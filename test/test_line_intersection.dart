@@ -257,7 +257,7 @@ main() {
       var intersections = computeLineIntersections([s1,s2]);
       expect(intersections.length, 1);
       expect(intersections.first.pos, equals(new DirectPosition2D(0, 0)));
-      expect(intersections.first.intersecting.toSet(), equals([s1, s2].toSet()));
+      expect(intersections.first.intersecting, unorderedEquals([s1, s2]));
     });
 
 
@@ -267,7 +267,7 @@ main() {
       var intersections = computeLineIntersections([s1,s2]);
       expect(intersections.length, 1);
       expect(intersections.first.pos, equals(new DirectPosition2D(5, 0)));
-      expect(intersections.first.intersecting.toSet(), equals([s1, s2].toSet()));
+      expect(intersections.first.intersecting, unorderedEquals([s1, s2]));
     });
 
     test("two overlapping lines", () {
@@ -276,9 +276,9 @@ main() {
       var intersections = computeLineIntersections([s1,s2]);
       expect(intersections.length, 2);
       expect(intersections[0].pos, equals(new DirectPosition2D(4, 4)));
-      expect(intersections[0].intersecting.toSet(), equals([s1, s2].toSet()));
+      expect(intersections[0].intersecting,unorderedEquals([s1, s2]));
       expect(intersections[1].pos, equals(new DirectPosition2D(3, 3)));
-      expect(intersections[1].intersecting.toSet(), equals([s1, s2].toSet()));
+      expect(intersections[1].intersecting,unorderedEquals([s1, s2]));
     });
   });
 }
