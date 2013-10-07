@@ -1,10 +1,9 @@
 library simple_features;
 
-import "dart:async";
 import "dart:collection";
 import "package:meta/meta.dart";
 import "dart:math";
-import "dart:json" as json;
+import "dart:convert";
 
 
 part "src/annotations.dart";
