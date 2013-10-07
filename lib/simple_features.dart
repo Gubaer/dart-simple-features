@@ -1,6 +1,5 @@
 library simple_features;
 
-import "dart:async";
 import "dart:collection";
 import "package:meta/meta.dart";
 import "dart:math";
