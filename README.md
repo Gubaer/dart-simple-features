@@ -1,3 +1,11 @@
+----
+
+This repository is **archived**. You can still fork it, but it isn't maintained anymore.
+
+Alternatives:
+  * [dart_jts](https://github.com/moovida/dart_jts)
+----
+
 `simple_features` is a [Dart](http://www.dartlang.org) implementation of
 [OGC](http://www.opengeospatial.org/)s
 [Simple Feature Specification](http://www.opengeospatial.org/standards/sfa) (SFS).
